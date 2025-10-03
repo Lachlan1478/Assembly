@@ -1,20 +1,16 @@
 # generate_initial_design.py
-# Minimal "Base44 bot" stub — no external deps or API calls.
+# Base44 automation using persistent Edge profile (no storage_state.json needed)
 
-import uuid
-
-import re, time
+import uuid, re, time
 from typing import Optional, Tuple
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 from pathlib import Path
+from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 
 BASE44_URL = "https://app.base44.com"
 
-def _base44_create_stub(prompt: dict):
-    app_id = "app_" + uuid.uuid4().hex[:8]
-    preview_url = "http://localhost:8000/mock_preview/" + app_id
-    # In a real client you would POST 'prompt' to Base44 and parse the response.
-    return app_id, preview_url
+# Path to your seeded Edge profile (update if different)
+EDGE_PROFILE_DIR = r"C:\Users\User\EdgePW"
+PROFILE_NAME = "Default"   # usually "Default"
 
 def _extract_app_id(preview_url: str) -> Optional[str]:
     m = re.search(r"/preview/([a-zA-Z0-9_-]+)", preview_url)
@@ -46,46 +42,41 @@ def _wait_for_preview_url(context, page, timeout_s: int = 180) -> str:
     raise TimeoutError("Timed out waiting for preview URL")
 
 def _find_builder_input(page):
-    # 1) Try placeholder (most stable)
     try:
         box = page.get_by_placeholder(re.compile(r"Describe the app you want to create", re.I))
         box.wait_for(state="visible", timeout=10_000)
         return box
     except Exception:
         pass
-    # 2) Fallback: any textarea/contenteditable
     loc = page.locator("textarea, [contenteditable='true']").first
     loc.wait_for(state="visible", timeout=10_000)
     return loc
 
 def build_from_spec(spec_text: str, headless: bool = True) -> Tuple[str, str]:
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
-
-        storage_file = "storage_state.json"
-        if Path(storage_file).exists():
-            context = browser.new_context(storage_state=storage_file)
-        else:
-            context = browser.new_context()
-
-        page = context.new_page()
+        # 👇 Launch with your persistent Edge profile
+        ctx = p.chromium.launch_persistent_context(
+            user_data_dir=EDGE_PROFILE_DIR,
+            channel="msedge",
+            headless=headless,
+            args=[f"--profile-directory={PROFILE_NAME}"],
+        )
+        page = ctx.pages[0] if ctx.pages else ctx.new_page()
         page.set_default_timeout(30_000)
 
         page.goto(BASE44_URL + "/", wait_until="domcontentloaded")
 
-        # if you need to log in manually, do it once in the launched browser;
-        # then you can persist storage_state and reuse it later.
-
+        # Should already be logged in since we're reusing EdgePW profile
         input_loc = _find_builder_input(page)
 
-        # clear + type
+        # Clear + type spec text
         try:
             tag = page.evaluate("(el)=>el.tagName && el.tagName.toLowerCase()", input_loc.element_handle())
         except Exception:
             tag = None
 
         if tag in ("textarea", "input"):
-            input_loc.fill("")       # clear
+            input_loc.fill("")
             input_loc.fill(spec_text)
         else:
             page.evaluate(
@@ -94,7 +85,7 @@ def build_from_spec(spec_text: str, headless: bool = True) -> Tuple[str, str]:
             )
             input_loc.type(spec_text, delay=1)
 
-        # submit: try a nearby button, then keyboard fallbacks
+        # Try to submit
         submitted = False
         try:
             container = input_loc.locator(
@@ -112,9 +103,7 @@ def build_from_spec(spec_text: str, headless: bool = True) -> Tuple[str, str]:
 
         if not submitted:
             try:
-                mod = "Control" if page.context.browser.browser_type.name == "chromium" and page.context.browser.is_connected() and page.context.browser_name != "webkit" and page.context.browser_name != "firefox" and page.context.browser_name != "webkit" else "Control"
-                # Keep it simple: Ctrl/Cmd+Enter; Windows/Linux use Control
-                input_loc.press("Control+Enter")
+                input_loc.press("Control+Enter")  # Windows/Linux
                 submitted = True
             except Exception:
                 pass
@@ -131,15 +120,14 @@ def build_from_spec(spec_text: str, headless: bool = True) -> Tuple[str, str]:
         if not submitted:
             input_loc.press("Enter")
 
-        preview_url = _wait_for_preview_url(context, page, timeout_s=180)
+        # Wait for preview URL
+        preview_url = _wait_for_preview_url(ctx, page, timeout_s=180)
         app_id = _extract_app_id(preview_url) or f"unknown_{int(time.time())}"
 
-        context.close()
-        browser.close()
+        print(f"[✓] Built app {app_id}, preview at: {preview_url}")
+
+        ctx.close()
         return app_id, preview_url
 
-
-
-
 def create_initial_design(initial_spec):
-    return build_from_spec(initial_spec, headless = False)
+    return build_from_spec(initial_spec, headless=False)

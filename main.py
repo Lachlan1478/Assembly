@@ -19,12 +19,6 @@ from generate_initial_design_03 import create_initial_design
 INSPIRATION = """
     Domain: Cooking
     Target users: Home cooks, food enthusiasts, and culinary beginners
-    Primary outcome: To help users discover, organize, and share recipes featured in TV shows and movies
-    Must haves: 
-        - A searchable database of recipes from popular TV shows and movies
-        - User accounts for saving and organizing favorite recipes
-        - Step-by-step cooking instructions with images or videos
-        - Social sharing features to share recipes with friends and family
 """
 
 # INSPIRATION = """
