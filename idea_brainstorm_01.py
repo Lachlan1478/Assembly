@@ -9,6 +9,74 @@ MODEL = "gpt-4.1-mini"
 def _score(idea, must_haves):
     pass
 
+
+from typing import List, Dict, Any, Callable, Optional
+
+# Persona type alias: takes (context: Dict) → returns an output dict
+PersonaFn = Callable[[Dict[str, Any]], Dict[str, Any]]
+
+def meeting_facilitator(
+    personas: Dict[str, PersonaFn],
+    phases: List[Dict[str, Any]],
+    shared_context: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    personas: mapping persona_id → function that takes context & returns output
+    phases: list of dicts like:
+        { "phase_id": str,
+          "lead_role": Optional[str],   # role to drive this phase
+          "allowed_roles": List[str],   # roles allowed to speak/respond
+          "prompt_key": str             # key in shared_context or derived for persona prompt
+        }
+    shared_context: mutable dict passed to all persona calls and updated over time
+
+    Returns: final shared_context (will include logs, results, decision)
+    """
+
+    logs = []
+    for phase in phases:
+        lead = phase.get("lead_role")
+        allowed = phase.get("allowed_roles", list(personas.keys()))
+        prompt_key = phase.get("prompt_key")
+
+        # 1. Lead speaks first (if exists)
+        if lead and lead in personas:
+            persona_fn = personas[lead]
+            ctx = { **shared_context, "phase": phase }
+            lead_output = persona_fn(ctx)
+            logs.append({ "phase": phase["phase_id"], "role": lead, "output": lead_output })
+            # Merge or store output
+            shared_context.setdefault("history", []).append(lead_output)
+
+        # 2. Others respond
+        for role, persona_fn in personas.items():
+            if role == lead:
+                continue
+            if role not in allowed:
+                continue
+            ctx = { **shared_context, "phase": phase }
+            resp = persona_fn(ctx)
+            logs.append({ "phase": phase["phase_id"], "role": role, "output": resp })
+            shared_context.setdefault("history", []).append(resp)
+
+        # 3. Summarize / mediator summary (optional)
+        # You might call a small summarizer persona or aggregator here:
+        # summary = summarizer(shared_context, phase)
+        # logs.append({ "phase": phase["phase_id"], "role": "facilitator", "output": summary })
+        # shared_context["last_summary"] = summary
+
+    # After all phases, optionally call a decision-maker
+    if "decision" in personas:
+        decision = personas["decision"](shared_context)
+        logs.append({ "phase": "decision", "role": "decision", "output": decision })
+        shared_context["decision"] = decision
+
+    shared_context["logs"] = logs
+    return shared_context
+
+
+
+
 def generate_idea(inspiration, number_of_ideas = 1):
 
     system_content = """You are a startup idea generator. Given some inspiration, you will generate a single, specific, concrete startup idea.
