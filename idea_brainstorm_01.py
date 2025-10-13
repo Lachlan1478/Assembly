@@ -76,15 +76,13 @@ def meeting_facilitator(
 
 
 
-
-def generate_idea(inspiration, number_of_ideas = 1):
+# Single LLM call to generate ideas. Old Methodology. To be improved.
+def single_llm_idea_generator(inspiration, number_of_ideas = 1):
 
     system_content = """You are a startup idea generator. Given some inspiration, you will generate a single, specific, concrete startup idea.
-    The idea should be a mobile app, web app, or SaaS product.
+        The idea should be a mobile app, web app, or SaaS product.
     """
     client = OpenAI(api_key = os.getenv("OPENAI_API_KEY", ""))
-
-    print(inspiration)
 
     message_content = f"""
         Given the following inspiration, generate {number_of_ideas} different startup idea(s).
@@ -117,9 +115,19 @@ def generate_idea(inspiration, number_of_ideas = 1):
         n = 1, # number of chat completion choices to generate
         # response_format,
     )
+
     raw_response = response.choices[0].message.content
 
     business_ideas = json.loads(raw_response)
+
+    return business_ideas
+
+
+def generate_idea(inspiration, number_of_ideas = 1):
+
+    print(inspiration)
+
+    business_ideas = single_llm_idea_generator(inspiration = inspiration, number_of_ideas = number_of_ideas)
 
     return business_ideas
 
