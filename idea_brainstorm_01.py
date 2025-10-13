@@ -3,6 +3,7 @@
 import json
 from openai import OpenAI
 import os
+from persona import Persona
 
 MODEL = "gpt-4.1-mini"
 
@@ -74,6 +75,39 @@ def meeting_facilitator(
     shared_context["logs"] = logs
     return shared_context
 
+# Multi-persona LLM call to generate ideas. New Methodology.
+def multiple_llm_idea_generator(inspiration, number_of_ideas = 1):
+
+    researcher = Persona.from_file("personas/researcher.json", model_name=MODEL)
+    tech_lead = Persona.from_file("personas/tech_lead.json", model_name=MODEL)
+    cfo = Persona.from_file("personas/cfo.json", model_name=MODEL)
+
+    personas = {
+        "researcher": researcher.response,
+        "tech_lead": tech_lead.response,
+        "cfo": cfo.response,
+    }    
+
+    phases = [
+        { "phase_id": "ideation", "lead_role": "researcher", "allowed_roles": ["researcher", "tech_lead", "cfo"], "prompt_key": "user_prompt" },
+        { "phase_id": "feasibility", "lead_role": "tech_lead", "allowed_roles": ["tech_lead", "cfo"], "prompt_key": "user_prompt" },
+        { "phase_id": "financials", "lead_role": "cfo", "allowed_roles": ["cfo"], "prompt_key": "user_prompt" },
+        { "phase_id": "decision", "lead_role": "decision", "allowed_roles": ["decision"], "prompt_key": "user_prompt" },
+    ]
+
+    shared_context = {
+        "user_prompt": f"Given the following inspiration, generate {number_of_ideas} different startup idea(s). Each item must include: title, description, target_users, primary_outcome, must_haves, constraints, non_goals and be in valid JSON format as an array of objects. Ensure the ideas are meaningfully different. Inspiration: {inspiration}",
+        "inspiration": inspiration,
+        "number_of_ideas": number_of_ideas,
+    }
+
+    final_context = meeting_facilitator(personas, phases, shared_context)
+    raw_ideas = final_context.get("decision", {}).get("response", "[]")
+
+    
+    business_ideas = json.loads(raw_ideas)
+    
+    return business_ideas
 
 
 # Single LLM call to generate ideas. Old Methodology. To be improved.
@@ -137,6 +171,11 @@ def generate_ideas_and_pick_best(inspiration, number_of_ideas = 2):
     ideas = generate_idea(inspiration = inspiration, number_of_ideas = number_of_ideas)
 
     print(ideas)
+
+
+    new_ideas = multiple_llm_idea_generator(inspiration = inspiration, number_of_ideas = number_of_ideas)
+
+    print(new_ideas)
 
     
     return ideas
