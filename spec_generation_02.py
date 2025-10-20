@@ -70,7 +70,6 @@ def generate_spec(idea):
             # {"role": "assistant", "content": "Short selling is when..."},                 # Model’s previous replies (if you’re keeping conversation history).
             # {"type": "image_url", "image_url": {"url": "https://example.com/chart.png"}}. # Can have multiple images
         ],
-        temperature = 1,
         # max_tokens,
         frequency_penalty = 0.0, # -2.0 to 2.0, default 0.0 - penalizes repeated phrases
         presence_penalty = 0.0, # -2.0 to 2.0, default 0.0 - penalizes repeated topics

@@ -5,7 +5,8 @@ from openai import OpenAI
 import os
 from persona import Persona
 
-MODEL = "gpt-4.1-mini"
+#MODEL = "gpt-4.1-mini"
+MODEL = "gpt-5-mini"
 
 def _score(idea, must_haves):
     pass
@@ -40,24 +41,35 @@ def meeting_facilitator(
         allowed = phase.get("allowed_roles", list(personas.keys()))
         prompt_key = phase.get("prompt_key")
 
+        print(f"\n=== Starting Phase: {phase['phase_id']} ===")
+        
         # 1. Lead speaks first (if exists)
         if lead and lead in personas:
+            print(f"\n👤 Lead {lead} is speaking...")
             persona_fn = personas[lead]
             ctx = { **shared_context, "phase": phase }
             lead_output = persona_fn(ctx)
-            logs.append({ "phase": phase["phase_id"], "role": lead, "output": lead_output })
+            log_entry = { "phase": phase["phase_id"], "role": lead, "output": lead_output }
+            logs.append(log_entry)
+            print(f"Output from {lead}:")
+            print(json.dumps(log_entry["output"], indent=2))
             # Merge or store output
             shared_context.setdefault("history", []).append(lead_output)
 
         # 2. Others respond
+        print("\n👥 Other participants responding...")
         for role, persona_fn in personas.items():
             if role == lead:
                 continue
             if role not in allowed:
                 continue
             ctx = { **shared_context, "phase": phase }
+            print(f"\nℹ️ {role} is responding...")
             resp = persona_fn(ctx)
-            logs.append({ "phase": phase["phase_id"], "role": role, "output": resp })
+            log_entry = { "phase": phase["phase_id"], "role": role, "output": resp }
+            logs.append(log_entry)
+            print(f"Output from {role}:")
+            print(json.dumps(log_entry["output"], indent=2))
             shared_context.setdefault("history", []).append(resp)
 
         # 3. Summarize / mediator summary (optional)
@@ -68,8 +80,12 @@ def meeting_facilitator(
 
     # After all phases, optionally call a decision-maker
     if "decision" in personas:
+        print("\n🎯 Making final decision...")
         decision = personas["decision"](shared_context)
-        logs.append({ "phase": "decision", "role": "decision", "output": decision })
+        log_entry = { "phase": "decision", "role": "decision", "output": decision }
+        logs.append(log_entry)
+        print("Final Decision:")
+        print(json.dumps(log_entry["output"], indent=2))
         shared_context["decision"] = decision
 
     shared_context["logs"] = logs
@@ -78,33 +94,58 @@ def meeting_facilitator(
 # Multi-persona LLM call to generate ideas. New Methodology.
 def multiple_llm_idea_generator(inspiration, number_of_ideas = 1):
 
+    founder = Persona.from_file("personas/founder.json", model_name=MODEL)
+    designer = Persona.from_file("personas/designer.json", model_name=MODEL)
     researcher = Persona.from_file("personas/researcher.json", model_name=MODEL)
     tech_lead = Persona.from_file("personas/tech_lead.json", model_name=MODEL)
     cfo = Persona.from_file("personas/cfo.json", model_name=MODEL)
+    contrarian = Persona.from_file("personas/contrarian.json", model_name=MODEL)
 
     personas = {
+        "founder": founder.response,
+        "designer": designer.response,
         "researcher": researcher.response,
         "tech_lead": tech_lead.response,
         "cfo": cfo.response,
+        "contrarian": contrarian.response
     }    
 
     phases = [
-        { "phase_id": "ideation", "lead_role": "researcher", "allowed_roles": ["researcher", "tech_lead", "cfo"], "prompt_key": "user_prompt" },
-        { "phase_id": "feasibility", "lead_role": "tech_lead", "allowed_roles": ["tech_lead", "cfo"], "prompt_key": "user_prompt" },
-        { "phase_id": "financials", "lead_role": "cfo", "allowed_roles": ["cfo"], "prompt_key": "user_prompt" },
-        { "phase_id": "decision", "lead_role": "decision", "allowed_roles": ["decision"], "prompt_key": "user_prompt" },
+        { "phase_id": "ideation", "lead_role": "founder", "allowed_roles": ["founder", "designer", "researcher", "tech_lead", "cfo", "contrarian"], "prompt_key": "user_prompt" },
+        { "phase_id": "design", "lead_role": "designer", "allowed_roles": ["designer", "tech_lead", "researcher"], "prompt_key": "user_prompt" },
+        { "phase_id": "research", "lead_role": "researcher", "allowed_roles": ["researcher", "contrarian"], "prompt_key": "user_prompt" },
+        { "phase_id": "feasibility", "lead_role": "tech_lead", "allowed_roles": ["tech_lead", "designer", "cfo"], "prompt_key": "user_prompt" },
+        { "phase_id": "financials", "lead_role": "cfo", "allowed_roles": ["cfo", "contrarian"], "prompt_key": "user_prompt" },
+        { "phase_id": "critique", "lead_role": "contrarian", "allowed_roles": ["contrarian", "founder"], "prompt_key": "user_prompt" },
+        { "phase_id": "decision", "lead_role": "founder", "allowed_roles": ["founder"], "prompt_key": "user_prompt" }
     ]
 
+    intial_prompt = f"""
+
+
+        Inspiration: {inspiration}
+
+    """
+
+    prompt = f"""
+        Given the following inspiration, generate {number_of_ideas} different startup idea(s).
+        Ensure the ideas are meaningfully different.
+        
+        Inspiration: {inspiration}
+    """
+
     shared_context = {
-        "user_prompt": f"Given the following inspiration, generate {number_of_ideas} different startup idea(s). Each item must include: title, description, target_users, primary_outcome, must_haves, constraints, non_goals and be in valid JSON format as an array of objects. Ensure the ideas are meaningfully different. Inspiration: {inspiration}",
+        "user_prompt": prompt,
         "inspiration": inspiration,
         "number_of_ideas": number_of_ideas,
     }
 
     final_context = meeting_facilitator(personas, phases, shared_context)
+    logs = final_context.get("logs", [])
+    with open("meeting_logs.txt", "w", encoding="utf-8") as f:
+        json.dump(logs, f, indent=2)
     raw_ideas = final_context.get("decision", {}).get("response", "[]")
 
-    
     business_ideas = json.loads(raw_ideas)
     
     return business_ideas
@@ -142,7 +183,6 @@ def single_llm_idea_generator(inspiration, number_of_ideas = 1):
             # {"type": "image_url", "image_url": {"url": "https://example.com/chart.png"}}. # Can have multiple images
         ],
         response_format={"type": "json_object"},
-        temperature = 1,
         # max_tokens,
         frequency_penalty = 0.0, # -2.0 to 2.0, default 0.0 - penalizes repeated phrases
         presence_penalty = 0.0, # -2.0 to 2.0, default 0.0 - penalizes repeated topics
@@ -168,14 +208,6 @@ def generate_idea(inspiration, number_of_ideas = 1):
 
 def generate_ideas_and_pick_best(inspiration, number_of_ideas = 2):
 
-    ideas = generate_idea(inspiration = inspiration, number_of_ideas = number_of_ideas)
-
-    print(ideas)
-
-
     new_ideas = multiple_llm_idea_generator(inspiration = inspiration, number_of_ideas = number_of_ideas)
-
     print(new_ideas)
-
-    
-    return ideas
+    return new_ideas

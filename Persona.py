@@ -9,13 +9,12 @@ class Persona:
         definition: dict loaded from JSON defining this persona
         model_name: default model used for responses
         """
-        self.name = definition.get("name", "Unknown Persona")
-        self.role = definition.get("role", "")
-        self.purpose = definition.get("purpose", "")
-        self.delivers = definition.get("delivers", "")
-        self.watchouts = definition.get("watchouts", "")
-        self.system_prompt = definition.get("system_prompt", "")
-        self.temperature = 1.0  # Default temperature
+        self.name = definition.get("Name", "Unknown Persona")
+        self.archetype = definition.get("Archetype", "")
+        self.purpose = definition.get("Purpose", "")
+        self.deliverables = definition.get("Deliverables", "")
+        self.strengths = definition.get("Strengths", "")
+        self.watchouts = definition.get("Watch-out", "")
         self.model_name = model_name
         self.client = OpenAI()  # your LLM client
 
@@ -37,9 +36,10 @@ class Persona:
         messages = [
             {
                 "role": "system",
-                "content": f"You are {self.name}, the {self.role}. "
-                           f"Purpose: {self.purpose}. Deliverables: {self.delivers}. "
-                           f"Be mindful of: {self.watchouts}. {self.system_prompt}"
+                "content": f"You are {self.name}, the {self.archetype}. "
+                           f"Purpose: {self.purpose}. Deliverables: {self.deliverables}. "
+                           f"Strengths: {self.strengths}. "
+                           f"Be mindful of: {self.watchouts}."
             },
             {
                 "role": "user",
@@ -50,13 +50,12 @@ class Persona:
         # Call LLM
         completion = self.client.chat.completions.create(
             model=self.model_name,
-            messages=messages,
-            temperature=self.temperature
+            messages=messages
         )
 
         content = completion.choices[0].message.content.strip()
         return {
             "persona": self.name,
-            "role": self.role,
+            "archetype": self.archetype,
             "response": content
         }
