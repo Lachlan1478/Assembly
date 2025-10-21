@@ -206,7 +206,7 @@ def generate_idea(inspiration, number_of_ideas = 1):
     return business_ideas
 
 
-def generate_ideas_and_pick_best(inspiration, number_of_ideas = 2):
+def generate_ideas_and_pick_best(inspiration, number_of_ideas = 1):
 
     new_ideas = multiple_llm_idea_generator(inspiration = inspiration, number_of_ideas = number_of_ideas)
     print(new_ideas)
