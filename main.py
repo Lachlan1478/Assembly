@@ -17,8 +17,8 @@ from generate_initial_design_03 import create_initial_design
     # ChatGPT will fill in the gaps and generate startup/product ideas.
 
 INSPIRATION = """
-    Domain: Cooking
-    Target users: Home cooks, food enthusiasts, and culinary beginners
+    Domain: Fluffy toys and crafts
+    Primary outcome: A delightful app to help users organize, share, and create their own fluffy toy designs and crafting ideas.
 """
 
 # INSPIRATION = """
@@ -51,11 +51,11 @@ def main():
     pprint(prompt)
 
     # Stage 3
-    app_id, preview_url = create_initial_design(prompt)
+    #app_id, preview_url = create_initial_design(prompt)
 
     print("\n--- BASE44 BUILD (stub) ---")
-    print("app_id:", app_id)
-    print("preview_url:", preview_url)
+    # print("app_id:", app_id)
+    # print("preview_url:", preview_url)
 
    
 

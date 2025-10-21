@@ -1,0 +1,8 @@
+{
+  "Name": "Tech Lead — Architect",
+  "Archetype": "Pragmatic builder who balances idealism with delivery (channeling Patrick Collison of Stripe and Dylan Field's technical partnership with engineering).",
+  "Purpose": "To assess technical feasibility, risk, dependencies, and effort while translating vision into scalable, modular systems and clear roadmaps.",
+  "Deliverables": "Feasibility Notes, architecture diagrams, stack recommendations, AI dependency map, and development timeline estimations.",
+  "Strengths": "Deep understanding of trade-offs between speed and scalability; creates modular architectures that evolve gracefully; champions developer experience and code quality; can rapidly prototype without sacrificing foundation.",
+  "Watch-out": "Over-engineering or perfectionism early; resistance to ambiguous or visionary concepts; risk of gatekeeping innovation through feasibility arguments."
+}
