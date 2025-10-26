@@ -19,11 +19,11 @@ from spec_generation_02 import make_initial_prompt
     # ChatGPT will fill in the gaps and generate startup/product ideas.
 
 INSPIRATION = """
-    Domain: Remote work productivity and team collaboration
-    Target users: Remote-first companies and distributed teams (10-500 employees)
-    Primary outcome: Help remote teams maintain connection and productivity without Zoom fatigue
-    Constraints: Must work asynchronously across time zones, no required synchronous meetings
-    UX rules: Lightweight, non-intrusive, integrates with existing tools
+    Domain: Software development workflows and code review
+    Target users: Engineering teams at startups and scale-ups (5-50 engineers)
+    Primary outcome: Reduce context switching and improve code review velocity without sacrificing quality
+    Constraints: Must integrate with GitHub/GitLab, minimal initial configuration, works with existing workflows
+    UX rules: Fits naturally into developer workflow, actionable notifications only, no dashboard babysitting
 """
 
 # INSPIRATION = """
@@ -45,20 +45,22 @@ def main():
         epilog="""
 Available modes:
   fast     - Quick test run (1-2 min, minimal cost)
-  standard - Balanced run (5-10 min, moderate cost) [default]
-  deep     - Comprehensive run (10-15 min, higher cost)
+  medium   - Balanced run (3-5 min, moderate cost) [default]
+  standard - Comprehensive run (30-60 min, higher cost)
+  deep     - Deep exploration (60-90 min, highest cost)
 
 Examples:
-  python main.py                  # Run in standard mode
-  python main.py --mode fast      # Run in fast mode
-  python main.py --mode deep      # Run in deep mode
+  python main.py                   # Run in medium mode (default)
+  python main.py --mode fast       # Run in fast mode
+  python main.py --mode standard   # Run in standard mode
+  python main.py --mode deep       # Run in deep mode
         """
     )
     parser.add_argument(
         "--mode",
         type=str,
-        default=os.getenv("ASSEMBLY_MODE", "standard"),
-        choices=["fast", "standard", "deep"],
+        default=os.getenv("ASSEMBLY_MODE", "medium"),
+        choices=["fast", "medium", "standard", "deep"],
         help="Run mode (can also be set via ASSEMBLY_MODE env var)"
     )
     args = parser.parse_args()

@@ -1,0 +1,54 @@
+{
+  "ideation": {
+    "founder_visionary": {
+      "objective_facts": [],
+      "subjective_notes": {
+        "key_concerns": [],
+        "priorities": [],
+        "opinions": []
+      }
+    },
+    "market_researcher_growth_product_manager": {
+      "objective_facts": [],
+      "subjective_notes": {
+        "key_concerns": [],
+        "priorities": [],
+        "opinions": []
+      }
+    },
+    "product_designer_ux_designer": {
+      "objective_facts": [],
+      "subjective_notes": {
+        "key_concerns": [],
+        "priorities": [],
+        "opinions": []
+      }
+    }
+  },
+  "decision": {
+    "facilitator_orchestrator": {
+      "objective_facts": [],
+      "subjective_notes": {
+        "key_concerns": [],
+        "priorities": [],
+        "opinions": []
+      }
+    },
+    "product_designer_ux_designer": {
+      "objective_facts": [],
+      "subjective_notes": {
+        "key_concerns": [],
+        "priorities": [],
+        "opinions": []
+      }
+    },
+    "tech_lead_architect": {
+      "objective_facts": [],
+      "subjective_notes": {
+        "key_concerns": [],
+        "priorities": [],
+        "opinions": []
+      }
+    }
+  }
+}
