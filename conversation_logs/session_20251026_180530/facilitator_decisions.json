@@ -1,0 +1,81 @@
+[
+  {
+    "timestamp": "2025-10-26T18:05:33.188220",
+    "type": "persona_selection",
+    "phase": "ideation",
+    "decision": [
+      "founder_visionary",
+      "product_designer_ux_designer",
+      "market_researcher_growth_product_manager",
+      "tech_lead_architect"
+    ],
+    "reasoning": "Selected 4 personas for phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:34.002727",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 0 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:38.554874",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 1 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:42.809048",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 2 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:47.267579",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 3 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:50.025320",
+    "type": "persona_selection",
+    "phase": "decision",
+    "decision": [
+      "founder_visionary",
+      "tech_lead_architect",
+      "facilitator_orchestrator"
+    ],
+    "reasoning": "Selected 3 personas for phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:51.165183",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 0 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:54.838579",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 1 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T18:05:59.836312",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 2 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T18:06:02.416776",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 3 in phase 'decision'"
+  }
+]
