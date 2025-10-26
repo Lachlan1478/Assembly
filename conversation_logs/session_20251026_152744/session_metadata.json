@@ -1,0 +1,33 @@
+{
+  "timestamp": "20251026_152744",
+  "session_start": "2025-10-26T15:27:44.758381",
+  "inspiration": "\n    Domain: Remote work productivity and team collaboration\n    Target users: Remote-first companies and distributed teams (10-500 employees)\n    Primary outcome: Help remote teams maintain connection and productivity without Zoom fatigue\n    Constraints: Must work asynchronously across time zones, no required synchronous meetings\n    UX rules: Lightweight, non-intrusive, integrates with existing tools\n",
+  "number_of_ideas": 1,
+  "mode": "fast",
+  "model": "gpt-3.5-turbo",
+  "personas_loaded": [
+    "cfo_business_strategist",
+    "contrarian_devil's_advocate",
+    "product_designer_ux_designer",
+    "facilitator_orchestrator",
+    "founder_visionary",
+    "market_researcher_growth_product_manager",
+    "tech_lead_architect"
+  ],
+  "phases": [
+    {
+      "phase_id": "ideation",
+      "goal": "Generate 1 different startup idea(s) based on the inspiration",
+      "desired_outcome": "List of concrete startup ideas with clear value propositions",
+      "max_turns": 3
+    },
+    {
+      "phase_id": "decision",
+      "goal": "Consolidate all feedback and output final startup ideas in JSON format",
+      "desired_outcome": "JSON array of 1 startup idea(s) with all required fields",
+      "max_turns": 3
+    }
+  ],
+  "ideas": [],
+  "session_end": "2025-10-26T15:28:11.935222"
+}
