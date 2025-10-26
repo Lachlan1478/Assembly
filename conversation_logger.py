@@ -5,6 +5,7 @@ Saves timestamped session data to enable validation of persona interactions and 
 """
 
 import json
+import textwrap
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any
@@ -191,6 +192,37 @@ class ConversationLogger:
         if description:
             print(f"[Logger] Saved {filename}: {description}")
 
+    def _wrap_text(self, text: str, width: int = 100) -> str:
+        """
+        Wrap long text to specified width while preserving paragraphs.
+
+        Args:
+            text: Text to wrap
+            width: Maximum line width (default 100 for readability)
+
+        Returns:
+            Wrapped text with preserved paragraph structure
+        """
+        # Split into paragraphs
+        paragraphs = text.split('\n')
+        wrapped_paragraphs = []
+
+        for para in paragraphs:
+            if para.strip():
+                # Wrap each paragraph
+                wrapped = textwrap.fill(
+                    para,
+                    width=width,
+                    break_long_words=False,
+                    break_on_hyphens=False
+                )
+                wrapped_paragraphs.append(wrapped)
+            else:
+                # Preserve blank lines
+                wrapped_paragraphs.append('')
+
+        return '\n'.join(wrapped_paragraphs)
+
     def _save_phase_summaries(self) -> None:
         """Save phase summaries as readable text file."""
         filepath = self.session_dir / "phase_summaries.txt"
@@ -202,20 +234,26 @@ class ConversationLogger:
             for phase_id, summary in self.phase_summaries.items():
                 f.write(f"Phase: {phase_id.upper()}\n")
                 f.write("-" * 70 + "\n")
-                f.write(summary + "\n\n")
+                wrapped_summary = self._wrap_text(summary, width=70)
+                f.write(wrapped_summary + "\n\n")
 
         print(f"[Logger] Saved phase_summaries.txt: Human-readable phase summaries")
 
     def _generate_transcript(self) -> None:
-        """Generate a human-friendly markdown transcript."""
+        """Generate a human-friendly markdown transcript with wrapped text."""
         filepath = self.session_dir / "readable_transcript.md"
 
         with open(filepath, "w", encoding="utf-8") as f:
             # Header
             f.write(f"# Conversation Transcript\n\n")
             f.write(f"**Session**: {self.metadata.get('timestamp')}\n\n")
+
             if "inspiration" in self.metadata:
-                f.write(f"**Inspiration**: {self.metadata['inspiration']}\n\n")
+                f.write(f"**Inspiration**:\n```\n")
+                inspiration_text = self._wrap_text(str(self.metadata['inspiration']), width=80)
+                f.write(inspiration_text)
+                f.write("\n```\n\n")
+
             f.write("---\n\n")
 
             # Group exchanges by phase
@@ -230,7 +268,8 @@ class ConversationLogger:
 
                     # Add phase summary if available
                     if phase in self.phase_summaries:
-                        f.write(f"*{self.phase_summaries[phase]}*\n\n")
+                        wrapped_phase_summary = self._wrap_text(self.phase_summaries[phase], width=100)
+                        f.write(f"*{wrapped_phase_summary}*\n\n")
 
                 # Exchange
                 speaker = exchange["speaker"]
@@ -238,8 +277,11 @@ class ConversationLogger:
                 content = exchange["content"]
                 turn = exchange["turn"]
 
-                f.write(f"### Turn {turn}: {speaker} ({archetype})\n\n")
-                f.write(f"{content}\n\n")
+                f.write(f"### Turn {turn}: {speaker} — {archetype}\n\n")
+
+                # Wrap content for readability
+                wrapped_content = self._wrap_text(content, width=100)
+                f.write(f"{wrapped_content}\n\n")
                 f.write("---\n\n")
 
             # Final summary

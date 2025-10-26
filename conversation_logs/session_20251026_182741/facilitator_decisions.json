@@ -1,0 +1,532 @@
+[
+  {
+    "timestamp": "2025-10-26T18:27:46.676411",
+    "type": "persona_selection",
+    "phase": "ideation",
+    "decision": [
+      "founder_visionary",
+      "product_designer_ux_designer",
+      "market_researcher_growth_product_manager",
+      "facilitator_orchestrator",
+      "contrarian_devil's_advocate"
+    ],
+    "reasoning": "Selected 5 personas for phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:27:48.864689",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 0 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:28:30.390066",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 1 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:29:02.794904",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 2 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:29:36.455031",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 3 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:30:14.500462",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 4 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:30:50.125651",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 5 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:31:31.647133",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "facilitator_orchestrator",
+    "reasoning": "Turn 6 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:32:16.597867",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 7 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:32:59.972794",
+    "type": "speaker_choice",
+    "phase": "ideation",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'ideation'"
+  },
+  {
+    "timestamp": "2025-10-26T18:33:06.265345",
+    "type": "persona_selection",
+    "phase": "design",
+    "decision": [
+      "product_designer_ux_designer",
+      "founder_visionary",
+      "market_researcher_growth_product_manager",
+      "tech_lead_architect",
+      "facilitator_orchestrator"
+    ],
+    "reasoning": "Selected 5 personas for phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:33:07.930456",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 0 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:33:54.885537",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 1 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:34:40.667465",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 2 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:35:36.765690",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 3 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:36:29.026317",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 4 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:37:22.850309",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 5 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:38:18.881522",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 6 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:39:20.927608",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 7 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:40:09.234925",
+    "type": "speaker_choice",
+    "phase": "design",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'design'"
+  },
+  {
+    "timestamp": "2025-10-26T18:40:17.469370",
+    "type": "persona_selection",
+    "phase": "research",
+    "decision": [
+      "market_researcher_growth_product_manager",
+      "cfo_business_strategist",
+      "contrarian_devil's_advocate",
+      "founder_visionary",
+      "product_designer_ux_designer"
+    ],
+    "reasoning": "Selected 5 personas for phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:40:19.476827",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 0 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:41:17.602059",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 1 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:42:18.031712",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "contrarian_devil's_advocate",
+    "reasoning": "Turn 2 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:43:20.014589",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 3 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:44:25.772377",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 4 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:45:25.989453",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 5 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:46:16.945202",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 6 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:47:13.523295",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 7 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:48:02.103467",
+    "type": "speaker_choice",
+    "phase": "research",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'research'"
+  },
+  {
+    "timestamp": "2025-10-26T18:48:07.463112",
+    "type": "persona_selection",
+    "phase": "feasibility",
+    "decision": [
+      "tech_lead_architect",
+      "contrarian_devil's_advocate",
+      "product_designer_ux_designer",
+      "market_researcher_growth_product_manager",
+      "cfo_business_strategist"
+    ],
+    "reasoning": "Selected 5 personas for phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:48:09.868313",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 0 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:49:02.728315",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 1 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:49:50.000512",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "product_designer_ux_designer",
+    "reasoning": "Turn 2 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:50:33.628880",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 3 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:51:15.195823",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 4 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:51:56.636107",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 5 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:52:40.074373",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 6 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:53:24.295463",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 7 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:54:01.735234",
+    "type": "speaker_choice",
+    "phase": "feasibility",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'feasibility'"
+  },
+  {
+    "timestamp": "2025-10-26T18:54:07.948587",
+    "type": "persona_selection",
+    "phase": "financials",
+    "decision": [
+      "cfo_business_strategist",
+      "contrarian_devil's_advocate",
+      "market_researcher_growth_product_manager",
+      "tech_lead_architect"
+    ],
+    "reasoning": "Selected 4 personas for phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:54:10.286216",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 0 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:54:48.372758",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 1 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:55:36.610738",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 2 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:56:13.191974",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 3 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:56:56.162941",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 4 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:57:47.381826",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 5 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:58:26.022825",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 6 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:59:11.326462",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 7 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T18:59:58.960271",
+    "type": "speaker_choice",
+    "phase": "financials",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'financials'"
+  },
+  {
+    "timestamp": "2025-10-26T19:00:05.573118",
+    "type": "persona_selection",
+    "phase": "critique",
+    "decision": [
+      "contrarian_devil's_advocate",
+      "cfo_business_strategist",
+      "market_researcher_growth_product_manager",
+      "tech_lead_architect"
+    ],
+    "reasoning": "Selected 4 personas for phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:00:08.553752",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "contrarian_devil's_advocate",
+    "reasoning": "Turn 0 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:01:26.065274",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 1 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:02:35.374327",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 2 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:03:31.676102",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "contrarian_devil's_advocate",
+    "reasoning": "Turn 3 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:04:44.579755",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "tech_lead_architect",
+    "reasoning": "Turn 4 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:05:42.017504",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 5 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:07:00.862229",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "contrarian_devil's_advocate",
+    "reasoning": "Turn 6 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:08:01.460907",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 7 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:08:56.476474",
+    "type": "speaker_choice",
+    "phase": "critique",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'critique'"
+  },
+  {
+    "timestamp": "2025-10-26T19:09:03.969955",
+    "type": "persona_selection",
+    "phase": "decision",
+    "decision": [
+      "cfo_business_strategist",
+      "contrarian_devil's_advocate",
+      "founder_visionary",
+      "facilitator_orchestrator",
+      "market_researcher_growth_product_manager"
+    ],
+    "reasoning": "Selected 5 personas for phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:09:06.550222",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 0 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:09:55.442153",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 1 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:10:49.725092",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 2 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:11:44.384282",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "market_researcher_growth_product_manager",
+    "reasoning": "Turn 3 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:12:35.047497",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "facilitator_orchestrator",
+    "reasoning": "Turn 4 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:13:26.583762",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "cfo_business_strategist",
+    "reasoning": "Turn 5 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:14:28.695290",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "contrarian_devil's_advocate",
+    "reasoning": "Turn 6 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:15:29.031018",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "founder_visionary",
+    "reasoning": "Turn 7 in phase 'decision'"
+  },
+  {
+    "timestamp": "2025-10-26T19:16:12.380686",
+    "type": "speaker_choice",
+    "phase": "decision",
+    "decision": "PHASE_COMPLETE",
+    "reasoning": "Turn 8 in phase 'decision'"
+  }
+]
