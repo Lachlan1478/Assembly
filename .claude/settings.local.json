@@ -4,7 +4,14 @@
       "Bash(python -m py_compile:*)",
       "Bash(python test_new_architecture.py:*)",
       "Bash(move test_new_architecture.py Testingtest_new_architecture.py)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(move idea_brainstorm_01a_config.py srcidea_generationconfig.py)",
+      "Bash(move idea_brainstorm_01b_prompts.py srcidea_generationprompts.py)",
+      "Bash(move idea_brainstorm_01c_orchestration.py srcidea_generationorchestration.py)",
+      "Bash(move idea_brainstorm_01d_extraction.py srcidea_generationextraction.py)",
+      "Bash(move idea_brainstorm_01.py srcidea_generationgenerator.py)",
+      "Bash(move spec_generation_02.py srcstagesspec_generation.py)",
+      "Bash(move generate_initial_design_03.py srcstagesdesign_generation.py)"
     ],
     "deny": [],
     "ask": []

@@ -1,6 +1,6 @@
 # persona.py
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from openai import OpenAI
 
 class Persona:
@@ -52,13 +52,19 @@ class Persona:
         user_prompt = ctx.get("user_prompt") or ctx.get("prompt") or ""
         phase = ctx.get("phase", {})
         shared_context = ctx.get("shared_context", {})
+        recent_exchanges = ctx.get("recent_exchanges", [])
 
         # Format summary for inclusion in prompt
         summary_text = self._format_summary()
 
+        # Format recent discussion
+        recent_discussion = self._format_recent_exchanges(recent_exchanges)
+
         # Build enhanced user prompt with summary and context
         enhanced_prompt = f"""CURRENT TOPIC/QUESTION:
 {user_prompt}
+
+{recent_discussion}
 
 YOUR MEETING SUMMARY SO FAR:
 {summary_text}
@@ -69,7 +75,7 @@ SHARED CONTEXT:
 CURRENT PHASE:
 {json.dumps(phase, indent=2) if phase else 'Not specified'}
 
-Based on your summary, the shared context, and your role as {self.archetype}, provide your perspective on the current topic."""
+Based on the recent discussion, your summary, the shared context, and your role as {self.archetype}, provide your perspective. Build on previous ideas when appropriate, or challenge them if you see issues."""
 
         # Build messages with persona identity in system prompt
         messages = [
@@ -126,6 +132,38 @@ Based on your summary, the shared context, and your role as {self.archetype}, pr
                     lines.append(f"  {key.replace('_', ' ').title()}: {value}")
 
         return "\n".join(lines) if lines else "No summary yet."
+
+    def _format_recent_exchanges(self, exchanges: List[Dict[str, Any]]) -> str:
+        """
+        Format recent exchanges for inclusion in prompts.
+
+        Args:
+            exchanges: List of recent exchange dicts with speaker, content, etc.
+
+        Returns:
+            Formatted string showing recent discussion
+        """
+        if not exchanges:
+            return "RECENT DISCUSSION:\n(No recent exchanges - this is the start of the phase)"
+
+        lines = ["RECENT DISCUSSION:"]
+
+        # Show last 3-5 exchanges (most recent conversation context)
+        recent = exchanges[-5:] if len(exchanges) > 5 else exchanges
+
+        for ex in recent:
+            speaker = ex.get("speaker", "Unknown")
+            content = ex.get("content", "")
+
+            # Truncate very long responses to ~500 chars
+            if len(content) > 500:
+                content = content[:500] + "..."
+
+            lines.append(f"\n[{speaker}]:")
+            lines.append(content)
+            lines.append("")  # Blank line between exchanges
+
+        return "\n".join(lines)
 
     def update_summary(self, new_exchange: Dict[str, Any]) -> None:
         """

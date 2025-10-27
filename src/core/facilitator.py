@@ -65,26 +65,26 @@ class FacilitatorAgent:
 
         selection_prompt = f"""You are a meeting facilitator selecting participants for a phase.
 
-PHASE INFORMATION:
-- Phase ID: {phase.get('phase_id')}
-- Goal: {phase.get('goal')}
-- Desired Outcome: {phase.get('desired_outcome')}
+            PHASE INFORMATION:
+            - Phase ID: {phase.get('phase_id')}
+            - Goal: {phase.get('goal')}
+            - Desired Outcome: {phase.get('desired_outcome')}
 
-AVAILABLE PERSONAS:
-{json.dumps(persona_descriptions, indent=2)}
+            AVAILABLE PERSONAS:
+            {json.dumps(persona_descriptions, indent=2)}
 
-Select the 3-6 most relevant personas for this phase based on:
-1. Their archetype and purpose alignment with phase goal
-2. Their strengths matching the desired outcome
-3. Diversity of perspectives needed
+            Select the 3-6 most relevant personas for this phase based on:
+            1. Their archetype and purpose alignment with phase goal
+            2. Their strengths matching the desired outcome
+            3. Diversity of perspectives needed
 
-Respond ONLY with a JSON object:
-{{
-  "selected_personas": ["persona1", "persona2", ...],
-  "reasoning": "Brief explanation of why these personas were chosen"
-}}
+            Respond ONLY with a JSON object:
+            {{
+            "selected_personas": ["persona1", "persona2", ...],
+            "reasoning": "Brief explanation of why these personas were chosen"
+            }}
 
-Use the exact "name" values from the available personas list."""
+            Use the exact "name" values from the available personas list."""
 
         messages = [
             {

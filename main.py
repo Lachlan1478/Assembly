@@ -9,8 +9,9 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from idea_brainstorm_01 import generate_ideas_and_pick_best, MODE_CONFIGS
-from spec_generation_02 import make_initial_prompt
+from src.idea_generation.generator import multiple_llm_idea_generator
+from src.idea_generation.config import MODE_CONFIGS
+from src.stages.spec_generation import make_initial_prompt
 # from generate_initial_design_03 import create_initial_design  # Stage 3 not needed for this test
 
 # ---- Hard-coded "user input" / criteria ----
@@ -70,7 +71,7 @@ Examples:
     print(f"Mode: {args.mode.upper()}")
     print(f"{'='*60}\n")
 
-    ideas = generate_ideas_and_pick_best(INSPIRATION, mode=args.mode)
+    ideas = multiple_llm_idea_generator(INSPIRATION, number_of_ideas=1, mode=args.mode)
 
     print("\n--- IDEAS ---")
     pprint(ideas)
