@@ -5,7 +5,7 @@ Utility functions for the Assembly application.
 import json
 from pathlib import Path
 from typing import Dict
-from persona import Persona
+from src.core.persona import Persona
 
 
 def load_all_personas(directory: str = "personas", model_name: str = "gpt-4o-mini") -> Dict[str, Persona]:
