@@ -52,12 +52,14 @@ __author__ = "Assembly Team"
 from .persona import Persona
 from .facilitator import FacilitatorAgent
 from .logger import ConversationLogger
+from .monitor import ConversationMonitor
 from .helpers import load_personas_from_directory, format_summary_for_prompt
 
 __all__ = [
     "Persona",
     "FacilitatorAgent",
     "ConversationLogger",
+    "ConversationMonitor",
     "load_personas_from_directory",
     "format_summary_for_prompt",
 ]
