@@ -2,9 +2,7 @@
 # Orchestration module: Meeting facilitator and conversation management
 
 from typing import Dict, List, Any
-from src.core.persona import Persona
-from src.core.facilitator import FacilitatorAgent
-from src.core.conversation_logger import ConversationLogger
+from framework import Persona, FacilitatorAgent, ConversationLogger
 from src.idea_generation.prompts import generate_dynamic_prompt
 from src.idea_generation.extraction import extract_idea_title
 

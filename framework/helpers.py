@@ -1,14 +1,14 @@
 """
-Utility functions for the Assembly application.
+Helper functions for the Assembly Framework.
 """
 
 import json
 from pathlib import Path
 from typing import Dict
-from src.core.persona import Persona
+from framework.persona import Persona
 
 
-def load_all_personas(directory: str = "personas", model_name: str = "gpt-4o-mini") -> Dict[str, Persona]:
+def load_personas_from_directory(directory: str = "personas", model_name: str = "gpt-4o-mini") -> Dict[str, Persona]:
     """
     Dynamically load all persona definitions from the specified directory.
 

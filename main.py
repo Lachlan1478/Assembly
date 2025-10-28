@@ -10,32 +10,61 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.idea_generation.generator import multiple_llm_idea_generator
-from src.idea_generation.config import MODE_CONFIGS
 from src.stages.spec_generation import make_initial_prompt
-# from generate_initial_design_03 import create_initial_design  # Stage 3 not needed for this test
+# from src.stages.design_generation import create_initial_design  # Stage 3 not needed for this test
 
-# ---- Hard-coded "user input" / criteria ----
-
-# You can provide as little or as much detail as you like.
-    # ChatGPT will fill in the gaps and generate startup/product ideas.
+# ---- INSPIRATION INPUT ----
+# Provide as much or as little detail as you want.
+# The AI personas will explore and fill in the gaps.
+# Only Domain is required - all other fields are optional.
 
 INSPIRATION = """
-    Domain: Software development workflows and code review
-    Target users: Engineering teams at startups and scale-ups (5-50 engineers)
-    Primary outcome: Reduce context switching and improve code review velocity without sacrificing quality
-    Constraints: Must integrate with GitHub/GitLab, minimal initial configuration, works with existing workflows
-    UX rules: Fits naturally into developer workflow, actionable notifications only, no dashboard babysitting
+    Domain: Healthcare technology
+
+    Context: Tools to help patients manage chronic conditions at home
 """
 
+# ===============================================================
+# INSPIRATION EXAMPLES - Uncomment and modify as needed
+# ===============================================================
+
+# Example 1: Minimal (Domain + Brief Context)
+# Best for: Open-ended exploration, letting personas drive direction
 # INSPIRATION = """
-#     Domain: finance
-#     Target users: 
-#     Primary outcome:
-#     Must haves:
-#     Constraints: 
-#     Non-goals:
-#     UX rules: 
-#     Performance: 
+#     Domain: Education technology
+#
+#     Context: Making online learning more engaging for high school students
+# """
+
+# Example 2: Moderate Detail (Add Target Users + Problem)
+# Best for: Focused exploration with specific user segment
+# INSPIRATION = """
+#     Domain: Personal finance
+#     Target users: Young professionals (25-35) new to investing
+#     Primary outcome: Build confidence in making investment decisions
+#
+#     Context: Most investment apps are overwhelming for beginners. We need something that educates while helping users invest.
+# """
+
+# Example 3: Detailed (All Fields Specified)
+# Best for: Highly constrained problem spaces, specific requirements
+# INSPIRATION = """
+#     Domain: Software development workflows and code review
+#     Target users: Engineering teams at startups and scale-ups (5-50 engineers)
+#     Primary outcome: Reduce context switching and improve code review velocity without sacrificing quality
+#     Constraints: Must integrate with GitHub/GitLab, minimal initial configuration, works with existing workflows
+#     UX rules: Fits naturally into developer workflow, actionable notifications only, no dashboard babysitting
+#     Must haves: Real-time updates, inline commenting, status tracking
+#     Non-goals: Not replacing GitHub/GitLab, just enhancing workflow
+# """
+
+# Example 4: Different Domain (E-commerce)
+# INSPIRATION = """
+#     Domain: E-commerce for local artisans
+#     Target users: Independent craftspeople who sell handmade goods
+#     Primary outcome: Connect directly with customers without marketplace fees
+#
+#     Context: Etsy and similar platforms take 10-15% of each sale. Local artisans need their own storefronts.
 # """
 
 def main():

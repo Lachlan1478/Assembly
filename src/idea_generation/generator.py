@@ -3,9 +3,8 @@
 
 import json
 import re
-from src.core.utils import load_all_personas
-from src.core.facilitator import FacilitatorAgent
-from src.core.conversation_logger import ConversationLogger
+from framework import FacilitatorAgent, ConversationLogger
+from framework.helpers import load_personas_from_directory
 from src.idea_generation.config import MODE_CONFIGS, MODEL
 from src.idea_generation.orchestration import meeting_facilitator
 from src.idea_generation.extraction import extract_ideas_with_llm
@@ -36,7 +35,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
 
     # Load personas dynamically from personas/ directory
     print("\n[i] Loading personas from personas/ directory...")
-    all_personas = load_all_personas(directory="personas", model_name=config["model"])
+    all_personas = load_personas_from_directory(directory="personas", model_name=config["model"])
 
     # Create facilitator agent
     facilitator = FacilitatorAgent(model_name=config["model"])
