@@ -11,7 +11,9 @@
       "Bash(move idea_brainstorm_01d_extraction.py srcidea_generationextraction.py)",
       "Bash(move idea_brainstorm_01.py srcidea_generationgenerator.py)",
       "Bash(move spec_generation_02.py srcstagesspec_generation.py)",
-      "Bash(move generate_initial_design_03.py srcstagesdesign_generation.py)"
+      "Bash(move generate_initial_design_03.py srcstagesdesign_generation.py)",
+      "Bash(mv:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
