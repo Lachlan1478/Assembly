@@ -1,19 +1,24 @@
 # idea_brainstorm_01c_orchestration.py
 # Orchestration module: Meeting facilitator and conversation management
 
-from typing import Dict, List, Any
+import asyncio
+import time
+from typing import Dict, List, Any, Optional
 from framework import Persona, FacilitatorAgent, ConversationLogger
+from framework.monitor import ConversationMonitor
 from src.idea_generation.prompts import generate_dynamic_prompt
 from src.idea_generation.extraction import extract_idea_title
 
 
-def meeting_facilitator(
+async def meeting_facilitator(
     all_personas: Dict[str, Persona],
     phases: List[Dict[str, Any]],
     shared_context: Dict[str, Any],
     facilitator: FacilitatorAgent,
     logger: ConversationLogger = None,
-    enable_summary_updates: bool = True
+    monitor: Optional[ConversationMonitor] = None,
+    enable_summary_updates: bool = True,
+    use_async_updates: bool = True
 ) -> Dict[str, Any]:
     """
     Facilitator-directed conversation architecture with staged prompts.
@@ -28,7 +33,9 @@ def meeting_facilitator(
         shared_context: Mutable dict for shared artifacts (ideas, decisions, etc.)
         facilitator: FacilitatorAgent instance
         logger: Optional ConversationLogger for comprehensive logging
+        monitor: Optional ConversationMonitor for real-time progress tracking
         enable_summary_updates: If False, skip LLM calls for summary updates (fast mode)
+        use_async_updates: If True, use async parallel summary updates for speedup (default: True)
 
     Returns:
         final shared_context with logs and results
@@ -37,10 +44,21 @@ def meeting_facilitator(
     all_phase_summaries = []
 
     for phase in phases:
-        print(f"\n{'='*60}")
-        print(f"=== Phase: {phase['phase_id'].upper()} ===")
-        print(f"Goal: {phase.get('goal')}")
-        print(f"{'='*60}\n")
+        # Track phase start time for monitor
+        phase_start_time = time.time()
+
+        # Monitor: Phase start
+        if monitor:
+            monitor.on_phase_start(
+                phase_id=phase['phase_id'],
+                goal=phase.get('goal', 'No goal specified')
+            )
+        else:
+            # Fallback display if no monitor
+            print(f"\n{'='*60}")
+            print(f"=== Phase: {phase['phase_id'].upper()} ===")
+            print(f"Goal: {phase.get('goal')}")
+            print(f"{'='*60}\n")
 
         # Facilitator selects relevant personas for this phase
         selected_persona_names = facilitator.select_personas_for_phase(
@@ -107,7 +125,16 @@ def meeting_facilitator(
             # Get the persona and have them respond
             speaker_persona = active_personas[next_speaker_name]
 
-            print(f"\n[Speaker] {speaker_persona.name} ({speaker_persona.archetype}) speaking...")
+            # Monitor: Turn start
+            if monitor:
+                monitor.on_turn_start(
+                    speaker=speaker_persona.name,
+                    turn_num=turn_count,
+                    max_turns=max_turns
+                )
+            else:
+                # Fallback display if no monitor
+                print(f"\n[Speaker] {speaker_persona.name} ({speaker_persona.archetype}) speaking...")
 
             # Generate dynamic prompt based on conversation state
             dynamic_prompt = generate_dynamic_prompt(
@@ -129,7 +156,16 @@ def meeting_facilitator(
             response_data = speaker_persona.response(ctx)
             response_content = response_data.get("response", "")
 
-            print(f"\n{speaker_persona.name}: {response_content[:200]}...")
+            # Display response (only if not using monitor, to avoid clutter)
+            if not monitor:
+                print(f"\n{speaker_persona.name}: {response_content[:200]}...")
+
+            # Monitor: Turn complete (estimate ~500 tokens per response)
+            if monitor:
+                monitor.on_turn_complete(
+                    speaker=speaker_persona.name,
+                    tokens_used=500  # Rough estimate
+                )
 
             # Log this exchange
             exchange = {
@@ -162,26 +198,56 @@ def meeting_facilitator(
 
             # All active personas update their summaries based on this exchange
             if enable_summary_updates:
-                print(f"[i] Updating summaries for all active personas...")
-                for persona_name, persona in active_personas.items():
-                    persona.update_summary({
-                        "speaker": speaker_persona.name,
-                        "content": response_content,
-                        "phase": phase["phase_id"]
-                    })
+                exchange_data = {
+                    "speaker": speaker_persona.name,
+                    "content": response_content,
+                    "phase": phase["phase_id"]
+                }
+
+                if use_async_updates:
+                    # Parallel async updates for speed
+                    if not monitor:
+                        print(f"[i] Updating summaries for all active personas (async parallel)...")
+
+                    await asyncio.gather(*[
+                        persona.update_summary_async(exchange_data)
+                        for persona in active_personas.values()
+                    ])
+                else:
+                    # Sequential updates (backward compatibility)
+                    if not monitor:
+                        print(f"[i] Updating summaries for all active personas (sequential)...")
+
+                    for persona_name, persona in active_personas.items():
+                        persona.update_summary(exchange_data)
             else:
-                print(f"[i] Fast mode: Skipping summary updates")
+                if not monitor:
+                    print(f"[i] Fast mode: Skipping summary updates")
 
             turn_count += 1
 
         # Phase complete - create summary
-        print(f"\n[OK] Phase '{phase['phase_id']}' complete after {turn_count} turns")
+        phase_elapsed_time = time.time() - phase_start_time
+
+        if not monitor:
+            print(f"\n[OK] Phase '{phase['phase_id']}' complete after {turn_count} turns")
+
         phase_summary = facilitator.summarize_phase(
             phase=phase,
             exchanges=phase_exchanges,
             shared_context=shared_context
         )
-        print(f"[Summary] {phase_summary}\n")
+
+        # Monitor: Phase complete
+        if monitor:
+            monitor.on_phase_complete(
+                phase_id=phase['phase_id'],
+                summary=phase_summary,
+                total_turns=turn_count,
+                total_time=phase_elapsed_time
+            )
+        else:
+            print(f"[Summary] {phase_summary}\n")
 
         all_phase_summaries.append({
             "phase_id": phase["phase_id"],
@@ -197,5 +263,9 @@ def meeting_facilitator(
     # Store logs and summaries in shared context
     shared_context["logs"] = logs
     shared_context["phase_summaries"] = all_phase_summaries
+
+    # Monitor: Display final summary
+    if monitor:
+        monitor.display_summary()
 
     return shared_context

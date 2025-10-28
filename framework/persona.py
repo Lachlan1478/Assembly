@@ -1,7 +1,8 @@
 # persona.py
 import json
+import asyncio
 from typing import Dict, Any, Optional, List
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 
 class Persona:
     def __init__(self, definition: Dict[str, Any], model_name: str = "gpt-3.5-turbo"):
@@ -17,6 +18,7 @@ class Persona:
         self.watchouts = definition.get("Watch-out", "")
         self.model_name = model_name
         self.client = OpenAI()  # your LLM client
+        self.async_client = AsyncOpenAI()  # async LLM client for parallel operations
 
         # Initialize hybrid summary (objective facts + subjective notes)
         self.summary = {
@@ -254,4 +256,98 @@ Only include fields that have new information. Empty lists/objects are fine if n
 
         except Exception as e:
             print(f"[!] Failed to update summary for {self.name}: {e}")
+            # Continue without updating - non-critical failure
+
+    async def update_summary_async(self, new_exchange: Dict[str, Any]) -> None:
+        """
+        Async version of update_summary for parallel execution.
+
+        Update the persona's summary based on a new conversation exchange.
+        This method can be called concurrently with other personas for speedup.
+
+        Uses LLM to extract:
+        1. Objective facts that should be added to shared understanding
+        2. Subjective observations relevant to this persona's role
+
+        Args:
+            new_exchange: Dict containing:
+                - speaker: Who spoke
+                - content: What was said
+                - phase: Current phase info (optional)
+        """
+        speaker = new_exchange.get("speaker", "Unknown")
+        content = new_exchange.get("content", "")
+        phase = new_exchange.get("phase", "")
+
+        # Build prompt for summary update
+        update_prompt = f"""You are {self.name}, the {self.archetype}.
+
+CURRENT SUMMARY:
+{self._format_summary()}
+
+NEW EXCHANGE:
+{speaker}: {content}
+
+CURRENT PHASE: {phase}
+
+Update your summary by:
+1. Extracting any new OBJECTIVE FACTS (concrete information that everyone should know)
+2. Adding your SUBJECTIVE NOTES as {self.archetype} (concerns, priorities, opinions)
+
+Respond ONLY with a JSON object in this format:
+{{
+  "new_objective_facts": ["fact1", "fact2"],
+  "new_subjective_notes": {{
+    "key_concerns": ["concern1"],
+    "priorities": ["priority1"],
+    "opinions": ["opinion1"]
+  }}
+}}
+
+Only include fields that have new information. Empty lists/objects are fine if nothing new."""
+
+        messages = [
+            {
+                "role": "system",
+                "content": f"You are a summary updater for {self.name}, the {self.archetype}. "
+                           f"Extract objective facts and subjective notes from conversations."
+            },
+            {
+                "role": "user",
+                "content": update_prompt
+            }
+        ]
+
+        # Call LLM asynchronously to update summary
+        try:
+            completion = await self.async_client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                response_format={"type": "json_object"}
+            )
+
+            response_content = completion.choices[0].message.content.strip()
+            updates = json.loads(response_content)
+
+            # Merge new facts (avoid duplicates)
+            new_facts = updates.get("new_objective_facts", [])
+            for fact in new_facts:
+                if fact and fact not in self.summary["objective_facts"]:
+                    self.summary["objective_facts"].append(fact)
+
+            # Merge subjective notes
+            new_subj = updates.get("new_subjective_notes", {})
+            for key, values in new_subj.items():
+                if key in self.summary["subjective_notes"]:
+                    if isinstance(values, list):
+                        for val in values:
+                            if val and val not in self.summary["subjective_notes"][key]:
+                                self.summary["subjective_notes"][key].append(val)
+                    else:
+                        self.summary["subjective_notes"][key] = values
+                else:
+                    self.summary["subjective_notes"][key] = values
+
+        except Exception as e:
+            print(f"[!] Failed to async update summary for {self.name}: {e}")
             # Continue without updating - non-critical failure

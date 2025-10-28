@@ -3,7 +3,8 @@
 
 import json
 import re
-from framework import FacilitatorAgent, ConversationLogger
+import asyncio
+from framework import FacilitatorAgent, ConversationLogger, ConversationMonitor
 from framework.helpers import load_personas_from_directory
 from src.idea_generation.config import MODE_CONFIGS, MODEL
 from src.idea_generation.orchestration import meeting_facilitator
@@ -42,6 +43,9 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
 
     # Create conversation logger
     logger = ConversationLogger(base_dir="conversation_logs")
+
+    # Create conversation monitor for real-time progress tracking
+    monitor = ConversationMonitor()
 
     # Log session metadata
     logger.log_metadata("inspiration", inspiration)
@@ -131,16 +135,18 @@ Inspiration: {inspiration}
         "current_focus": None  # Most recently discussed idea
     }
 
-    # Run the facilitator-directed meeting
+    # Run the facilitator-directed meeting (async)
     print("\n[i] Starting facilitator-directed meeting...\n")
-    final_context = meeting_facilitator(
+    final_context = asyncio.run(meeting_facilitator(
         all_personas=all_personas,
         phases=phases,
         shared_context=shared_context,
         facilitator=facilitator,
         logger=logger,
-        enable_summary_updates=config["enable_summary_updates"]
-    )
+        monitor=monitor,
+        enable_summary_updates=config["enable_summary_updates"],
+        use_async_updates=True  # Enable async parallel summary updates
+    ))
 
     # Save basic logs (backwards compatibility)
     logs = final_context.get("logs", [])
