@@ -53,6 +53,8 @@ from .persona import Persona
 from .facilitator import FacilitatorAgent
 from .logger import ConversationLogger
 from .monitor import ConversationMonitor
+from .analytics import ConversationAnalytics
+from .replay import ConversationReplayer
 from .helpers import load_personas_from_directory, format_summary_for_prompt
 
 __all__ = [
@@ -60,6 +62,8 @@ __all__ = [
     "FacilitatorAgent",
     "ConversationLogger",
     "ConversationMonitor",
+    "ConversationAnalytics",
+    "ConversationReplayer",
     "load_personas_from_directory",
     "format_summary_for_prompt",
 ]
