@@ -6,6 +6,8 @@ import re
 import asyncio
 from framework import FacilitatorAgent, ConversationLogger, ConversationMonitor
 from framework.helpers import load_personas_from_directory
+from framework.persona_manager import PersonaManager
+from framework.generators import generate_phases_for_domain
 from src.idea_generation.config import MODE_CONFIGS, MODEL
 from src.idea_generation.orchestration import meeting_facilitator
 from src.idea_generation.extraction import extract_ideas_with_llm
@@ -34,9 +36,13 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
     config = MODE_CONFIGS[mode]
     print(f"\n[i] Running in {mode.upper()} mode: {config['description']}")
 
-    # Load personas dynamically from personas/ directory
-    print("\n[i] Loading personas from personas/ directory...")
-    all_personas = load_personas_from_directory(directory="personas", model_name=config["model"])
+    # Initialize PersonaManager for dynamic generation
+    print("\n[i] Initializing PersonaManager for dynamic persona generation...")
+    persona_manager = PersonaManager(
+        cache_dir="dynamic_personas",
+        archive_dir="personas_archive",
+        model_name=config["model"]
+    )
 
     # Create facilitator agent
     facilitator = FacilitatorAgent(model_name=config["model"])
@@ -52,57 +58,83 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
     logger.log_metadata("number_of_ideas", number_of_ideas)
     logger.log_metadata("mode", mode)
     logger.log_metadata("model", config["model"])
-    logger.log_metadata("personas_loaded", list(all_personas.keys()))
+    logger.log_metadata("dynamic_generation", True)
 
-    # Define all possible phases with goals and desired outcomes
-    all_phases = [
-        {
-            "phase_id": "ideation",
-            "goal": f"Generate {number_of_ideas} different startup idea(s) based on the inspiration",
-            "desired_outcome": "List of concrete startup ideas with clear value propositions"
-        },
-        {
-            "phase_id": "design",
-            "goal": "Refine the user experience and design aspects of the proposed ideas",
-            "desired_outcome": "Enhanced ideas with UX considerations and design principles"
-        },
-        {
-            "phase_id": "research",
-            "goal": "Validate market demand and identify whitespace for the ideas",
-            "desired_outcome": "Market validation and competitive analysis for each idea"
-        },
-        {
-            "phase_id": "feasibility",
-            "goal": "Assess technical feasibility and implementation approach",
-            "desired_outcome": "Technical assessment and architecture considerations"
-        },
-        {
-            "phase_id": "financials",
-            "goal": "Evaluate business model and economic viability",
-            "desired_outcome": "Revenue model and cost structure for each idea"
-        },
-        {
-            "phase_id": "critique",
-            "goal": "Stress-test assumptions and identify potential risks",
-            "desired_outcome": "List of key risks and mitigation strategies"
-        },
-        {
-            "phase_id": "decision",
-            "goal": "Consolidate all feedback and output final startup ideas in JSON format",
-            "desired_outcome": f"JSON array of {number_of_ideas} startup idea(s) with all required fields"
-        }
-    ]
+    # Generate domain-specific phases using LLM
+    print("\n[i] Generating custom workflow phases for domain...")
+    all_phases = generate_phases_for_domain(
+        inspiration=inspiration,
+        number_of_ideas=number_of_ideas,
+        model_name=config["model"]
+    )
 
-    # Filter phases based on mode configuration and apply max_turns
+    # Fallback to default phases if generation fails
+    if not all_phases:
+        print("[!] Phase generation failed, using default phases")
+        all_phases = [
+            {
+                "phase_id": "ideation",
+                "goal": f"Generate {number_of_ideas} different startup idea(s) based on the inspiration",
+                "desired_outcome": "List of concrete startup ideas with clear value propositions",
+                "max_turns": 8
+            },
+            {
+                "phase_id": "design",
+                "goal": "Refine the user experience and design aspects of the proposed ideas",
+                "desired_outcome": "Enhanced ideas with UX considerations and design principles",
+                "max_turns": 8
+            },
+            {
+                "phase_id": "research",
+                "goal": "Validate market demand and identify whitespace for the ideas",
+                "desired_outcome": "Market validation and competitive analysis for each idea",
+                "max_turns": 8
+            },
+            {
+                "phase_id": "feasibility",
+                "goal": "Assess technical feasibility and implementation approach",
+                "desired_outcome": "Technical assessment and architecture considerations",
+                "max_turns": 8
+            },
+            {
+                "phase_id": "financials",
+                "goal": "Evaluate business model and economic viability",
+                "desired_outcome": "Revenue model and cost structure for each idea",
+                "max_turns": 8
+            },
+            {
+                "phase_id": "critique",
+                "goal": "Stress-test assumptions and identify potential risks",
+                "desired_outcome": "List of key risks and mitigation strategies",
+                "max_turns": 8
+            },
+            {
+                "phase_id": "decision",
+                "goal": "Consolidate all feedback and output final startup ideas in JSON format",
+                "desired_outcome": f"JSON array of {number_of_ideas} startup idea(s) with all required fields",
+                "max_turns": 8
+            }
+        ]
+
+    # Filter phases based on mode configuration
     enabled_phase_ids = config["phases"]
-    phases = [
-        {**phase, "max_turns": config["max_turns_per_phase"]}
-        for phase in all_phases
-        if phase["phase_id"] in enabled_phase_ids
-    ]
+
+    # If mode uses default phase IDs, filter generated phases accordingly
+    # Otherwise use all generated phases (since they're domain-specific)
+    if enabled_phase_ids == ["ideation", "decision"]:  # fast mode
+        phases = [p for p in all_phases if p["phase_id"] in ["ideation", "decision"]] [:2]
+    elif enabled_phase_ids == ["ideation", "design", "decision"]:  # medium mode
+        phases = all_phases[:3] if len(all_phases) >= 3 else all_phases
+    else:  # standard/deep mode - use all phases
+        phases = all_phases
+
+    # Ensure max_turns is set (use from config if not in phase)
+    for phase in phases:
+        if "max_turns" not in phase:
+            phase["max_turns"] = config["max_turns_per_phase"]
 
     print(f"[i] Running {len(phases)} phases: {', '.join([p['phase_id'] for p in phases])}")
-    print(f"[i] Max turns per phase: {config['max_turns_per_phase']}\n")
+    print(f"[i] Max turns per phase: varies by phase\n")
 
     # Create initial prompt template (will be replaced by dynamic prompts)
     prompt = f"""
@@ -135,10 +167,11 @@ Inspiration: {inspiration}
         "current_focus": None  # Most recently discussed idea
     }
 
-    # Run the facilitator-directed meeting (async)
-    print("\n[i] Starting facilitator-directed meeting...\n")
+    # Run the facilitator-directed meeting (async) with dynamic persona generation
+    print("\n[i] Starting facilitator-directed meeting with dynamic persona generation...\n")
     final_context = asyncio.run(meeting_facilitator(
-        all_personas=all_personas,
+        persona_manager=persona_manager,
+        inspiration=inspiration,
         phases=phases,
         shared_context=shared_context,
         facilitator=facilitator,

@@ -11,7 +11,8 @@ from src.idea_generation.extraction import extract_idea_title
 
 
 async def meeting_facilitator(
-    all_personas: Dict[str, Persona],
+    persona_manager,
+    inspiration: str,
     phases: List[Dict[str, Any]],
     shared_context: Dict[str, Any],
     facilitator: FacilitatorAgent,
@@ -21,10 +22,11 @@ async def meeting_facilitator(
     use_async_updates: bool = True
 ) -> Dict[str, Any]:
     """
-    Facilitator-directed conversation architecture with staged prompts.
+    Facilitator-directed conversation with dynamic persona generation.
 
     Args:
-        all_personas: Dict mapping persona names to Persona instances
+        persona_manager: PersonaManager for on-demand persona generation
+        inspiration: Problem domain context for persona generation
         phases: List of phase dicts with:
             - phase_id: str
             - goal: str (what should be accomplished)
@@ -60,27 +62,22 @@ async def meeting_facilitator(
             print(f"Goal: {phase.get('goal')}")
             print(f"{'='*60}\n")
 
-        # Facilitator selects relevant personas for this phase
-        selected_persona_names = facilitator.select_personas_for_phase(
-            phase=phase,
-            available_personas=all_personas
+        # Request personas from PersonaManager for this phase
+        active_personas = persona_manager.request_personas_for_phase(
+            inspiration=inspiration,
+            phase_info=phase,
+            count=4  # Generate 4 personas per phase
         )
 
-        # Log persona selection
+        # Log persona generation
         if logger:
+            persona_names = list(active_personas.keys())
             logger.log_facilitator_decision(
-                decision_type="persona_selection",
+                decision_type="persona_generation",
                 phase_id=phase["phase_id"],
-                decision=selected_persona_names,
-                reasoning=f"Selected {len(selected_persona_names)} personas for phase '{phase['phase_id']}'"
+                decision=persona_names,
+                reasoning=f"Generated {len(persona_names)} personas for phase '{phase['phase_id']}'"
             )
-
-        # Get the actual Persona instances
-        active_personas = {
-            name: all_personas[name]
-            for name in selected_persona_names
-            if name in all_personas
-        }
 
         if not active_personas:
             print(f"[!] No personas selected for phase '{phase['phase_id']}', skipping")
