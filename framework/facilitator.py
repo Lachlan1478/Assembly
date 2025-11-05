@@ -162,7 +162,7 @@ class FacilitatorAgent:
         for exchange in recent_exchanges[-5:]:
             recent_formatted.append(f"{exchange.get('speaker')}: {exchange.get('content')[:200]}...")
 
-        decision_prompt = f"""You are a meeting facilitator managing conversation flow.
+        decision_prompt = f"""You are a meeting facilitator creating NATURAL, ENGAGING conversation flow.
 
 PHASE INFORMATION:
 - Phase ID: {phase.get('phase_id')}
@@ -179,21 +179,29 @@ RECENT EXCHANGES:
 SHARED CONTEXT:
 {json.dumps(shared_context, indent=2)}
 
-Decide:
-1. Is the phase goal achieved? (Check if desired outcome is met)
-2. If not, who should speak next to move toward the goal?
+Decide who should speak next to create NATURAL conversation flow:
 
-Consider:
-- Balance of participation (don't let one persona dominate)
+PRIORITIZE NATURAL DIALOGUE:
+1. If someone was directly ASKED or ADDRESSED, give them the floor to respond
+2. If a claim was made, let the CONTRARIAN or relevant expert challenge it
+3. If someone DISAGREED or PUSHED BACK, allow that person to respond/defend
+4. Allow 2-3 turn EXCHANGES between same speakers when they're actively debating
+5. Route to domain experts when technical/financial/design questions arise
+
+ALSO CONSIDER:
+- Balance of participation (but natural back-and-forth beats forced rotation)
 - Phase goal progress
-- Natural conversation flow
-- Avoiding repetition
+- Avoiding the same person speaking 4+ times in a row (unless in active debate)
+- Mix quick reactions with deeper analysis
+
+PHASE COMPLETION:
+Mark phase_complete=true ONLY if the desired outcome is clearly achieved in the exchanges.
 
 Respond ONLY with a JSON object:
 {{
   "phase_complete": true/false,
   "next_speaker": "persona_name" or null,
-  "reasoning": "Brief explanation"
+  "reasoning": "Why this creates natural flow (e.g., 'Designer asked Market Researcher a question' or 'Contrarian challenged Founder's assumption')"
 }}
 
 If phase_complete is true, set next_speaker to null.
