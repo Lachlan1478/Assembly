@@ -149,7 +149,8 @@ async def meeting_facilitator(
                 "user_prompt": dynamic_prompt,  # Use dynamic prompt instead of static
                 "phase": phase,
                 "shared_context": shared_context,
-                "recent_exchanges": phase_exchanges  # Add recent discussion context
+                "recent_exchanges": phase_exchanges,  # Add recent discussion context
+                "turn_count": turn_count  # Add turn count for dynamic word limits
             }
 
             # Persona generates response using their summary

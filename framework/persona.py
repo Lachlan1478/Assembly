@@ -16,6 +16,7 @@ class Persona:
         self.deliverables = definition.get("Deliverables", "")
         self.strengths = definition.get("Strengths", "")
         self.watchouts = definition.get("Watch-out", "")
+        self.conversation_style = definition.get("Conversation_Style", "")
         self.model_name = model_name
         self.client = OpenAI()  # your LLM client
         self.async_client = AsyncOpenAI()  # async LLM client for parallel operations
@@ -47,6 +48,7 @@ class Persona:
                 - user_prompt or prompt: The current question/topic
                 - phase: Current phase information (optional)
                 - shared_context: Any shared artifacts (optional)
+                - turn_count: Current turn number in phase (for dynamic word limits)
 
         Returns:
             Dict with persona, archetype, and response
@@ -55,6 +57,18 @@ class Persona:
         phase = ctx.get("phase", {})
         shared_context = ctx.get("shared_context", {})
         recent_exchanges = ctx.get("recent_exchanges", [])
+        turn_count = ctx.get("turn_count", 0)
+
+        # Calculate dynamic word limit based on turn position
+        # Turn 0: 300 words (context-setting)
+        # Turns 1-2: 200 words (initial discussion)
+        # Turns 3+: 150 words (refinement/debate)
+        if turn_count == 0:
+            word_limit = 300
+        elif turn_count <= 2:
+            word_limit = 200
+        else:
+            word_limit = 150
 
         # Format summary for inclusion in prompt
         summary_text = self._format_summary()
@@ -77,9 +91,13 @@ SHARED CONTEXT:
 CURRENT PHASE:
 {json.dumps(phase, indent=2) if phase else 'Not specified'}
 
-Based on the recent discussion, your summary, the shared context, and your role as {self.archetype}, provide your perspective. Build on previous ideas when appropriate, or challenge them if you see issues."""
+Based on the recent discussion, your summary, the shared context, and your role as {self.archetype}, provide your perspective. Build on previous ideas when appropriate, or challenge them if you see issues.
+
+WORD LIMIT: Your response MUST NOT exceed {word_limit} words. Be concise and impactful. Focus on clarity over comprehensiveness."""
 
         # Build messages with persona identity in system prompt
+        conversation_style_text = f"\n\nCONVERSATION STYLE: {self.conversation_style}" if self.conversation_style else ""
+
         messages = [
             {
                 "role": "system",
@@ -87,6 +105,7 @@ Based on the recent discussion, your summary, the shared context, and your role 
                            f"Purpose: {self.purpose}. Deliverables: {self.deliverables}. "
                            f"Strengths: {self.strengths}. "
                            f"Be mindful of: {self.watchouts}."
+                           f"{conversation_style_text}"
             },
             {
                 "role": "user",
