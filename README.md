@@ -51,25 +51,32 @@ python main.py --mode standard # Investor pitch
 ```
 Assembly/
 ├── main.py                          # Entry point & CLI
-├── src/                             # Source code (Python package)
-│   ├── core/                        # Core framework
-│   │   ├── persona.py              # Persona with memory
-│   │   ├── facilitator.py          # Orchestration
-│   │   ├── conversation_logger.py  # Multi-format logging
-│   │   └── utils.py                # Helpers
+├── .env.example                     # Environment template
+├── framework/                       # Core conversation framework
+│   ├── persona.py                  # Persona with memory system
+│   ├── facilitator.py              # AI-powered orchestration
+│   ├── conversation_logger.py      # Multi-format logging
+│   ├── analytics.py                # Conversation analysis
+│   ├── generators.py               # Dynamic persona/phase generation
+│   └── utils.py                    # Helper utilities
+├── src/                             # Application logic
 │   ├── idea_generation/            # Idea generation pipeline
 │   │   ├── generator.py            # Main entry point
 │   │   ├── config.py               # Mode configurations
 │   │   ├── prompts.py              # Staged prompts
-│   │   ├── orchestration.py       # Meeting facilitation
+│   │   ├── orchestration.py        # Meeting facilitation
 │   │   └── extraction.py           # Idea extraction
-│   └── stages/                      # Pipeline stages
+│   └── stages/                     # Pipeline stages
 │       ├── spec_generation.py      # Stage 2: Specs
 │       └── design_generation.py    # Stage 3: Base44
+├── dynamic_personas/                # LLM-generated personas (cached)
+├── personas/                        # Static persona definitions (JSON)
+├── personas_archive/                # Archived persona versions
+├── scripts/                         # Utility scripts
+│   └── compare_modes.py            # Mode comparison tool
+├── tests/                           # Test suite
 ├── docs/                            # Documentation
-├── personas/                        # Persona definitions (JSON)
-├── tests/                          # Test scripts
-└── conversation_logs/              # Generated logs
+└── conversation_logs/               # Generated session logs
 ```
 
 ## How It Works
