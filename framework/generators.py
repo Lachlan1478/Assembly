@@ -85,19 +85,30 @@ IMPORTANT GUIDELINES:
 - Avoid generic business roles - be specific to the domain
 - Each persona should complement the others (no overlapping strengths)
 
-Respond ONLY with a JSON array of persona objects:
-[
-  {{
-    "Name": "...",
-    "Archetype": "...",
-    "Purpose": "...",
-    "Deliverables": "...",
-    "Strengths": "...",
-    "Watch-out": "...",
-    "Conversation_Style": "..."
-  }},
-  ...
-]"""
+Respond ONLY with a JSON object containing a "personas" array:
+{{
+  "personas": [
+    {{
+      "Name": "...",
+      "Archetype": "...",
+      "Purpose": "...",
+      "Deliverables": "...",
+      "Strengths": "...",
+      "Watch-out": "...",
+      "Conversation_Style": "..."
+    }},
+    {{
+      "Name": "...",
+      "Archetype": "...",
+      "Purpose": "...",
+      "Deliverables": "...",
+      "Strengths": "...",
+      "Watch-out": "...",
+      "Conversation_Style": "..."
+    }},
+    ...
+  ]
+}}"""
 
     try:
         response = client.chat.completions.create(
@@ -120,11 +131,18 @@ Respond ONLY with a JSON array of persona objects:
 
         # Parse JSON - handle both array and object formats
         parsed = json.loads(content)
+
         if isinstance(parsed, dict):
-            # LLM wrapped array in object
-            personas = parsed.get("personas", parsed.get("persona_list", []))
-        else:
+            # Check if this dict looks like a single persona (has "Name" key)
+            if "Name" in parsed or "name" in parsed:
+                personas = [parsed]
+            else:
+                # LLM wrapped array in object - try multiple possible keys
+                personas = parsed.get("personas", parsed.get("persona_list", parsed.get("Personas", parsed.get("PersonaList", []))))
+        elif isinstance(parsed, list):
             personas = parsed
+        else:
+            personas = []
 
         print(f"[OK] Generated {len(personas)} personas for {phase_info.get('phase_id', 'phase')}")
         return personas

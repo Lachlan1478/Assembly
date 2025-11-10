@@ -117,13 +117,17 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         ]
 
     # Filter phases based on mode configuration
+    # For dynamic phases, we take first/last or first N phases instead of filtering by ID
     enabled_phase_ids = config["phases"]
 
-    # If mode uses default phase IDs, filter generated phases accordingly
-    # Otherwise use all generated phases (since they're domain-specific)
     if enabled_phase_ids == ["ideation", "decision"]:  # fast mode
-        phases = [p for p in all_phases if p["phase_id"] in ["ideation", "decision"]] [:2]
+        # Take first and last phase (exploring and deciding)
+        if len(all_phases) >= 2:
+            phases = [all_phases[0], all_phases[-1]]
+        else:
+            phases = all_phases
     elif enabled_phase_ids == ["ideation", "design", "decision"]:  # medium mode
+        # Take first 3 phases
         phases = all_phases[:3] if len(all_phases) >= 3 else all_phases
     else:  # standard/deep mode - use all phases
         phases = all_phases

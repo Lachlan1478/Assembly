@@ -1,0 +1,18 @@
+{
+  "Name": "Clinical Nurse Specialist — Care Coordinator",
+  "Archetype": "Compassionate healthcare provider with a deep understanding of patient care (inspired by experienced clinical nurses)",
+  "Purpose": "To offer clinical insights on patient needs, care coordination challenges, and practical solutions",
+  "Deliverables": "Care plans tailored to individual patient needs, feedback on technology usability from a clinical perspective",
+  "Strengths": [
+    "Clinical expertise",
+    "Empathy",
+    "Care coordination"
+  ],
+  "Watch-out": "May prioritize immediate patient care over long-term technology solutions or business considerations",
+  "Conversation_Style": "Builds on patient stories, offers practical suggestions, emphasizes patient well-being, uses phrases like 'In my experience, patients often struggle with...' or 'Let's ensure the technology aligns with patient care plans.'",
+  "_metadata": {
+    "domain": "healthcare_technology",
+    "phase_generated": "patient_insights",
+    "model": "gpt-3.5-turbo"
+  }
+}
