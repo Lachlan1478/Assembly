@@ -68,68 +68,47 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         model_name=config["model"]
     )
 
-    # Fallback to default phases if generation fails
-    if not all_phases:
-        print("[!] Phase generation failed, using default phases")
-        all_phases = [
-            {
-                "phase_id": "ideation",
-                "goal": f"Generate {number_of_ideas} different startup idea(s) based on the inspiration",
-                "desired_outcome": "List of concrete startup ideas with clear value propositions",
-                "max_turns": 8
-            },
-            {
-                "phase_id": "design",
-                "goal": "Refine the user experience and design aspects of the proposed ideas",
-                "desired_outcome": "Enhanced ideas with UX considerations and design principles",
-                "max_turns": 8
-            },
-            {
-                "phase_id": "research",
-                "goal": "Validate market demand and identify whitespace for the ideas",
-                "desired_outcome": "Market validation and competitive analysis for each idea",
-                "max_turns": 8
-            },
-            {
-                "phase_id": "feasibility",
-                "goal": "Assess technical feasibility and implementation approach",
-                "desired_outcome": "Technical assessment and architecture considerations",
-                "max_turns": 8
-            },
-            {
-                "phase_id": "financials",
-                "goal": "Evaluate business model and economic viability",
-                "desired_outcome": "Revenue model and cost structure for each idea",
-                "max_turns": 8
-            },
-            {
-                "phase_id": "critique",
-                "goal": "Stress-test assumptions and identify potential risks",
-                "desired_outcome": "List of key risks and mitigation strategies",
-                "max_turns": 8
-            },
-            {
-                "phase_id": "decision",
-                "goal": "Consolidate all feedback and output final startup ideas in JSON format",
-                "desired_outcome": f"JSON array of {number_of_ideas} startup idea(s) with all required fields",
-                "max_turns": 8
-            }
-        ]
+    # Validate that phases were generated successfully
+    if not all_phases or len(all_phases) == 0:
+        raise RuntimeError(
+            "[ERROR] Failed to generate phases dynamically. "
+            "This could be due to:\n"
+            "  - OpenAI API error or connectivity issue\n"
+            "  - Malformed inspiration text\n"
+            "  - Model response parsing failure\n"
+            "Please check your API key and try again."
+        )
 
-    # Filter phases based on mode configuration
-    # For dynamic phases, we take first/last or first N phases instead of filtering by ID
-    enabled_phase_ids = config["phases"]
+    # Select phases based on mode configuration strategy
+    # Dynamically generated phases can have any names, so we use positional selection
+    selection_strategy = config.get("phase_selection", "all")
 
-    if enabled_phase_ids == ["ideation", "decision"]:  # fast mode
-        # Take first and last phase (exploring and deciding)
+    if selection_strategy == "bookends":
+        # Fast mode: Take first and last phase (exploring and deciding)
         if len(all_phases) >= 2:
             phases = [all_phases[0], all_phases[-1]]
         else:
             phases = all_phases
-    elif enabled_phase_ids == ["ideation", "design", "decision"]:  # medium mode
-        # Take first 3 phases
-        phases = all_phases[:3] if len(all_phases) >= 3 else all_phases
-    else:  # standard/deep mode - use all phases
+    elif selection_strategy == "bookends_plus_middle":
+        # Medium mode: First + (n-2) middle + last (ensures decision phase is included)
+        n = config.get("num_phases", 4)
+        if len(all_phases) <= n:
+            # If we have fewer phases than requested, take all
+            phases = all_phases
+        elif n <= 2:
+            # If n is 2 or less, just do bookends
+            phases = [all_phases[0], all_phases[-1]] if len(all_phases) >= 2 else all_phases
+        else:
+            # Take first, (n-2) from middle, and last
+            middle_count = n - 2
+            middle_phases = all_phases[1:1+middle_count]  # Take first (n-2) after first phase
+            phases = [all_phases[0]] + middle_phases + [all_phases[-1]]
+    elif selection_strategy == "first_n":
+        # Take first N phases (partial workflow)
+        n = config.get("num_phases", 3)
+        phases = all_phases[:n] if len(all_phases) >= n else all_phases
+    else:  # "all"
+        # Standard/deep mode: Use all generated phases (full workflow)
         phases = all_phases
 
     # Ensure max_turns is set (use from config if not in phase)
@@ -140,30 +119,12 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
     print(f"[i] Running {len(phases)} phases: {', '.join([p['phase_id'] for p in phases])}")
     print(f"[i] Max turns per phase: varies by phase\n")
 
-    # Create initial prompt template (will be replaced by dynamic prompts)
-    prompt = f"""
-Given the following inspiration, generate {number_of_ideas} different startup idea(s).
-Ensure the ideas are meaningfully different.
-
-Each idea should include:
-- title: Name of the startup
-- description: What it does
-- target_users: Who will use it
-- primary_outcome: Main value delivered
-- must_haves: Essential features
-- constraints: Limitations to consider
-- non_goals: What it explicitly won't do
-
-Inspiration: {inspiration}
-"""
-
     # Log phases to metadata
     logger.log_metadata("phases", phases)
 
-    # Initialize shared context
+    # Initialize shared context (Pure Dynamic - no prompt template needed)
+    # Phases generate their own prompts based on their goals
     shared_context = {
-        "user_prompt": prompt,
-        "original_prompt": prompt,  # Store original for dynamic prompt generation
         "inspiration": inspiration,
         "number_of_ideas": number_of_ideas,
         "ideas": [],  # Will be populated during conversation
