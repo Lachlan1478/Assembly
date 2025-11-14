@@ -23,6 +23,7 @@ python main.py --mode medium
 - **Multi-Persona Architecture**: 7 distinct AI personas (Founder, Designer, Researcher, Tech Lead, CFO, Contrarian, Facilitator) collaborate to generate ideas
 - **Staged Discovery Process**: Guides personas from problem exploration → competitive analysis → solution synthesis (mimics real brainstorming)
 - **Facilitator-Directed Conversations**: AI facilitator intelligently manages discussion flow and speaker selection
+- **Enhanced Idea Tracking**: Rich context tracking with status management (in_play/rejected), rejection reasoning, and evolution tracking prevents redundant discussion
 - **Hybrid Memory System**: Personas maintain bounded summaries for efficient long-term conversations
 - **4 Run Modes**: Fast (90s), Medium (3-5min), Standard (30-60min), Deep (60-90min)
 - **Comprehensive Logging**: Human-readable transcripts + structured JSON outputs
@@ -42,6 +43,7 @@ python main.py --mode standard # Investor pitch
 
 ## Documentation
 
+- **[Architecture Deep Dive](docs/architecture_deep_dive.md)** - Comprehensive technical deep dive with diagrams explaining shared context, async orchestration, and idea tracking
 - **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Detailed technical architecture, script execution order, and module overview
 - **[DOCUMENTATION.md](docs/DOCUMENTATION.md)** - Complete user guide with examples and troubleshooting
 - **[CLAUDE.md](docs/CLAUDE.md)** - Development context for AI assistants
@@ -65,6 +67,7 @@ Assembly/
 │   │   ├── config.py               # Mode configurations
 │   │   ├── prompts.py              # Staged prompts
 │   │   ├── orchestration.py        # Meeting facilitation
+│   │   ├── idea_tracker.py         # Enhanced idea tracking & status management
 │   │   └── extraction.py           # Idea extraction
 │   └── stages/                     # Pipeline stages
 │       ├── spec_generation.py      # Stage 2: Specs

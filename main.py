@@ -19,9 +19,17 @@ from src.stages.spec_generation import make_initial_prompt
 # Only Domain is required - all other fields are optional.
 
 INSPIRATION = """
-    Domain: Healthcare technology
+    Domain: Startup ideas for small development teams with AI tools
 
-    Context: Tools to help patients manage chronic conditions at home
+    Target users: Small dev teams (2-4 developers), indie hackers, technical founders
+    Primary outcome: Identify viable startup opportunities that can be built with modern AI assistance
+    Constraints:
+    - Must be buildable as MVP in 3-6 months with 2-4 developers
+    - Low infrastructure costs (leverage existing APIs/platforms)
+    - Clear monetization model from day one
+    - Should leverage AI tools (GPT-4, Claude, GitHub Copilot, etc.) during development
+
+    Context: Looking for startup ideas across any domain where small teams with AI capabilities can compete effectively. Ideas should solve real problems and be feasible without massive teams or infrastructure.
 """
 
 # ===============================================================
@@ -100,7 +108,7 @@ Examples:
     print(f"Mode: {args.mode.upper()}")
     print(f"{'='*60}\n")
 
-    ideas = multiple_llm_idea_generator(INSPIRATION, number_of_ideas=1, mode=args.mode)
+    ideas = multiple_llm_idea_generator(INSPIRATION, number_of_ideas=3, mode=args.mode)
 
     print("\n--- IDEAS ---")
     pprint(ideas)

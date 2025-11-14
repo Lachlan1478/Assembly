@@ -13,7 +13,12 @@
       "Bash(move spec_generation_02.py srcstagesspec_generation.py)",
       "Bash(move generate_initial_design_03.py srcstagesdesign_generation.py)",
       "Bash(mv:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(if exist nul del nul)",
+      "Bash(if exist meeting_logs.txt del meeting_logs.txt)",
+      "Bash(if exist replay_snapshot.json del replay_snapshot.json)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

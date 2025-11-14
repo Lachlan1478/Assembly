@@ -8,6 +8,11 @@ from framework import Persona, FacilitatorAgent, ConversationLogger
 from framework.monitor import ConversationMonitor
 from src.idea_generation.prompts import generate_dynamic_prompt
 from src.idea_generation.extraction import extract_idea_title
+from src.idea_generation.idea_tracker import (
+    is_detailed_proposal,
+    extract_idea_concept_async,
+    detect_rejections_async
+)
 
 
 async def meeting_facilitator(
@@ -19,7 +24,9 @@ async def meeting_facilitator(
     logger: ConversationLogger = None,
     monitor: Optional[ConversationMonitor] = None,
     enable_summary_updates: bool = True,
-    use_async_updates: bool = True
+    use_async_updates: bool = True,
+    model_name: str = "gpt-4o-mini",
+    personas_per_phase: int = 4
 ) -> Dict[str, Any]:
     """
     Facilitator-directed conversation with dynamic persona generation.
@@ -38,6 +45,8 @@ async def meeting_facilitator(
         monitor: Optional ConversationMonitor for real-time progress tracking
         enable_summary_updates: If False, skip LLM calls for summary updates (fast mode)
         use_async_updates: If True, use async parallel summary updates for speedup (default: True)
+        model_name: LLM model to use for idea extraction (default: "gpt-4o-mini")
+        personas_per_phase: Number of personas to generate per phase (default: 4)
 
     Returns:
         final shared_context with logs and results
@@ -66,7 +75,7 @@ async def meeting_facilitator(
         active_personas = persona_manager.request_personas_for_phase(
             inspiration=inspiration,
             phase_info=phase,
-            count=4  # Generate 4 personas per phase
+            count=personas_per_phase  # Configurable persona count (default: 4)
         )
 
         # Log persona generation
@@ -87,6 +96,9 @@ async def meeting_facilitator(
         phase_exchanges = []
         turn_count = 0
         max_turns = phase.get("max_turns", 15)
+
+        # Track pending async extractions for this phase
+        pending_extractions = []
 
         # Conversation loop for this phase
         while True:
@@ -186,13 +198,32 @@ async def meeting_facilitator(
                     content=response_content
                 )
 
-            # Extract and track discussed ideas (Fix #3)
-            idea_title = extract_idea_title(response_content)
-            if idea_title:
-                if idea_title not in shared_context["ideas_discussed"]:
-                    shared_context["ideas_discussed"].append(idea_title)
-                    print(f"[i] New idea identified: '{idea_title}'")
-                shared_context["current_focus"] = idea_title
+            # Enhanced idea tracking: Extract detailed concepts and detect rejections (async)
+            # Check if this is a detailed proposal (not just passing mention)
+            if is_detailed_proposal(response_content):
+                # Kick off async extraction (non-blocking)
+                extraction_task = asyncio.create_task(
+                    extract_idea_concept_async(
+                        response=response_content,
+                        shared_context=shared_context,
+                        turn_count=turn_count,
+                        phase_id=phase["phase_id"],
+                        model_name=model_name
+                    )
+                )
+                pending_extractions.append(extraction_task)
+
+            # Also detect rejections asynchronously (always check, not just on proposals)
+            rejection_task = asyncio.create_task(
+                detect_rejections_async(
+                    response=response_content,
+                    shared_context=shared_context,
+                    turn_count=turn_count,
+                    phase_id=phase["phase_id"],
+                    model_name=model_name
+                )
+            )
+            pending_extractions.append(rejection_task)
 
             # All active personas update their summaries based on this exchange
             if enable_summary_updates:
@@ -223,6 +254,12 @@ async def meeting_facilitator(
                     print(f"[i] Fast mode: Skipping summary updates")
 
             turn_count += 1
+
+        # Phase complete - ensure all pending extractions are complete before moving to summary
+        if pending_extractions:
+            if not monitor:
+                print(f"[i] Waiting for {len(pending_extractions)} pending idea extractions/rejection detections...")
+            await asyncio.gather(*pending_extractions, return_exceptions=True)
 
         # Phase complete - create summary
         phase_elapsed_time = time.time() - phase_start_time

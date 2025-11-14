@@ -3,6 +3,12 @@
 
 from typing import Dict, Any, List
 from textwrap import dedent
+from src.idea_generation.idea_tracker import (
+    get_ideas_in_play,
+    get_rejected_ideas,
+    format_ideas_for_prompt,
+    format_rejections_for_prompt
+)
 
 
 def get_stage_info(phase_id: str, turn_count: int, max_turns: int) -> Dict[str, Any]:
@@ -70,7 +76,7 @@ def generate_dynamic_prompt(
         phase: Current phase dict with phase_id and goal
         turn_count: Current turn number in phase
         phase_exchanges: Exchanges so far in this phase
-        shared_context: Shared context including inspiration and original_prompt
+        shared_context: Shared context including inspiration, ideas, and focus
 
     Returns:
         Stage-appropriate prompt that guides natural discovery process
@@ -135,17 +141,29 @@ def generate_dynamic_prompt(
         # Stage 4: Synthesis & Refinement
         else:
             if ideas_discussed:
-                ideas_str = ", ".join(f'"{idea}"' for idea in ideas_discussed[-3:])
-                return dedent(f"""\
-                    We've discussed potential approaches: {ideas_str}
+                # Get ideas currently in play and rejected ideas
+                in_play = get_ideas_in_play(ideas_discussed)
+                rejected = get_rejected_ideas(ideas_discussed)
 
-                    Either:
-                    1. Build on these ideas with specific improvements or refinements
-                    2. Identify potential issues or edge cases we haven't considered
-                    3. Merge the best aspects into a stronger unified concept
-                    4. Describe how this would work in a specific real-world scenario
+                # Build prompt with structured context
+                ideas_context = format_ideas_for_prompt(in_play, max_count=3)
+                rejection_context = format_rejections_for_prompt(rejected)
 
-                    Focus on making ideas concrete and actionable.""").strip()
+                prompt_parts = [f"Ideas being considered:\n{ideas_context}"]
+
+                if rejection_context:
+                    prompt_parts.append(f"\nNote - these were rejected:\n{rejection_context}")
+
+                prompt_parts.append("""
+Either:
+1. Build on the in-play ideas with specific improvements or refinements
+2. Identify potential issues or edge cases we haven't considered
+3. Merge the best aspects into a stronger unified concept
+4. Describe how this would work in a specific real-world scenario
+
+Focus on making ideas concrete and actionable. Do not re-propose rejected ideas.""")
+
+                return dedent("\n".join(prompt_parts)).strip()
             else:
                 return dedent(f"""\
                     Let's consolidate our discussion into concrete startup concepts:
@@ -161,7 +179,15 @@ def generate_dynamic_prompt(
     # RESEARCH PHASE (3 stages)
     # =======================
     elif phase_id == "research":
-        concepts = ", ".join(f'"{idea}"' for idea in ideas_discussed[-3:]) if ideas_discussed else "the concepts discussed"
+        # Format in-play ideas with their full context
+        in_play = get_ideas_in_play(ideas_discussed)
+        if in_play:
+            concept_titles = [idea["title"] for idea in in_play[-3:]]
+            concepts = ", ".join(f'"{title}"' for title in concept_titles)
+            concepts_detail = format_ideas_for_prompt(in_play[-3:], max_count=3)
+        else:
+            concepts = "the concepts discussed"
+            concepts_detail = "the ideas we've been discussing"
 
         # Stage 1: Market Sizing
         if stage_num == 0:
@@ -205,7 +231,15 @@ def generate_dynamic_prompt(
     # CRITIQUE PHASE (3 stages)
     # =======================
     elif phase_id == "critique":
-        concepts = ", ".join(f'"{idea}"' for idea in ideas_discussed[-3:]) if ideas_discussed else "the proposed solution"
+        # Format in-play ideas with their full context
+        in_play = get_ideas_in_play(ideas_discussed)
+        if in_play:
+            concept_titles = [idea["title"] for idea in in_play[-3:]]
+            concepts = ", ".join(f'"{title}"' for title in concept_titles)
+            concepts_detail = format_ideas_for_prompt(in_play[-3:], max_count=3)
+        else:
+            concepts = "the proposed solution"
+            concepts_detail = "the ideas we've been discussing"
 
         # Stage 1: Assumption Identification
         if stage_num == 0:

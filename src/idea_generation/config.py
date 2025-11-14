@@ -14,6 +14,7 @@ MODE_CONFIGS = {
     "fast": {
         "phase_selection": "bookends",
         "max_turns_per_phase": 3,
+        "personas_per_phase": 3,  # Fewer personas for faster testing
         "model": "gpt-3.5-turbo",
         "enable_summary_updates": False,
         "description": "Quick test (1-2 min) - exploration → decision only"
@@ -22,6 +23,7 @@ MODE_CONFIGS = {
         "phase_selection": "bookends_plus_middle",
         "num_phases": 4,
         "max_turns_per_phase": 5,
+        "personas_per_phase": 4,  # Standard persona count
         "model": "gpt-4o-mini",
         "enable_summary_updates": True,
         "description": "Balanced (3-5 min) - first + middle + decision phases"
@@ -29,6 +31,7 @@ MODE_CONFIGS = {
     "standard": {
         "phase_selection": "all",
         "max_turns_per_phase": 8,
+        "personas_per_phase": 4,  # Standard persona count
         "model": "gpt-4o-mini",
         "enable_summary_updates": True,
         "description": "Comprehensive (30-60 min) - full workflow"
@@ -36,6 +39,7 @@ MODE_CONFIGS = {
     "deep": {
         "phase_selection": "all",
         "max_turns_per_phase": 15,
+        "personas_per_phase": 5,  # More personas for deeper exploration
         "model": "gpt-4o-mini",
         "enable_summary_updates": True,
         "description": "Deep exploration (60-90 min) - maximum depth"

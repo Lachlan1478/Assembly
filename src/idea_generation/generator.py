@@ -127,9 +127,9 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
     shared_context = {
         "inspiration": inspiration,
         "number_of_ideas": number_of_ideas,
-        "ideas": [],  # Will be populated during conversation
-        "ideas_discussed": [],  # Track idea titles discussed during conversation
-        "current_focus": None  # Most recently discussed idea
+        "ideas": [],  # Will be populated during conversation (final structured ideas)
+        "ideas_discussed": [],  # Track ideas with full context (title, overview, example, status, rejection_reason)
+        "current_focus": None  # Most recently discussed idea title
     }
 
     # Run the facilitator-directed meeting (async) with dynamic persona generation
@@ -143,7 +143,9 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         logger=logger,
         monitor=monitor,
         enable_summary_updates=config["enable_summary_updates"],
-        use_async_updates=True  # Enable async parallel summary updates
+        use_async_updates=True,  # Enable async parallel summary updates
+        model_name=config["model"],  # Pass model for idea extraction
+        personas_per_phase=config.get("personas_per_phase", 4)  # Configurable persona count
     ))
 
     # Save basic logs (backwards compatibility)
