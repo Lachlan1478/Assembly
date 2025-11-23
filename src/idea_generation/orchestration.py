@@ -236,19 +236,27 @@ async def meeting_facilitator(
                 if use_async_updates:
                     # Parallel async updates for speed
                     if not monitor:
-                        print(f"[i] Updating summaries for all active personas (async parallel)...")
+                        print(f"[i] Updating summaries and belief states for all active personas (async parallel)...")
 
-                    await asyncio.gather(*[
-                        persona.update_summary_async(exchange_data)
-                        for persona in active_personas.values()
-                    ])
+                    # Update both summaries and belief states in parallel
+                    update_tasks = []
+                    for persona in active_personas.values():
+                        update_tasks.append(persona.update_summary_async(exchange_data))
+                        # Also update belief state if initialized
+                        if persona.belief_state is not None:
+                            update_tasks.append(persona.update_belief_state_async(exchange_data, turn_count))
+
+                    await asyncio.gather(*update_tasks)
                 else:
                     # Sequential updates (backward compatibility)
                     if not monitor:
-                        print(f"[i] Updating summaries for all active personas (sequential)...")
+                        print(f"[i] Updating summaries and belief states for all active personas (sequential)...")
 
                     for persona_name, persona in active_personas.items():
                         persona.update_summary(exchange_data)
+                        # Also update belief state if initialized
+                        if persona.belief_state is not None:
+                            persona.update_belief_state(exchange_data, turn_count)
             else:
                 if not monitor:
                     print(f"[i] Fast mode: Skipping summary updates")

@@ -111,18 +111,23 @@ Response:
 {response}
 
 Extract the following:
-1. **Title**: The name of the solution/product (e.g., "HealthBridge", "MediSync")
-2. **Overview**: 1-2 sentences describing what it is and how it works
-3. **Example**: A concrete real-world use case showing how someone would use it
+1. **Title**: The name of the solution/product (e.g., "HealthBridge", "MediSync", "TaxMate")
+2. **Overview**: 2 sentences max describing what it is and how it works
+3. **Why it works**: 1 key reason this solution is compelling (max 25 words, or leave empty if not mentioned)
+4. **Why it might fail**: 1 key risk or challenge (max 25 words, or leave empty if not mentioned)
+5. **Example**: A concrete real-world use case (max 30 words)
 
 Return as JSON:
 {{
   "title": "...",
   "overview": "...",
+  "why_it_works": "...",
+  "why_it_might_fail": "...",
   "example": "..."
 }}
 
 If no clear solution is proposed, return: {{"title": null}}
+If pros/cons haven't been discussed yet, leave those fields empty ("").
 """
 
     try:
@@ -158,6 +163,8 @@ If no clear solution is proposed, return: {{"title": null}}
         title = extracted["title"]
         overview = extracted.get("overview", "")
         example = extracted.get("example", "")
+        why_it_works = extracted.get("why_it_works", "")
+        why_it_might_fail = extracted.get("why_it_might_fail", "")
 
         # Check if similar idea already exists
         existing = find_existing_idea(title, shared_context["ideas_discussed"])
@@ -165,24 +172,38 @@ If no clear solution is proposed, return: {{"title": null}}
         if existing:
             # Update existing idea with refinement
             if len(overview) > len(existing.get("overview", "")):
-                # New description is more detailed, add as refinement
-                existing["refinements"].append({
-                    "turn": turn_count,
-                    "phase": phase_id,
-                    "overview": overview,
-                    "example": example
-                })
+                # New description is more detailed, update overview and example
                 existing["overview"] = overview
                 existing["example"] = example
-                existing["last_updated_turn"] = turn_count
-                print(f"[i] Refined existing idea: '{title}' (turn {turn_count})")
+
+            # Accumulate pros/cons (don't overwrite, add to lists)
+            if why_it_works and why_it_works not in existing["why_it_works"]:
+                existing["why_it_works"].append(why_it_works)
+
+            if why_it_might_fail and why_it_might_fail not in existing["why_it_might_fail"]:
+                existing["why_it_might_fail"].append(why_it_might_fail)
+
+            # Add refinement entry with all fields
+            existing["refinements"].append({
+                "turn": turn_count,
+                "phase": phase_id,
+                "overview": overview,
+                "example": example,
+                "why_it_works": why_it_works,
+                "why_it_might_fail": why_it_might_fail
+            })
+
+            existing["last_updated_turn"] = turn_count
+            print(f"[i] Refined existing idea: '{title}' (turn {turn_count})")
             return existing
         else:
-            # Create new idea entry
+            # Create new idea entry with pros/cons as lists
             new_idea = {
                 "title": title,
                 "overview": overview,
                 "example": example,
+                "why_it_works": [why_it_works] if why_it_works else [],  # List for accumulation
+                "why_it_might_fail": [why_it_might_fail] if why_it_might_fail else [],  # List for accumulation
                 "status": "in_play",
                 "rejection_reason": None,
                 "first_mentioned_phase": phase_id,
@@ -192,7 +213,9 @@ If no clear solution is proposed, return: {{"title": null}}
                     "turn": turn_count,
                     "phase": phase_id,
                     "overview": overview,
-                    "example": example
+                    "example": example,
+                    "why_it_works": why_it_works,
+                    "why_it_might_fail": why_it_might_fail
                 }]
             }
 
@@ -428,3 +451,74 @@ def get_idea_summary_stats(ideas_discussed: List[Dict[str, Any]]) -> Dict[str, i
         "in_play": len([i for i in ideas_discussed if i["status"] == "in_play"]),
         "rejected": len([i for i in ideas_discussed if i["status"] == "rejected"])
     }
+
+
+def format_idea_memory_card(idea: Dict[str, Any], max_pros: int = 2, max_cons: int = 2) -> str:
+    """
+    Format idea as a memory card with solution, pros, cons, and example.
+
+    Max output: ~100 tokens per idea
+
+    Args:
+        idea: Idea dict with title, overview, why_it_works, why_it_might_fail, example
+        max_pros: Max number of "why it works" points to show (default: 2)
+        max_cons: Max number of "why it might fail" points to show (default: 2)
+
+    Returns:
+        Formatted memory card string
+    """
+    lines = [f"{idea['title']}:"]
+
+    # Solution (overview) - truncate to 60 chars
+    overview = idea.get('overview', 'No description yet')
+    if len(overview) > 60:
+        overview = overview[:60] + "..."
+    lines.append(f"  • Solution: {overview}")
+
+    # Why it works (take last/most recent pros)
+    pros = idea.get('why_it_works', [])
+    recent_pros = [p for p in pros if p and p != "To be determined"][-max_pros:]
+    if recent_pros:
+        # Use most recent pro (last in list)
+        pros_text = recent_pros[-1][:50] if recent_pros else ""
+        if pros_text:
+            lines.append(f"  • Why it works: {pros_text}")
+
+    # Why it might fail (take last/most recent cons)
+    cons = idea.get('why_it_might_fail', [])
+    recent_cons = [c for c in cons if c and c != "To be determined"][-max_cons:]
+    if recent_cons:
+        # Use most recent con (last in list)
+        cons_text = recent_cons[-1][:50] if recent_cons else ""
+        if cons_text:
+            lines.append(f"  • Why it might fail: {cons_text}")
+
+    # Example - truncate to 60 chars
+    example = idea.get('example', 'No example yet')
+    if len(example) > 60:
+        example = example[:60] + "..."
+    lines.append(f"  • Example: {example}")
+
+    return "\n".join(lines)
+
+
+def format_ideas_as_memory_cards(ideas: List[Dict[str, Any]], max_count: int = 3) -> str:
+    """
+    Format multiple ideas as memory cards.
+
+    Max output: ~100 tokens/idea × max_count = ~300 tokens
+
+    Args:
+        ideas: List of idea dicts
+        max_count: Max number of ideas to format (default: 3)
+
+    Returns:
+        Formatted memory cards separated by blank lines
+    """
+    if not ideas:
+        return "No ideas yet."
+
+    recent_ideas = ideas[-max_count:]  # Take most recent
+
+    cards = [format_idea_memory_card(idea) for idea in recent_ideas]
+    return "\n\n".join(cards)

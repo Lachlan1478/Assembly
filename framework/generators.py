@@ -215,6 +215,10 @@ For each phase, provide:
 - **goal**: Clear objective for this phase
 - **desired_outcome**: Specific deliverable (be concrete about what artifact should exist after)
 - **max_turns**: Recommended number of conversation turns (typically 8-12)
+- **phase_type**: Either "debate" (default) or "integration"
+  - Use "debate" for divergent thinking phases (exploration, analysis, critique)
+  - Use "integration" for convergent thinking phases (synthesis, consensus, decision)
+  - Typically the last 1-2 phases should be "integration" to converge on solutions
 
 Respond ONLY with a JSON object:
 {{
@@ -223,7 +227,8 @@ Respond ONLY with a JSON object:
       "phase_id": "...",
       "goal": "...",
       "desired_outcome": "...",
-      "max_turns": 8
+      "max_turns": 8,
+      "phase_type": "debate"
     }},
     ...
   ]
@@ -251,9 +256,20 @@ Respond ONLY with a JSON object:
 
         phases = parsed.get("phases", [])
 
+        # Add defaults for backward compatibility
+        for phase in phases:
+            # Default phase_type to "debate" if not specified
+            if "phase_type" not in phase:
+                phase["phase_type"] = "debate"
+            # Validate phase_type
+            if phase["phase_type"] not in ["debate", "integration"]:
+                print(f"[!] Warning: Invalid phase_type '{phase['phase_type']}' for {phase.get('phase_id')}, defaulting to 'debate'")
+                phase["phase_type"] = "debate"
+
         print(f"[OK] Generated {len(phases)} custom phases for domain")
         for phase in phases:
-            print(f"     - {phase.get('phase_id')}: {phase.get('goal')}")
+            phase_type_label = f"[{phase.get('phase_type', 'debate').upper()}]"
+            print(f"     - {phase_type_label} {phase.get('phase_id')}: {phase.get('goal')}")
 
         return phases
 

@@ -58,13 +58,25 @@ Participants should explore these perspectives deeply, engaging with each
 other's arguments and considering edge cases and objections.
 """
 
-# Single phase definition for focused ethical analysis
-PHASES = [{
-    "phase_id": "ethical_analysis",
-    "goal": "Analyze the Trolley Problem from multiple ethical frameworks and engage in rigorous philosophical debate",
-    "desired_outcome": "Clear articulation of utilitarian and deontological positions with reasoning, objections, and responses",
-    "max_turns": 10
-}]
+# Two-phase definition: debate + integration
+PHASES = [
+    {
+        "phase_id": "ethical_analysis",
+        "goal": "Analyze the Trolley Problem from multiple ethical frameworks and engage in rigorous philosophical debate",
+        "desired_outcome": "Clear articulation of utilitarian and deontological positions with reasoning, objections, and responses",
+        "max_turns": 8,
+        "phase_type": "debate",
+        "domain": "philosophical_debate"
+    },
+    {
+        "phase_id": "ethical_integration",
+        "goal": "Find common ground between utilitarian and deontological perspectives on the Trolley Problem",
+        "desired_outcome": "Identification of shared principles and clear articulation of genuine remaining disagreements",
+        "max_turns": 5,
+        "phase_type": "integration",
+        "domain": "philosophical_debate"
+    }
+]
 
 
 async def run_trolley_problem_test():
@@ -74,7 +86,9 @@ async def run_trolley_problem_test():
     Configuration:
     - 2 personas (likely: Utilitarian + Deontologist)
     - 1 facilitator managing the discussion
-    - 10 turns for medium-depth exploration
+    - Phase 1 (debate): 8 turns of rigorous philosophical debate
+    - Phase 2 (integration): 5 turns of finding common ground
+    - Belief state tracking enabled
     - Memory updates enabled for realistic conversation
     """
     print("="*70)
@@ -83,11 +97,13 @@ async def run_trolley_problem_test():
     print()
     print("Configuration:")
     print("  - Personas: 2 (dynamically generated)")
-    print("  - Turns: 10 (medium depth)")
+    print("  - Phase 1 (DEBATE): 8 turns - rigorous philosophical debate")
+    print("  - Phase 2 (INTEGRATION): 5 turns - finding common ground")
+    print("  - Belief state tracking: ENABLED")
     print("  - Memory updates: ENABLED (realistic conversation)")
     print("  - Model: gpt-4o-mini")
     print()
-    print("Estimated runtime: 3-5 minutes")
+    print("Estimated runtime: 5-7 minutes")
     print()
 
     # Initialize components
@@ -143,12 +159,12 @@ async def run_trolley_problem_test():
     print(f"  {logger.session_dir}")
     print()
     print("Files generated:")
-    print("  📄 readable_transcript.md     - Human-friendly conversation transcript")
-    print("  📊 persona_summaries.json      - How personas evolved their understanding")
-    print("  🎯 facilitator_decisions.json  - Who spoke when and why")
-    print("  📝 full_conversation.json      - Complete conversation data")
-    print("  📋 phase_summaries.txt         - High-level phase summary")
-    print("  ⚙️  session_metadata.json      - Session configuration")
+    print("  readable_transcript.md     - Human-friendly conversation transcript")
+    print("  persona_summaries.json      - How personas evolved their understanding")
+    print("  facilitator_decisions.json  - Who spoke when and why")
+    print("  full_conversation.json      - Complete conversation data")
+    print("  phase_summaries.txt         - High-level phase summary")
+    print("  session_metadata.json      - Session configuration")
     print()
     print("Next steps:")
     print(f"  1. Review: {logger.session_dir / 'readable_transcript.md'}")
@@ -170,13 +186,13 @@ def main():
     """Main entry point for the test."""
     try:
         result = asyncio.run(run_trolley_problem_test())
-        print("✓ Test completed successfully!")
+        print("[OK] Test completed successfully!")
         return 0
     except KeyboardInterrupt:
-        print("\n\n⚠️  Test interrupted by user")
+        print("\n\n[!] Test interrupted by user")
         return 1
     except Exception as e:
-        print(f"\n\n❌ Test failed with error: {e}")
+        print(f"\n\n[ERROR] Test failed with error: {e}")
         import traceback
         traceback.print_exc()
         return 1

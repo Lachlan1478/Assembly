@@ -33,7 +33,6 @@ Assembly uses a **facilitator-directed multi-phase conversation** architecture w
                         │
                         ├─► Generate dynamic phases (LLM)
                         │
-                        ├─► Initialize shared_context = {}
                         │
                         ▼
 ┌─────────────────────────────────────────────────────────────────┐
