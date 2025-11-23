@@ -5,10 +5,11 @@ The facilitator is responsible for:
 1. Selecting relevant personas for each phase
 2. Deciding who should speak next
 3. Determining when phase objectives are met
+4. Detecting repetition and enforcing novelty
 """
 
 import json
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Set
 from openai import OpenAI
 
 
@@ -20,6 +21,62 @@ def safe_print(text: str) -> None:
         # Replace problematic unicode characters with ASCII equivalents
         safe_text = text.encode('ascii', 'replace').decode('ascii')
         print(safe_text)
+
+
+def extract_key_phrases(text: str, max_phrases: int = 5) -> Set[str]:
+    """
+    Extract key phrases (3-5 word sequences) from text for repetition detection.
+
+    Args:
+        text: Input text to extract phrases from
+        max_phrases: Maximum number of phrases to extract
+
+    Returns:
+        Set of key phrases (lowercase, normalized)
+    """
+    # Simple extraction: get 3-5 word sequences
+    words = text.lower().split()
+    phrases = set()
+
+    # Extract 3-word sequences
+    for i in range(len(words) - 2):
+        phrase = " ".join(words[i:i+3])
+        phrases.add(phrase)
+        if len(phrases) >= max_phrases:
+            break
+
+    return phrases
+
+
+def detect_repetition(current_text: str, previous_texts: List[str], threshold: float = 0.3) -> bool:
+    """
+    Detect if current text repeats content from previous texts.
+
+    Args:
+        current_text: Current speaker's text
+        previous_texts: List of previous texts from same speaker
+        threshold: Similarity threshold (0.0-1.0) to consider repetition
+
+    Returns:
+        True if repetition detected, False otherwise
+    """
+    if not previous_texts:
+        return False
+
+    current_phrases = extract_key_phrases(current_text, max_phrases=10)
+
+    for prev_text in previous_texts[-3:]:  # Check last 3 turns only
+        prev_phrases = extract_key_phrases(prev_text, max_phrases=10)
+
+        # Calculate overlap
+        if current_phrases and prev_phrases:
+            overlap = len(current_phrases & prev_phrases)
+            similarity = overlap / len(current_phrases)
+
+            if similarity >= threshold:
+                return True
+
+    return False
 
 
 class FacilitatorAgent:
@@ -37,6 +94,8 @@ class FacilitatorAgent:
         """
         self.model_name = model_name
         self.client = OpenAI()
+        # Track speaker history for repetition detection
+        self.speaker_history: Dict[str, List[str]] = {}  # {speaker_name: [previous_responses]}
 
     def select_personas_for_phase(
         self,
@@ -247,6 +306,43 @@ Otherwise, choose from: {', '.join([p['name'] for p in persona_list]) if persona
                 print(f"[Facilitator] Fallback: selecting {fallback}")
                 return fallback
             return None
+
+    def check_for_repetition(
+        self,
+        speaker_name: str,
+        response_content: str
+    ) -> Optional[str]:
+        """
+        Check if speaker is repeating previous arguments.
+
+        Args:
+            speaker_name: Name of the speaker
+            response_content: Current response content
+
+        Returns:
+            Warning message if repetition detected, None otherwise
+        """
+        # Get speaker's history
+        previous_responses = self.speaker_history.get(speaker_name, [])
+
+        # Detect repetition
+        if detect_repetition(response_content, previous_responses):
+            warning = (
+                f"[Facilitator] {speaker_name}, you repeated a previous point. "
+                "Please revise by adding a novel nuance or modifying your belief_state."
+            )
+            return warning
+
+        # Update history
+        if speaker_name not in self.speaker_history:
+            self.speaker_history[speaker_name] = []
+        self.speaker_history[speaker_name].append(response_content)
+
+        # Keep only last 5 responses per speaker
+        if len(self.speaker_history[speaker_name]) > 5:
+            self.speaker_history[speaker_name] = self.speaker_history[speaker_name][-5:]
+
+        return None
 
     def summarize_phase(
         self,
