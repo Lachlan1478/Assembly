@@ -29,7 +29,7 @@ async def meeting_facilitator(
     personas_per_phase: int = 4
 ) -> Dict[str, Any]:
     """
-    Facilitator-directed conversation with dynamic persona generation.
+    Facilitator-directed conversation with dynamic persona generation and novelty tracking.
 
     Args:
         persona_manager: PersonaManager for on-demand persona generation
@@ -53,6 +53,10 @@ async def meeting_facilitator(
     """
     logs = []
     all_phase_summaries = []
+
+    # Initialize novelty tracking in shared_context
+    if "mentioned_nuances" not in shared_context:
+        shared_context["mentioned_nuances"] = set()
 
     for phase in phases:
         # Track phase start time for monitor
@@ -165,6 +169,22 @@ async def meeting_facilitator(
             # Persona generates response using their summary
             response_data = speaker_persona.response(ctx)
             response_content = response_data.get("response", "")
+
+            # Check for repetition
+            repetition_warning = facilitator.check_for_repetition(
+                speaker_name=speaker_persona.name,
+                response_content=response_content
+            )
+
+            if repetition_warning:
+                print(repetition_warning)
+                # Note: In a full implementation, we could request a revision here
+                # For now, we just warn and continue
+
+            # Track novelty: extract key phrases from response and add to mentioned_nuances
+            from framework.facilitator import extract_key_phrases
+            new_phrases = extract_key_phrases(response_content, max_phrases=3)
+            shared_context["mentioned_nuances"].update(new_phrases)
 
             # Display response (only if not using monitor, to avoid clutter)
             if not monitor:
