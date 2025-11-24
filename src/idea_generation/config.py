@@ -17,6 +17,7 @@ MODE_CONFIGS = {
         "personas_per_phase": 3,  # Fewer personas for faster testing
         "model": "gpt-3.5-turbo",
         "enable_summary_updates": False,
+        "enable_mediator": False,  # Disable mediator for speed
         "description": "Quick test (1-2 min) - exploration → decision only"
     },
     "medium": {
@@ -26,6 +27,7 @@ MODE_CONFIGS = {
         "personas_per_phase": 4,  # Standard persona count
         "model": "gpt-4o-mini",
         "enable_summary_updates": True,
+        "enable_mediator": True,  # Enable mediator for quality discussions
         "description": "Balanced (3-5 min) - first + middle + decision phases"
     },
     "standard": {
@@ -34,6 +36,7 @@ MODE_CONFIGS = {
         "personas_per_phase": 4,  # Standard persona count
         "model": "gpt-4o-mini",
         "enable_summary_updates": True,
+        "enable_mediator": True,  # Enable mediator for quality discussions
         "description": "Comprehensive (30-60 min) - full workflow"
     },
     "deep": {
@@ -42,6 +45,7 @@ MODE_CONFIGS = {
         "personas_per_phase": 5,  # More personas for deeper exploration
         "model": "gpt-4o-mini",
         "enable_summary_updates": True,
+        "enable_mediator": True,  # Enable mediator for deepest exploration
         "description": "Deep exploration (60-90 min) - maximum depth"
     }
 }
