@@ -97,23 +97,28 @@ async def run_trolley_problem_test():
     print()
     print("Configuration:")
     print("  - Personas: 2 (dynamically generated)")
+    print("  - Mediator: ENABLED (neutral meta-level guide)")
     print("  - Phase 1 (DEBATE): 8 turns - rigorous philosophical debate")
     print("  - Phase 2 (INTEGRATION): 5 turns - finding common ground")
     print("  - Belief state tracking: ENABLED")
     print("  - Memory updates: ENABLED (realistic conversation)")
     print("  - Model: gpt-4o-mini")
     print()
-    print("Estimated runtime: 5-7 minutes")
+    print("Estimated runtime: 6-8 minutes (with mediator interventions)")
     print()
 
     # Initialize components
-    print("[1/5] Initializing PersonaManager...")
+    print("[1/6] Initializing PersonaManager...")
     persona_manager = PersonaManager(model_name="gpt-4o-mini")
 
-    print("[2/5] Initializing Facilitator...")
+    print("[2/6] Initializing Facilitator...")
     facilitator = FacilitatorAgent(model_name="gpt-4o-mini")
 
-    print("[3/5] Initializing Logger...")
+    print("[3/6] Initializing Mediator...")
+    from framework.mediator_persona import MediatorPersona
+    mediator = MediatorPersona.get_default_mediator(model_name="gpt-4o-mini")
+
+    print("[4/6] Initializing Logger...")
     logger = ConversationLogger(base_dir=str(LOGS_DIR))
 
     # Shared context for tracking discussion
@@ -124,7 +129,7 @@ async def run_trolley_problem_test():
         "objections_raised": []
     }
 
-    print("[4/5] Starting conversation...")
+    print("[5/6] Starting conversation...")
     print()
     print("-" * 70)
 
@@ -139,12 +144,14 @@ async def run_trolley_problem_test():
         enable_summary_updates=True,  # Enable memory updates
         use_async_updates=True,       # Parallel updates for speed
         model_name="gpt-4o-mini",
-        personas_per_phase=2          # KEY: Override to 2 personas
+        personas_per_phase=2,         # KEY: Override to 2 personas
+        enable_mediator=True,         # Enable mediator interventions
+        mediator=mediator             # Use initialized mediator
     )
 
     print("-" * 70)
     print()
-    print("[5/5] Saving logs...")
+    print("[6/6] Saving logs...")
     logger.save_all()  # Save all conversation logs to disk
     print()
     print("Test complete!")

@@ -145,7 +145,8 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         enable_summary_updates=config["enable_summary_updates"],
         use_async_updates=True,  # Enable async parallel summary updates
         model_name=config["model"],  # Pass model for idea extraction
-        personas_per_phase=config.get("personas_per_phase", 4)  # Configurable persona count
+        personas_per_phase=config.get("personas_per_phase", 4),  # Configurable persona count
+        enable_mediator=config.get("enable_mediator", True)  # Enable mediator based on mode
     ))
 
     # Save basic logs (backwards compatibility)
