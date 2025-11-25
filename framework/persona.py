@@ -131,7 +131,7 @@ class Persona:
                 "deltas": []
             }
 
-    def response(self, ctx: Dict[str, Any], prompt_key: Optional[str] = None) -> Dict[str, Any]:
+    def response(self, ctx: Dict[str, Any], prompt_key: Optional[str] = None, prompt_logger: Optional[callable] = None) -> Dict[str, Any]:
         """
         Generate a persona response given context (ctx).
         Uses the persona's summary instead of full conversation history.
@@ -142,6 +142,7 @@ class Persona:
                 - phase: Current phase information (optional)
                 - shared_context: Any shared artifacts (optional)
                 - turn_count: Current turn number in phase (for dynamic word limits)
+            prompt_logger: Optional callback to log the full prompt input before LLM call
 
         Returns:
             Dict with persona, archetype, and response
@@ -292,12 +293,14 @@ SHARED WHITEBOARD (team's shared state):
         ]
 
         # Count tokens before sending (using tiktoken for accurate counting)
+        token_count = 0
         try:
             import tiktoken
             enc = tiktoken.encoding_for_model(self.model_name)
             system_tokens = len(enc.encode(system_message))
             user_tokens = len(enc.encode(enhanced_prompt))
             total_tokens = system_tokens + user_tokens
+            token_count = total_tokens
 
             # Warn if exceeding safe limits
             if total_tokens > 4000:
@@ -313,6 +316,18 @@ SHARED WHITEBOARD (team's shared state):
         except Exception as e:
             # Other errors (e.g., unknown model), skip counting
             pass
+
+        # Log prompt input if callback provided
+        if prompt_logger:
+            try:
+                prompt_logger({
+                    "system_message": system_message,
+                    "enhanced_prompt": enhanced_prompt,
+                    "token_count": token_count
+                })
+            except Exception as e:
+                # Don't fail the response if logging fails
+                print(f"[!] Warning: Failed to log prompt input: {e}")
 
         # Call LLM
         completion = self.client.chat.completions.create(

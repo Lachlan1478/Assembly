@@ -183,7 +183,18 @@ async def meeting_facilitator(
             }
 
             # Persona generates response using their summary
-            response_data = speaker_persona.response(ctx)
+            # Pass prompt logging callback if logger is available
+            prompt_logger_callback = None
+            if logger:
+                prompt_logger_callback = lambda prompt_data: logger.log_prompt_input(
+                    phase_id=phase["phase_id"],
+                    turn=turn_count,
+                    speaker=speaker_persona.name,
+                    archetype=speaker_persona.archetype,
+                    prompt_data=prompt_data
+                )
+
+            response_data = speaker_persona.response(ctx, prompt_logger=prompt_logger_callback)
             response_content = response_data.get("response", "")
 
             # Check for repetition

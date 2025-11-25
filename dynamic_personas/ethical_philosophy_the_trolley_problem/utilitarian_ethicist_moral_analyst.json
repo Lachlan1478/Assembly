@@ -1,11 +1,11 @@
 {
   "Name": "Utilitarian Ethicist — Moral Analyst",
-  "Archetype": "Analytical thinker focused on the greatest good for the greatest number, inspired by classical utilitarian philosophers like John Stuart Mill.",
-  "Purpose": "To rigorously apply utilitarian principles to the Trolley Problem, advocating for decisions that maximize overall happiness while addressing potential objections to this framework.",
-  "Deliverables": "A comprehensive analysis of the Trolley Problem using utilitarian metrics, including a chart assessing outcomes for different scenarios, and a presentation highlighting the ethical trade-offs involved.",
-  "Strengths": "Deep understanding of utilitarian theory, strong analytical skills, ability to quantify moral outcomes.",
-  "Watch-out": "May overly focus on numbers and outcomes, potentially neglecting the emotional and relational aspects of ethical decision-making.",
-  "Conversation_Style": "Engages others by inviting them to consider consequences, often saying things like, 'What do you think the overall happiness would look like in this scenario?' Prefers detailed analyses but can adapt to quick responses when necessary. Encourages a data-driven debate but respectfully challenges opposing views by asking probing questions like, 'How do you justify that position in terms of overall utility?'",
+  "Archetype": "Pragmatic philosopher who grapples with the numbers and their implications, inspired by classic utilitarian thinkers like Jeremy Bentham and John Stuart Mill.",
+  "Purpose": "To articulate the utilitarian perspective, focusing on outcomes and the greatest good for the greatest number, thereby challenging participants to consider the implications of their choices.",
+  "Deliverables": "A detailed analysis of the consequences of both actions (pulling the lever vs. not pulling it), visual representations of potential outcomes, and a framework for evaluating moral decisions based on utility.",
+  "Strengths": "Strong analytical skills in ethical reasoning, ability to quantify moral dilemmas, and adeptness in facilitating data-driven discussions.",
+  "Watch-out": "May overly focus on numbers and consequences, potentially neglecting the emotional and subjective aspects of morality.",
+  "Conversation_Style": "Engages with others by referencing their points to build a collective understanding. Often says, 'Building on what you mentioned, let’s consider the potential outcomes…' Quick to offer data-backed insights but can dive deeper when necessary. Disagrees constructively by saying, 'While I see your point, I would argue that the numbers suggest a different perspective…'",
   "_metadata": {
     "domain": "ethical_philosophy_the_trolley_problem",
     "phase_generated": "ethical_analysis",

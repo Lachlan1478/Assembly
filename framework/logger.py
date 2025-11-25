@@ -44,6 +44,7 @@ class ConversationLogger:
         self.persona_summaries = {}  # {phase_id: {persona_name: summary}}
         self.phase_summaries = {}    # {phase_id: summary_text}
         self.facilitator_decisions = []
+        self.prompt_inputs = []      # Full prompt inputs for each turn
         self.metadata = {
             "timestamp": timestamp,
             "session_start": datetime.now().isoformat()
@@ -88,6 +89,36 @@ class ConversationLogger:
             "content": content
         }
         self.exchanges.append(exchange)
+
+    def log_prompt_input(
+        self,
+        phase_id: str,
+        turn: int,
+        speaker: str,
+        archetype: str,
+        prompt_data: Dict[str, Any]
+    ) -> None:
+        """
+        Log the complete input prompt sent to a persona.
+
+        Args:
+            phase_id: Current phase
+            turn: Turn number within phase
+            speaker: Persona name
+            archetype: Persona archetype
+            prompt_data: Dict containing system_message, enhanced_prompt, and token_count
+        """
+        prompt_input = {
+            "timestamp": datetime.now().isoformat(),
+            "phase": phase_id,
+            "turn": turn,
+            "speaker": speaker,
+            "archetype": archetype,
+            "system_message": prompt_data.get("system_message", ""),
+            "enhanced_prompt": prompt_data.get("enhanced_prompt", ""),
+            "token_count": prompt_data.get("token_count", 0)
+        }
+        self.prompt_inputs.append(prompt_input)
 
     def log_persona_summaries(self, phase_id: str, personas: Dict[str, Any]) -> None:
         """
@@ -179,6 +210,9 @@ class ConversationLogger:
 
         # Generate readable transcript
         self._generate_transcript()
+
+        # Generate prompt inputs document
+        self._generate_prompt_inputs()
 
         print(f"\n[Logger] All logs saved to: {self.session_dir}")
         print(f"[Logger] Total exchanges: {len(self.exchanges)}")
@@ -297,3 +331,56 @@ class ConversationLogger:
                 f.write("\n```\n")
 
         print(f"[Logger] Saved readable_transcript.md: Human-friendly transcript")
+
+    def _generate_prompt_inputs(self) -> None:
+        """Generate a document showing the complete input prompts sent to each persona."""
+        filepath = self.session_dir / "prompt_inputs.md"
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            # Header
+            f.write(f"# Persona Prompt Inputs\n\n")
+            f.write(f"**Session**: {self.metadata.get('timestamp')}\n\n")
+            f.write(f"This document shows the complete input (system message + enhanced prompt) ")
+            f.write(f"sent to each persona for every turn.\n\n")
+            f.write("---\n\n")
+
+            # Group prompt inputs by phase
+            current_phase = None
+            for prompt_input in self.prompt_inputs:
+                phase = prompt_input["phase"]
+
+                # New phase header
+                if phase != current_phase:
+                    current_phase = phase
+                    f.write(f"\n## Phase: {phase.upper()}\n\n")
+
+                # Prompt input entry
+                speaker = prompt_input["speaker"]
+                archetype = prompt_input["archetype"]
+                system_message = prompt_input["system_message"]
+                enhanced_prompt = prompt_input["enhanced_prompt"]
+                token_count = prompt_input["token_count"]
+                turn = prompt_input["turn"]
+
+                f.write(f"### Turn {turn}: {speaker} — {archetype}\n\n")
+
+                # System message
+                f.write(f"#### System Message\n\n")
+                f.write(f"```\n{system_message}\n```\n\n")
+
+                # Enhanced prompt
+                f.write(f"#### Enhanced Prompt\n\n")
+                f.write(f"```\n{enhanced_prompt}\n```\n\n")
+
+                # Token count
+                if token_count > 0:
+                    f.write(f"**Token Count**: {token_count} tokens\n\n")
+
+                f.write("---\n\n")
+
+            # Final summary
+            f.write("\n## Summary\n\n")
+            f.write(f"- **Total Prompt Inputs Logged**: {len(self.prompt_inputs)}\n")
+            f.write(f"- **Total Phases**: {len(set(p['phase'] for p in self.prompt_inputs))}\n")
+
+        print(f"[Logger] Saved prompt_inputs.md: Complete input prompts for each turn")
