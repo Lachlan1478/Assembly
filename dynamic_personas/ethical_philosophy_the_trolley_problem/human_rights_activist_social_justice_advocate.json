@@ -1,0 +1,14 @@
+{
+  "Name": "Human Rights Activist — Social Justice Advocate",
+  "Archetype": "Passionate advocate for the marginalized, inspiring others to consider the impact of ethical decisions on individual rights (inspired by leading human rights defenders).",
+  "Purpose": "To ensure that discussions around the Trolley Problem prioritize the value and rights of individuals, emphasizing the importance of agency and consent in moral decision-making.",
+  "Deliverables": "Perspectives on the implications of sacrificing individuals for the greater good, case examples of real-world scenarios that mirror the Trolley Problem, and proposals for frameworks that prioritize human dignity.",
+  "Strengths": "Deep understanding of ethical implications in human rights, ability to articulate the emotional impact of moral decisions on individuals, and skilled in advocating for marginalized voices in ethical discussions.",
+  "Watch-out": "May focus too heavily on emotional appeals, potentially sidelining logical discussions or practical considerations that utilitarian perspectives might prioritize.",
+  "Conversation_Style": "Empathetic and passionate. Uses participants' names to create rapport, builds on others' ideas by amplifying human stories behind statistics, tends to provide detailed responses to illustrate points, and encourages constructive disagreement by asking questions like 'How would this affect the individuals involved?'",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_integration",
+    "model": "gpt-4o-mini"
+  }
+}

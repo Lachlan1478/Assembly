@@ -6,6 +6,13 @@ import time
 from typing import Dict, List, Any, Optional
 from framework import Persona, FacilitatorAgent, ConversationLogger
 from framework.monitor import ConversationMonitor
+from framework.mediator_persona import MediatorPersona
+from framework.mediator_triggers import (
+    check_mediator_triggers,
+    detect_stagnation,
+    detect_implicit_agreement,
+    should_force_definition
+)
 from src.idea_generation.prompts import generate_dynamic_prompt
 from src.idea_generation.extraction import extract_idea_title
 from src.idea_generation.idea_tracker import (
@@ -26,10 +33,12 @@ async def meeting_facilitator(
     enable_summary_updates: bool = True,
     use_async_updates: bool = True,
     model_name: str = "gpt-4o-mini",
-    personas_per_phase: int = 4
+    personas_per_phase: int = 4,
+    enable_mediator: bool = True,
+    mediator: Optional[MediatorPersona] = None
 ) -> Dict[str, Any]:
     """
-    Facilitator-directed conversation with dynamic persona generation.
+    Facilitator-directed conversation with dynamic persona generation and novelty tracking.
 
     Args:
         persona_manager: PersonaManager for on-demand persona generation
@@ -39,6 +48,7 @@ async def meeting_facilitator(
             - goal: str (what should be accomplished)
             - desired_outcome: str (specific deliverable)
             - max_turns: int (optional, default 15)
+            - phase_type: "debate" or "integration" (optional, default "debate")
         shared_context: Mutable dict for shared artifacts (ideas, decisions, etc.)
         facilitator: FacilitatorAgent instance
         logger: Optional ConversationLogger for comprehensive logging
@@ -47,12 +57,22 @@ async def meeting_facilitator(
         use_async_updates: If True, use async parallel summary updates for speedup (default: True)
         model_name: LLM model to use for idea extraction (default: "gpt-4o-mini")
         personas_per_phase: Number of personas to generate per phase (default: 4)
+        enable_mediator: If True, enable neutral mediator interventions (default: True)
+        mediator: Optional MediatorPersona instance (creates default if None)
 
     Returns:
         final shared_context with logs and results
     """
     logs = []
     all_phase_summaries = []
+
+    # Initialize novelty tracking in shared_context
+    if "mentioned_nuances" not in shared_context:
+        shared_context["mentioned_nuances"] = []  # Use list instead of set for JSON serialization
+
+    # Initialize mediator if enabled and not provided
+    if enable_mediator and mediator is None:
+        mediator = MediatorPersona.get_default_mediator(model_name=model_name)
 
     for phase in phases:
         # Track phase start time for monitor
@@ -177,6 +197,25 @@ async def meeting_facilitator(
             response_data = speaker_persona.response(ctx, prompt_logger=prompt_logger_callback)
             response_content = response_data.get("response", "")
 
+            # Check for repetition
+            repetition_warning = facilitator.check_for_repetition(
+                speaker_name=speaker_persona.name,
+                response_content=response_content
+            )
+
+            if repetition_warning:
+                print(repetition_warning)
+                # Note: In a full implementation, we could request a revision here
+                # For now, we just warn and continue
+
+            # Track novelty: extract key phrases from response and add to mentioned_nuances
+            from framework.facilitator import extract_key_phrases
+            new_phrases = extract_key_phrases(response_content, max_phrases=3)
+            # Add new phrases to list (avoiding duplicates)
+            for phrase in new_phrases:
+                if phrase not in shared_context["mentioned_nuances"]:
+                    shared_context["mentioned_nuances"].append(phrase)
+
             # Display response (only if not using monitor, to avoid clutter)
             if not monitor:
                 print(f"\n{speaker_persona.name}: {response_content[:200]}...")
@@ -273,6 +312,98 @@ async def meeting_facilitator(
                     print(f"[i] Fast mode: Skipping summary updates")
 
             turn_count += 1
+
+            # Check if mediator should intervene
+            if enable_mediator and mediator is not None:
+                phase_type = phase.get("phase_type", "debate")
+                mediator_should_speak = check_mediator_triggers(
+                    turn_count=turn_count,
+                    phase_exchanges=phase_exchanges,
+                    active_personas=active_personas,
+                    repetition_detected=bool(repetition_warning),
+                    phase_type=phase_type
+                )
+
+                if mediator_should_speak:
+                    # Mediator intervention
+                    if monitor:
+                        monitor.on_turn_start(
+                            speaker=mediator.name,
+                            turn_num=turn_count,
+                            max_turns=max_turns
+                        )
+                    else:
+                        print(f"\n[Mediator] {mediator.name} intervening...")
+
+                    # Build advocate belief states for mediator
+                    advocate_belief_states = {}
+                    for persona_name, persona in active_personas.items():
+                        if hasattr(persona, 'belief_state') and persona.belief_state:
+                            advocate_belief_states[persona_name] = persona.belief_state
+
+                    # Mediator context includes full belief state access
+                    mediator_ctx = {
+                        "advocate_belief_states": advocate_belief_states,
+                        "recent_exchanges": phase_exchanges[-5:],  # Last 5 turns
+                        "shared_context": shared_context,
+                        "turn_count": turn_count,
+                        "stagnation_detected": detect_stagnation(phase_exchanges, active_personas) > 0.7
+                    }
+
+                    # Mediator generates intervention
+                    mediator_response_data = mediator.mediate(mediator_ctx)
+                    mediator_content = mediator_response_data.get("response", "")
+
+                    # Display mediator intervention
+                    if not monitor:
+                        print(f"\n{mediator.name} (Mediator): {mediator_content[:200]}...")
+
+                    # Monitor: Turn complete
+                    if monitor:
+                        monitor.on_turn_complete(
+                            speaker=mediator.name,
+                            tokens_used=300  # Mediator responses typically shorter
+                        )
+
+                    # Log mediator exchange
+                    mediator_exchange = {
+                        "phase": phase["phase_id"],
+                        "turn": turn_count,
+                        "speaker": mediator.name,
+                        "archetype": "Neutral Mediator",
+                        "content": mediator_content
+                    }
+                    phase_exchanges.append(mediator_exchange)
+                    logs.append(mediator_exchange)
+
+                    # Log to conversation logger
+                    if logger:
+                        logger.log_exchange(
+                            phase_id=phase["phase_id"],
+                            turn=turn_count,
+                            speaker=mediator.name,
+                            archetype="Neutral Mediator",
+                            content=mediator_content
+                        )
+
+                    # All advocates update their summaries with mediator's intervention
+                    if enable_summary_updates:
+                        mediator_exchange_data = {
+                            "speaker": mediator.name,
+                            "content": mediator_content,
+                            "phase": phase["phase_id"]
+                        }
+
+                        if use_async_updates:
+                            update_tasks = []
+                            for persona in active_personas.values():
+                                update_tasks.append(persona.update_summary_async(mediator_exchange_data))
+                            await asyncio.gather(*update_tasks)
+                        else:
+                            for persona in active_personas.values():
+                                persona.update_summary(mediator_exchange_data)
+
+                    turn_count += 1  # Increment for mediator turn
 
         # Phase complete - ensure all pending extractions are complete before moving to summary
         if pending_extractions:

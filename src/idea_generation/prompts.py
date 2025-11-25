@@ -387,55 +387,26 @@ def generate_integration_prompt(
 
 """
 
-    # Early turns: Establish steelmanning and common ground
-    if turn_count < 3:
-        return dedent(f"""\
-            INTEGRATION PHASE: Finding Common Ground
+    # Integration phase uses same prompt structure regardless of turn count
+    # The persona's turn contract (in persona.py) handles the actual STEELMAN/SYNTHESIS/RESIDUAL format
+    return dedent(f"""\
+        INTEGRATION PHASE: Synthesis and Convergence
 
-            Goal: {phase_goal}
-            Desired outcome: {desired_outcome}
+        Goal: {phase_goal}
+        Desired outcome: {desired_outcome}
 
-            {context_section}
-            Your task:
-            1. STEELMAN the last speaker's position:
-               - Present the STRONGEST version of their argument
-               - What is the most charitable, compelling interpretation?
-               - What core insight makes their view valuable?
+        {context_section}
 
-            2. IDENTIFY COMMON GROUND:
-               - What do we ALL agree on across different positions?
-               - Where do our perspectives overlap?
-               - What shared values or goals unite us?
+        Your task is to synthesize perspectives and find common ground:
 
-            3. NARROW THE DISAGREEMENT:
-               - What is the GENUINE remaining disagreement?
-               - Not a misunderstanding, but a real difference in values/priorities
-               - Frame it as an open question we can all recognize
+        1. STEELMAN the last speaker's strongest point and explain how it affected your belief state
+           (reference specific changes: certainty shift, new conditional rule, exception, or accepted critique)
 
-            Focus on building bridges, not winning arguments.""").strip()
-    else:
-        # Later turns: Synthesize and converge
-        return dedent(f"""\
-            INTEGRATION PHASE: Synthesis and Convergence
+        2. SYNTHESIZE: Propose a hybrid principle that combines both perspectives
+           (e.g., "outcome-maximization under rights-based constraints")
 
-            Goal: {phase_goal}
-            Desired outcome: {desired_outcome}
+        3. RESIDUAL DISAGREEMENT: Identify the specific remaining conflict
+           (be concrete, not generic - what exact question or edge case remains unresolved?)
 
-            {context_section}
-            Your task:
-            1. SYNTHESIZE what we've learned:
-               - What principles or solutions can we all endorse?
-               - Where have perspectives shifted based on the discussion?
-               - What hybrid approaches combine the best of different views?
-
-            2. ACKNOWLEDGE LEGITIMATE TENSIONS:
-               - What tradeoffs remain unavoidable?
-               - What genuine value conflicts persist?
-               - Where is further investigation needed?
-
-            3. PROPOSE NEXT STEPS:
-               - Given our common ground, what should we do?
-               - What criteria should guide our final decision?
-               - What would it take to resolve remaining disagreements?
-
-            Your goal is synthesis, not further debate.""").strip()
+        Focus on synthesis and integration, not further debate.
+        Build bridges between perspectives.""").strip()

@@ -4,6 +4,39 @@ import asyncio
 from typing import Dict, Any, Optional, List
 from openai import OpenAI, AsyncOpenAI
 
+
+def extract_last_claim(last_turn: Dict) -> str:
+    """
+    Extract a specific claim (5-12 words) from the last speaker's turn.
+
+    Args:
+        last_turn: Dict with 'speaker' and 'content' keys
+
+    Returns:
+        Truncated claim quote (max 12 words)
+    """
+    content = last_turn.get("content", "")
+    if not content:
+        return "the previous point"
+
+    # Split into sentences and take the first substantial one
+    sentences = content.replace("!", ".").replace("?", ".").split(".")
+    for sentence in sentences:
+        words = sentence.strip().split()
+        if len(words) >= 5:
+            # Return 5-12 words from this sentence
+            claim_words = words[:12]
+            return " ".join(claim_words)
+
+    # Fallback: take first 12 words of entire content
+    words = content.split()[:12]
+    return " ".join(words) if words else "the previous point"
+
+
+def count_words(text: str) -> int:
+    """Count words in text."""
+    return len(text.split())
+
 class Persona:
     def __init__(self, definition: Dict[str, Any], model_name: str = "gpt-3.5-turbo"):
         """
@@ -31,6 +64,13 @@ class Persona:
             }
         }
 
+        # Enhanced persona memory with belief state delta tracking
+        self.memory = {
+            "belief_state": None,  # Initialized on first turn
+            "last_relevant_point": None,  # Single extracted quote from last speaker
+            "history_delta": []  # List of deltas for debugging
+        }
+
         # Domain-adapted belief state (separate from summary)
         # Summary = what happened (memory)
         # Belief state = current position/uncertainties/concessions (epistemic state)
@@ -46,20 +86,29 @@ class Persona:
 
     def _initialize_belief_state(self, domain: str, phase_info: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Initialize domain-adapted belief state on first turn.
+        Initialize domain-adapted belief state on first turn with delta-based tracking.
 
         Args:
             domain: Domain type ("philosophical_debate", "startup_ideas", etc.)
             phase_info: Current phase information
 
         Returns:
-            Initialized belief state dict
+            Initialized belief state dict with certainty, conditional_rules, exceptions, accepted_critiques
         """
+        # Base schema with new delta-based fields
+        base_schema = {
+            "position": None,  # Will be set on first response
+            "certainty": "medium",  # "low" | "medium" | "high"
+            "conditional_rules": [],  # "If X then Y" type rules
+            "exceptions": [],  # Known exceptions to position
+            "accepted_critiques": [],  # Critiques accepted from others
+            "confidence": 0.5,  # 0.0-1.0 numeric scale (backward compatible)
+        }
+
         # Domain-specific schemas
         if domain == "philosophical_debate":
             return {
-                "position": None,  # Will be set on first response
-                "confidence": 0.5,  # 0.0-1.0 scale
+                **base_schema,
                 "uncertainties": [],  # What I'm unsure about
                 "concessions": [],  # Points acknowledged from others: {from_speaker, point, turn}
                 "deltas": [],  # Position shifts: {turn, change, reason}
@@ -67,8 +116,7 @@ class Persona:
             }
         elif domain == "startup_ideas":
             return {
-                "position": None,  # Which idea(s) I favor and why
-                "confidence": 0.5,
+                **base_schema,
                 "uncertainties": [],  # Market/tech/competitive risks
                 "concessions": [],  # Acknowledged concerns/benefits from others
                 "deltas": [],  # Preference shifts
@@ -77,8 +125,7 @@ class Persona:
         else:
             # Generic fallback for unknown domains
             return {
-                "position": None,
-                "confidence": 0.5,
+                **base_schema,
                 "uncertainties": [],
                 "concessions": [],
                 "deltas": []
@@ -145,44 +192,63 @@ class Persona:
 
         # Build conditional turn contract based on phase_type
         if phase_type == "integration":
-            # Integration phase: Steelman + Find Common Ground
-            turn_contract = f"""INTEGRATION MODE - STEELMANNING REQUIRED:
+            # Integration phase: STEELMAN/SYNTHESIS/RESIDUAL with belief state reference
+            turn_contract = f"""INTEGRATION MODE - SYNTHESIS REQUIRED:
 
-Your response MUST follow this structure:
+CRITICAL: You MUST reference your belief_state in STEELMAN.
 
-1. STEELMAN (2-3 sentences):
-   Present the STRONGEST version of the last speaker's argument.
-   What is the most charitable, compelling interpretation of their view?
-   Example: "[Name] is arguing that [steelman]. The core insight here is [key strength]."
+Your response MUST follow this EXACT structure:
 
-2. COMMON GROUND (1-2 sentences):
-   What can we all agree on? Where do our positions overlap?
-   Example: "We all seem to agree that [shared belief]. This suggests [implication]."
+1. STEELMAN (max 40 words):
+   Restate the previous speaker's STRONGEST point AND how it changed your belief_state.
+   Reference a specific delta: certainty shift, new conditional rule, exception, or accepted critique.
+   Example: "[Name]'s point that [X] made me add the exception that [Y] to my position."
 
-3. REMAINING TENSION (1-2 sentences):
-   What legitimate disagreement remains? State it as a genuine question.
-   Example: "The real question is: [open question that captures the disagreement]"
+2. SYNTHESIS (max 25 words):
+   Propose ONE hybrid principle that combines both sides.
+   Example: "We could maximize outcomes while respecting rights-based constraints on [specific domain]."
 
-Your response (max {word_limit} words):"""
+3. RESIDUAL DISAGREEMENT (max 15 words):
+   Name ONE specific remaining conflict between frameworks.
+   NOT generic. Be concrete.
+   Example: "Who decides the constraint threshold in edge case Z?"
+
+Your response (total max {word_limit} words):"""
         else:  # debate mode (default)
-            # Standard debate: React + Update + Add
+            # Extract last claim for forced incorporation
+            last_claim = "the previous point"
+            if recent_exchanges:
+                last_claim = extract_last_claim(recent_exchanges[-1])
+
+            # Standard debate: React + Update + Add with strict enforcement
             turn_contract = f"""DEBATE MODE - REACT, UPDATE, ADD:
 
-Your response MUST follow this structure:
+CRITICAL: You MUST NOT repeat your earlier arguments unless directly modified by the belief update.
+You MUST reference your belief_state in UPDATE or STEELMAN.
 
-1. REACT (1-2 sentences):
-   Acknowledge ONE specific claim from the last speaker by name.
-   Example: "I agree with [Name] that [specific point]..." OR "I challenge [Name]'s claim that [X]..."
+Your response MUST follow this EXACT structure:
 
-2. UPDATE YOUR BELIEF STATE (1 sentence):
-   Explicitly state if this changes your position, uncertainty, or confidence.
-   Example: "This increases my confidence that [X]" OR "This doesn't change my view because [Y]" OR "This makes me uncertain about [Z]"
+1. REACT (max 30 words):
+   Quote EXACTLY ONE specific claim from the last speaker:
+   Last speaker said: "{last_claim}"
+   Explain in ONE sentence why this matters to YOUR framework.
+   DO NOT give general acknowledgements ("I appreciate...").
+   DO NOT restate your core philosophy.
 
-3. ADD YOUR REFINEMENT (2-3 sentences):
-   Build on the discussion with new insight, counterargument, or synthesis.
-   Example: "Here's what I'd add: [new insight/objection/refinement]..."
+2. UPDATE (max 20 words):
+   Modify EXACTLY ONE of the following:
+   - certainty (up/down: low|medium|high)
+   - add a new conditional rule ("If X then Y")
+   - add a new exception to your position
+   - add an accepted critique from the last speaker
+   If no change needed, justify why in ≤15 words ("No change because...").
 
-Your response (max {word_limit} words):"""
+3. ADD (max 40 words):
+   Introduce ONE new nuance not previously mentioned by ANYONE.
+   Must be one of: implication, boundary case, trade-off, or principle refinement.
+   DO NOT repeat previous points.
+
+Your response (total max {word_limit} words):"""
 
         # Build enhanced user prompt
         enhanced_prompt = f"""CURRENT TOPIC/QUESTION:
@@ -313,9 +379,9 @@ SHARED WHITEBOARD (team's shared state):
 
     def _format_shared_context_compressed(self, shared_context: Dict[str, Any]) -> str:
         """
-        Format shared context with RICH idea memory cards.
+        Format shared context with RICH idea memory cards (2-3 full summaries).
 
-        Max output: ~250-350 tokens (vs previous 10K-50K tokens from JSON dump)
+        Max output: ~400-500 tokens (keeping 2-3 idea summaries with full context)
 
         Shows actual solutions with pros/cons/examples instead of just titles.
 
@@ -323,7 +389,7 @@ SHARED WHITEBOARD (team's shared state):
             shared_context: Full shared context dict
 
         Returns:
-            Compressed snapshot with 1-2 idea memory cards
+            Compressed snapshot with 2-3 idea memory cards with full details
         """
         lines = []
 
@@ -332,7 +398,7 @@ SHARED WHITEBOARD (team's shared state):
             lines.append(f"Current focus: {shared_context['current_focus']}")
             lines.append("")  # Blank line
 
-        # In-play ideas as MEMORY CARDS (100 tokens each × 2 = 200 tokens)
+        # In-play ideas as RICH MEMORY CARDS (150 tokens each × 3 = 450 tokens)
         try:
             from src.idea_generation.idea_tracker import (
                 get_ideas_in_play,
@@ -341,29 +407,31 @@ SHARED WHITEBOARD (team's shared state):
 
             in_play = get_ideas_in_play(shared_context.get("ideas_discussed", []))
             if in_play:
-                # Show current focus + 1 alternative (max 2 ideas)
+                # Show current focus + 2 alternatives (max 3 ideas with full context)
                 if shared_context.get("current_focus"):
-                    # Find current focus idea + one other
+                    # Find current focus idea + two others
                     focus_idea = next((i for i in in_play if i["title"] == shared_context["current_focus"]), None)
-                    other_ideas = [i for i in in_play if i["title"] != shared_context["current_focus"]][-1:]
+                    other_ideas = [i for i in in_play if i["title"] != shared_context["current_focus"]][-2:]
                     ideas_to_show = ([focus_idea] if focus_idea else []) + other_ideas
                 else:
-                    # No focus set, show last 2
-                    ideas_to_show = in_play[-2:]
+                    # No focus set, show last 3
+                    ideas_to_show = in_play[-3:]
 
-                cards = format_ideas_as_memory_cards(ideas_to_show, max_count=2)
+                # Format as memory cards with FULL details (2-sentence solution + reasons + counterpoint)
+                cards = format_ideas_as_memory_cards(ideas_to_show, max_count=3)
                 lines.append(cards)
                 lines.append("")  # Blank line
         except ImportError:
-            # idea_tracker not available in basic setup - fall back to titles only
-            try:
-                from src.idea_generation.idea_tracker import get_ideas_in_play
-                in_play = get_ideas_in_play(shared_context.get("ideas_discussed", []))
+            # idea_tracker not available in basic setup - fall back to basic format
+            ideas_discussed = shared_context.get("ideas_discussed", [])
+            if ideas_discussed:
+                in_play = [idea for idea in ideas_discussed if idea.get("status") != "rejected"]
                 if in_play:
-                    idea_titles = [idea["title"] for idea in in_play[-3:]]
-                    lines.append(f"Ideas being discussed: {', '.join(idea_titles)}")
-            except ImportError:
-                pass
+                    lines.append("Ideas being discussed:")
+                    for idea in in_play[-3:]:  # Last 3 ideas
+                        title = idea.get("title", "Untitled")
+                        overview = idea.get("overview", "")[:100]  # Keep some context
+                        lines.append(f"  - {title}: {overview}")
 
         # Rejected ideas (titles only, 1 line)
         try:
@@ -408,10 +476,10 @@ SHARED WHITEBOARD (team's shared state):
 
     def _format_belief_state(self) -> str:
         """
-        Format belief state for inclusion in prompts.
+        Format belief state for inclusion in prompts with delta-based fields.
 
         Returns:
-            Formatted string showing current position, uncertainties, concessions, deltas
+            Formatted string showing position, certainty, conditional_rules, exceptions, accepted_critiques, etc.
         """
         if not self.belief_state:
             return "No belief state yet (first turn)"
@@ -423,10 +491,38 @@ SHARED WHITEBOARD (team's shared state):
         if position:
             lines.append(f"Current position: {position}")
 
-        # Confidence level
+        # Certainty level (new delta-based field)
+        certainty = self.belief_state.get("certainty", "medium")
+        lines.append(f"Certainty: {certainty}")
+
+        # Confidence level (backward compatible)
         confidence = self.belief_state.get("confidence", 0.5)
         conf_label = "high" if confidence > 0.7 else "medium" if confidence > 0.4 else "low"
-        lines.append(f"Confidence: {conf_label} ({confidence:.1f})")
+        lines.append(f"Confidence (numeric): {conf_label} ({confidence:.1f})")
+
+        # Conditional rules (new delta-based field)
+        conditional_rules = self.belief_state.get("conditional_rules", [])
+        if conditional_rules:
+            lines.append("Conditional rules:")
+            for rule in conditional_rules[-3:]:  # Show last 3
+                rule_truncated = rule[:60] + "..." if len(rule) > 60 else rule
+                lines.append(f"  - {rule_truncated}")
+
+        # Exceptions (new delta-based field)
+        exceptions = self.belief_state.get("exceptions", [])
+        if exceptions:
+            lines.append("Exceptions to position:")
+            for exc in exceptions[-3:]:  # Show last 3
+                exc_truncated = exc[:60] + "..." if len(exc) > 60 else exc
+                lines.append(f"  - {exc_truncated}")
+
+        # Accepted critiques (new delta-based field)
+        accepted_critiques = self.belief_state.get("accepted_critiques", [])
+        if accepted_critiques:
+            lines.append("Accepted critiques:")
+            for critique in accepted_critiques[-3:]:  # Show last 3
+                critique_truncated = critique[:60] + "..." if len(critique) > 60 else critique
+                lines.append(f"  - {critique_truncated}")
 
         # Uncertainties (show last 2-3)
         uncertainties = self.belief_state.get("uncertainties", [])

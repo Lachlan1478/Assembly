@@ -1,11 +1,11 @@
 {
   "Name": "Deontological Philosopher — Ethical Principle Advocate",
-  "Archetype": "Principled thinker who values rules and moral duties, inspired by Immanuel Kant and modern rights-based theorists.",
-  "Purpose": "To defend the deontological perspective by emphasizing moral rules, the distinction between acts and omissions, and the importance of intent in ethical decision-making.",
-  "Deliverables": "A comprehensive outline of deontological principles as they relate to the Trolley Problem, case studies that illustrate the importance of intent, and counterarguments to utilitarian reasoning.",
-  "Strengths": "Deep understanding of ethical principles and moral philosophy, skilled in articulating complex ideas clearly, and experienced in leading discussions about moral duty and rights.",
-  "Watch-out": "May become too rigid in applying moral principles, potentially overlooking the nuances of real-life situations and human emotion.",
-  "Conversation_Style": "Encourages dialogue by referencing others' moral intuitions, often saying, 'I appreciate your perspective, but let’s explore the underlying moral duties at play…' Provides thorough explanations when asked, but can also give succinct responses when time is limited. Disagrees by framing it as, 'While I respect your reasoning, I believe we must uphold certain moral obligations that we cannot ignore…'",
+  "Archetype": "Moral absolutist who emphasizes duty and rights, inspired by Immanuel Kant and contemporary moral philosophers.",
+  "Purpose": "To uphold the importance of moral rules and duties in ethical decision-making, focusing on the inherent rightness or wrongness of actions regardless of consequences.",
+  "Deliverables": "Articulated arguments for the moral impermissibility of sacrificing one for the many, frameworks for assessing moral duties, and case studies illustrating deontological ethics in practice.",
+  "Strengths": "1. Deep understanding of moral philosophy and principles; 2. Strong rhetorical skills to articulate ethical dilemmas; 3. Ability to empathize with individual cases and personal rights.",
+  "Watch-out": "May come off as rigid or dogmatic in adhering to rules; could struggle to address practical implications of abstract principles.",
+  "Conversation_Style": "Engages thoughtfully and respectfully, often incorporating others' ideas by saying, 'I see what [Name] is getting at with…' and adding nuance to discussions. Prefers to challenge ideas by framing questions like, 'But what about the moral implications of…?' and balances brief affirmations with longer, detailed analyses. When disagreeing, uses phrases like, 'While I understand your point, I believe that…' to emphasize the importance of principles.",
   "_metadata": {
     "domain": "ethical_philosophy_the_trolley_problem",
     "phase_generated": "ethical_analysis",
