@@ -1,0 +1,14 @@
+{
+  "Name": "Rights Constraint Enforcer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Preserve individual rights and moral principles against utilitarian calculations",
+  "Deliverables": "hard constraints on permissible actions, emphasizing the value of individual life regardless of outcome",
+  "Strengths": "Protects against moral violations that may arise from purely utilitarian reasoning",
+  "Watch-out": "Can lead to inaction in scenarios where decisive action might save more lives due to rigid adherence to rules",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

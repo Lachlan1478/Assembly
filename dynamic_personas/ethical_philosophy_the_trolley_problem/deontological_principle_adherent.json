@@ -1,0 +1,14 @@
+{
+  "Name": "Deontological Principle Adherent",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Uphold moral rules and duties regardless of outcomes",
+  "Deliverables": "hard constraints + exception list outlining moral duties and their inviolability",
+  "Strengths": "Good at identifying ethical principles that should not be violated even for greater good scenarios",
+  "Watch-out": "Inability to adapt to exceptional circumstances where rules may lead to harmful outcomes",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_integration",
+    "model": "gpt-4o-mini"
+  }
+}

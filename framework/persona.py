@@ -77,6 +77,10 @@ class Persona:
         self.belief_state = None  # Initialized on first turn
         self._domain = None       # Detected from phase config
 
+        # Native conversation threading - maintains OpenAI message format
+        # Each persona has their own conversation thread
+        self.conversation_history = []  # List of {"role": "user"/"assistant", "content": "..."}
+
     @classmethod
     def from_file(cls, path: str, model_name: str = "gpt-3.5-turbo"):
         """Initialize persona directly from a JSON file."""
@@ -133,33 +137,29 @@ class Persona:
 
     def response(self, ctx: Dict[str, Any], prompt_key: Optional[str] = None, prompt_logger: Optional[callable] = None) -> Dict[str, Any]:
         """
-        Generate a persona response given context (ctx).
-        Uses the persona's summary instead of full conversation history.
+        Generate a persona response using native OpenAI conversation threading.
+        Each persona maintains their own conversation history with proper message roles.
 
         Args:
             ctx: Context dictionary containing:
-                - user_prompt or prompt: The current question/topic
-                - phase: Current phase information (optional)
-                - shared_context: Any shared artifacts (optional)
-                - turn_count: Current turn number in phase (for dynamic word limits)
+                - initial_prompt: Facilitator's starter prompt for this phase
+                - other_speaker: Optional dict with {name, message} from the last speaker
+                - turn_count: Current turn number in phase
+                - phase: Phase information (for belief state)
             prompt_logger: Optional callback to log the full prompt input before LLM call
 
         Returns:
             Dict with persona, archetype, and response
         """
-        user_prompt = ctx.get("user_prompt") or ctx.get("prompt") or ""
-        phase = ctx.get("phase", {})
-        shared_context = ctx.get("shared_context", {})
-        recent_exchanges = ctx.get("recent_exchanges", [])
+        # Extract context
+        initial_prompt = ctx.get("initial_prompt", "")
+        other_speaker = ctx.get("other_speaker")  # {name, message} or None
         turn_count = ctx.get("turn_count", 0)
-
-        # Extract phase_type and domain for belief state
-        phase_type = phase.get("phase_type", "debate")  # Default to debate
-        domain = phase.get("domain") or ctx.get("domain")  # From phase config or context
+        phase = ctx.get("phase", {})
 
         # Initialize belief state on first turn if not already set
+        domain = phase.get("domain") or ctx.get("domain")
         if self.belief_state is None and turn_count == 0:
-            # Detect domain if not specified (simple heuristic)
             if not domain:
                 phase_id = phase.get("phase_id", "")
                 if "ethical" in phase_id or "philosophical" in phase_id or "moral" in phase_id:
@@ -168,165 +168,60 @@ class Persona:
                     domain = "startup_ideas"
                 else:
                     domain = "general"
-
             self._domain = domain
             self.belief_state = self._initialize_belief_state(domain, phase)
             print(f"[i] Initialized {domain} belief state for {self.name}")
 
-        # Calculate dynamic word limit based on turn position
-        # Turn 0: 300 words (context-setting)
-        # Turns 1-2: 200 words (initial discussion)
-        # Turns 3+: 150 words (refinement/debate)
-        if turn_count == 0:
-            word_limit = 300
-        elif turn_count <= 2:
-            word_limit = 200
-        else:
-            word_limit = 150
+        # Build system message as bare logic-role (no personality)
+        response_rules = """
 
-        # Format compressed context (max 150 tokens each)
-        summary_text = self._format_summary()
-        recent_discussion = self._format_recent_exchanges(recent_exchanges)
-        compressed_shared_context = self._format_shared_context_compressed(shared_context)
-        belief_state_text = self._format_belief_state()
-
-        # Build conditional turn contract based on phase_type
-        if phase_type == "integration":
-            # Integration phase: STEELMAN/SYNTHESIS/RESIDUAL with belief state reference
-            turn_contract = f"""INTEGRATION MODE - SYNTHESIS REQUIRED:
-
-CRITICAL: You MUST reference your belief_state in STEELMAN.
-
-Your response MUST follow this EXACT structure:
-
-1. STEELMAN (max 40 words):
-   Restate the previous speaker's STRONGEST point AND how it changed your belief_state.
-   Reference a specific delta: certainty shift, new conditional rule, exception, or accepted critique.
-   Example: "[Name]'s point that [X] made me add the exception that [Y] to my position."
-
-2. SYNTHESIS (max 25 words):
-   Propose ONE hybrid principle that combines both sides.
-   Example: "We could maximize outcomes while respecting rights-based constraints on [specific domain]."
-
-3. RESIDUAL DISAGREEMENT (max 15 words):
-   Name ONE specific remaining conflict between frameworks.
-   NOT generic. Be concrete.
-   Example: "Who decides the constraint threshold in edge case Z?"
-
-Your response (total max {word_limit} words):"""
-        else:  # debate mode (default)
-            # Extract last claim for forced incorporation
-            last_claim = "the previous point"
-            if recent_exchanges:
-                last_claim = extract_last_claim(recent_exchanges[-1])
-
-            # Standard debate: React + Update + Add with strict enforcement
-            turn_contract = f"""DEBATE MODE - REACT, UPDATE, ADD:
-
-CRITICAL: You MUST NOT repeat your earlier arguments unless directly modified by the belief update.
-You MUST reference your belief_state in UPDATE or STEELMAN.
-
-Your response MUST follow this EXACT structure:
-
-1. REACT (max 30 words):
-   Quote EXACTLY ONE specific claim from the last speaker:
-   Last speaker said: "{last_claim}"
-   Explain in ONE sentence why this matters to YOUR framework.
-   DO NOT give general acknowledgements ("I appreciate...").
-   DO NOT restate your core philosophy.
-
-2. UPDATE (max 20 words):
-   Modify EXACTLY ONE of the following:
-   - certainty (up/down: low|medium|high)
-   - add a new conditional rule ("If X then Y")
-   - add a new exception to your position
-   - add an accepted critique from the last speaker
-   If no change needed, justify why in ≤15 words ("No change because...").
-
-3. ADD (max 40 words):
-   Introduce ONE new nuance not previously mentioned by ANYONE.
-   Must be one of: implication, boundary case, trade-off, or principle refinement.
-   DO NOT repeat previous points.
-
-Your response (total max {word_limit} words):"""
-
-        # Build enhanced user prompt
-        enhanced_prompt = f"""CURRENT TOPIC/QUESTION:
-{user_prompt}
-
----
-
-LAST SPEAKER'S TURN(S):
-{recent_discussion}
-
----
-
-YOUR PRIVATE NOTEBOOK (your memory so far):
-{summary_text}
-
-YOUR CURRENT BELIEF STATE:
-{belief_state_text}
-
----
-
-SHARED WHITEBOARD (team's shared state):
-{compressed_shared_context}
-
----
-
-{turn_contract}"""
-
-        # Build messages with persona identity in system prompt
-        conversation_style_text = f"\n\nCONVERSATION STYLE: {self.conversation_style}" if self.conversation_style else ""
+RESPONSE RULES:
+- Max 4 sentences
+- Quote exact prior text
+- State agreement/disagreement explicitly
+- Update belief state or state no-update
+- No gratitude, no social language, no metaphors"""
 
         system_message = (
-            f"You are {self.name}, the {self.archetype}. "
-            f"Purpose: {self.purpose}. Deliverables: {self.deliverables}. "
-            f"Strengths: {self.strengths}. "
-            f"Be mindful of: {self.watchouts}."
-            f"{conversation_style_text}"
+            f"Role: {self.name}\n"
+            f"Reasoning type: {self.archetype}\n"
+            f"Objective: {self.purpose}\n"
+            f"Belief structure: {self.deliverables}\n"
+            f"Strengths: {self.strengths}\n"
+            f"Failure mode: {self.watchouts}"
+            f"{response_rules}"
         )
 
-        messages = [
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": enhanced_prompt}
-        ]
+        # Build new user message
+        # First turn: just initial_prompt
+        # Subsequent turns for first speaker: initial_prompt (already in history) + other speaker's message
+        # Subsequent turns for others: other speaker's message
+        if not self.conversation_history:
+            # First time this persona speaks
+            if other_speaker:
+                # Not the first speaker in the conversation
+                new_user_message = f"{initial_prompt}\n\n{other_speaker['name']} says: {other_speaker['message']}"
+            else:
+                # First speaker in the conversation
+                new_user_message = initial_prompt
+        else:
+            # Persona has spoken before - just add other speaker's message
+            new_user_message = f"{other_speaker['name']} says: {other_speaker['message']}"
 
-        # Count tokens before sending (using tiktoken for accurate counting)
-        token_count = 0
-        try:
-            import tiktoken
-            enc = tiktoken.encoding_for_model(self.model_name)
-            system_tokens = len(enc.encode(system_message))
-            user_tokens = len(enc.encode(enhanced_prompt))
-            total_tokens = system_tokens + user_tokens
-            token_count = total_tokens
-
-            # Warn if exceeding safe limits
-            if total_tokens > 4000:
-                print(f"[!] WARNING: Prompt for {self.name} is {total_tokens} tokens (>4K, may cause issues)")
-
-            # Debug mode: show token breakdown (optional, controlled by context)
-            if ctx.get("debug_tokens"):
-                print(f"[Token Breakdown] {self.name}:")
-                print(f"  System: {system_tokens} | User: {user_tokens} | Total: {total_tokens}")
-        except ImportError:
-            # tiktoken not installed, skip counting
-            pass
-        except Exception as e:
-            # Other errors (e.g., unknown model), skip counting
-            pass
+        # Build messages array: system + conversation_history + new user message
+        messages = [{"role": "system", "content": system_message}] + self.conversation_history + [{"role": "user", "content": new_user_message}]
 
         # Log prompt input if callback provided
         if prompt_logger:
             try:
+                # For logging, reconstruct the full prompt view
+                full_prompt = "\n\n".join([f"{m['role'].upper()}: {m['content']}" for m in messages])
                 prompt_logger({
                     "system_message": system_message,
-                    "enhanced_prompt": enhanced_prompt,
-                    "token_count": token_count
+                    "enhanced_prompt": full_prompt,
+                    "token_count": 0  # Token counting can be added later if needed
                 })
             except Exception as e:
-                # Don't fail the response if logging fails
                 print(f"[!] Warning: Failed to log prompt input: {e}")
 
         # Call LLM
@@ -336,6 +231,11 @@ SHARED WHITEBOARD (team's shared state):
         )
 
         content = completion.choices[0].message.content.strip()
+
+        # Append to conversation history
+        self.conversation_history.append({"role": "user", "content": new_user_message})
+        self.conversation_history.append({"role": "assistant", "content": content})
+
         return {
             "persona": self.name,
             "archetype": self.archetype,
@@ -471,6 +371,34 @@ SHARED WHITEBOARD (team's shared state):
             # Truncate to 200 chars (was 500)
             truncated = content[:200] + "..." if len(content) > 200 else content
             formatted.append(f"{speaker}: {truncated}")
+
+        return "\n\n".join(formatted)
+
+    def _format_full_history(self, exchanges: List[Dict[str, Any]], max_turns: int = 15) -> str:
+        """
+        Format the full conversation history (last N turns) with complete content.
+
+        Args:
+            exchanges: List of exchange dicts with speaker, content, turn, etc.
+            max_turns: Maximum number of turns to include (default: 15)
+
+        Returns:
+            Formatted string showing full conversation history with no truncation
+        """
+        if not exchanges:
+            return "No discussion yet (you're first)"
+
+        # Take last N exchanges (default 15 for balance between context and tokens)
+        recent = exchanges[-max_turns:]
+
+        formatted = []
+        for ex in recent:
+            turn = ex.get("turn", "?")
+            speaker = ex.get("speaker", "Unknown")
+            content = ex.get("content", "")
+
+            # Include full content with no truncation
+            formatted.append(f"Turn {turn} - {speaker}:\n{content}")
 
         return "\n\n".join(formatted)
 

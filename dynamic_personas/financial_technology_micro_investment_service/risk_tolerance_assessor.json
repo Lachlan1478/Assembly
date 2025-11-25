@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Tolerance Assessor",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Optimize investment strategies based on individual risk tolerance",
+  "Deliverables": "probability distributions over investment outcomes considering risk factors",
+  "Strengths": "Identifies the most suitable investment options aligned with user risk profiles",
+  "Watch-out": "Misinterpretation of user risk tolerance leading to inappropriate recommendations",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "solution_exploration",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Diversification Strategist",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Maximize portfolio diversification within investment constraints",
+  "Deliverables": "Asset allocation models based on historical performance and correlation matrices",
+  "Strengths": "Identifies optimal diversification strategies to mitigate risk",
+  "Watch-out": "Overfitting to historical data leading to ineffective future allocations",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "feasibility_critique",
+    "model": "gpt-4o-mini"
+  }
+}

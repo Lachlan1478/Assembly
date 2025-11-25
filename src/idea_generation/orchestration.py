@@ -120,6 +120,14 @@ async def meeting_facilitator(
         # Track pending async extractions for this phase
         pending_extractions = []
 
+        # Generate initial prompt from facilitator for this phase (used for native threading)
+        initial_prompt = generate_dynamic_prompt(
+            phase=phase,
+            turn_count=0,
+            phase_exchanges=[],
+            shared_context=shared_context
+        )
+
         # Conversation loop for this phase
         while True:
             # Facilitator decides who should speak next
@@ -165,21 +173,22 @@ async def meeting_facilitator(
                 # Fallback display if no monitor
                 print(f"\n[Speaker] {speaker_persona.name} ({speaker_persona.archetype}) speaking...")
 
-            # Generate dynamic prompt based on conversation state
-            dynamic_prompt = generate_dynamic_prompt(
-                phase=phase,
-                turn_count=turn_count,
-                phase_exchanges=phase_exchanges,
-                shared_context=shared_context
-            )
+            # Build other_speaker from last exchange (for native threading)
+            other_speaker = None
+            if phase_exchanges:
+                last_exchange = phase_exchanges[-1]
+                other_speaker = {
+                    "name": last_exchange["speaker"],
+                    "message": last_exchange["content"]
+                }
 
-            # Build context for this persona's response
+            # Build context for this persona's response (native threading format)
             ctx = {
-                "user_prompt": dynamic_prompt,  # Use dynamic prompt instead of static
+                "initial_prompt": initial_prompt,  # Facilitator's starter for this phase
+                "other_speaker": other_speaker,  # Last speaker's name and message, or None if first
+                "turn_count": turn_count,
                 "phase": phase,
-                "shared_context": shared_context,
-                "recent_exchanges": phase_exchanges,  # Add recent discussion context
-                "turn_count": turn_count  # Add turn count for dynamic word limits
+                "shared_context": shared_context
             }
 
             # Persona generates response using their summary

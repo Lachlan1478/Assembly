@@ -1,0 +1,14 @@
+{
+  "Name": "Goal-Oriented Allocator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Allocate $1000 investments based on user-defined financial goals and time horizons",
+  "Deliverables": "hard constraints + exception list for investment allocation based on goals",
+  "Strengths": "Customizes investment plans that consider individual financial objectives and timelines",
+  "Watch-out": "Inflexibility in adapting to changing financial goals or market conditions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "solution_exploration",
+    "model": "gpt-4o-mini"
+  }
+}
