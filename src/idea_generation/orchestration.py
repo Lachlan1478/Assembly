@@ -76,6 +76,9 @@ async def meeting_facilitator(
     if "scenario_history" not in shared_context:
         shared_context["scenario_history"] = []  # All past scenarios with responses
 
+    # Store inspiration in shared_context for prompt generation
+    shared_context["inspiration"] = inspiration
+
     # Initialize mediator if enabled and not provided
     if enable_mediator and mediator is None:
         mediator = MediatorPersona.get_default_mediator(model_name=model_name)
@@ -188,13 +191,14 @@ async def meeting_facilitator(
                     "message": last_exchange["content"]
                 }
 
-            # Build context for this persona's response (native threading format)
+            # Build context for this persona's response (full history format)
             ctx = {
                 "initial_prompt": initial_prompt,  # Facilitator's starter for this phase
                 "other_speaker": other_speaker,  # Last speaker's name and message, or None if first
                 "turn_count": turn_count,
                 "phase": phase,
-                "shared_context": shared_context
+                "shared_context": shared_context,
+                "exchanges": phase_exchanges  # Full conversation history from all participants
             }
 
             # Persona generates response using their summary

@@ -37,6 +37,7 @@ from src.idea_generation.orchestration import meeting_facilitator
 # Test configuration
 TEST_DIR = Path(__file__).parent
 LOGS_DIR = TEST_DIR / "logs"
+MODEL_NAME = "gpt-5.1"
 
 # Ensure logs directory exists
 LOGS_DIR.mkdir(exist_ok=True)
@@ -102,21 +103,21 @@ async def run_trolley_problem_test():
     print("  - Phase 2 (INTEGRATION): 5 turns - finding common ground")
     print("  - Belief state tracking: ENABLED")
     print("  - Memory updates: ENABLED (realistic conversation)")
-    print("  - Model: gpt-4o-mini")
+    print(f"  - Model: {MODEL_NAME}")
     print()
     print("Estimated runtime: 6-8 minutes (with mediator interventions)")
     print()
 
     # Initialize components
     print("[1/6] Initializing PersonaManager...")
-    persona_manager = PersonaManager(model_name="gpt-4o-mini")
+    persona_manager = PersonaManager(model_name=MODEL_NAME)
 
     print("[2/6] Initializing Facilitator...")
-    facilitator = FacilitatorAgent(model_name="gpt-4o-mini")
+    facilitator = FacilitatorAgent(model_name=MODEL_NAME)
 
     print("[3/6] Initializing Mediator...")
     from framework.mediator_persona import MediatorPersona
-    mediator = MediatorPersona.get_default_mediator(model_name="gpt-4o-mini")
+    mediator = MediatorPersona.get_default_mediator(model_name=MODEL_NAME)
 
     print("[4/6] Initializing Logger...")
     logger = ConversationLogger(base_dir=str(LOGS_DIR))
@@ -143,7 +144,7 @@ async def run_trolley_problem_test():
         logger=logger,
         enable_summary_updates=True,  # Enable memory updates
         use_async_updates=True,       # Parallel updates for speed
-        model_name="gpt-4o-mini",
+        model_name=MODEL_NAME,
         personas_per_phase=2,         # KEY: Override to 2 personas
         enable_mediator=True,         # Enable mediator interventions
         mediator=mediator             # Use initialized mediator

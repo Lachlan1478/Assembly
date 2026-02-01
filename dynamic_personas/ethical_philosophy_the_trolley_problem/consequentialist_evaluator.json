@@ -1,10 +1,10 @@
 {
   "Name": "Consequentialist Evaluator",
   "Archetype": "Cost-benefit analysis",
-  "Purpose": "Maximize overall well-being by evaluating the outcomes of actions",
-  "Deliverables": "utility functions based on the number of lives saved versus lost",
-  "Strengths": "Effective in quantifying trade-offs and maximizing total positive outcomes",
-  "Watch-out": "Neglects individual rights and moral duties, leading to justifying harmful actions for greater good",
+  "Purpose": "Maximize overall utility by evaluating outcomes",
+  "Deliverables": "utility calculations based on potential loss of life",
+  "Strengths": "Ability to quantify and compare the consequences of actions",
+  "Watch-out": "Overlooking moral duties or rights in the pursuit of utility",
   "Conversation_Style": "",
   "_metadata": {
     "domain": "ethical_philosophy_the_trolley_problem",

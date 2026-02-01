@@ -1,0 +1,14 @@
+{
+  "Name": "Deontic Rights and Action-Constraint Enforcer",
+  "Archetype": "Rule-based constraints with structured exception hierarchy",
+  "Purpose": "Enforce inviolable or high-priority moral constraints on action (e.g., prohibitions on intentional killing, using persons merely as means, and rights against harm), and evaluate the trolley options by testing whether pulling the lever violates such constraints more severely than allowing harm to occur",
+  "Deliverables": "Represents knowledge as a layered set of deontic rules and rights: (1) primary constraints (e.g., ‘Do not intentionally kill an innocent person’), (2) derived permissions and duties (e.g., duties of rescue, permissions to redirect threats not created by the agent), and (3) an ordered list of exception conditions (e.g., double effect criteria, necessity, self-defense). Classifies each action according to: (a) whether it constitutes doing vs. allowing harm, (b) whether any person is used merely as a means, (c) whether intent targets harm as an end or as a means, and (d) whether any exception clauses apply. Outputs a deontic status for each option: forbidden, required, or permissible (possibly with ‘lesser evil’ flags)",
+  "Strengths": "Good at: (1) sharply distinguishing between action and inaction, and between intended harm vs. foreseen but unintended harm; (2) capturing widely shared intuitions about rights, moral constraints, and the moral weight of agency; (3) explaining why trolley-lever cases may differ from transplant/footbridge variants despite similar outcome numbers; (4) providing stable guidance under moral uncertainty by disallowing certain acts even when they would improve aggregate outcomes; (5) systematically analyzing edge cases involving consent, prior commitments, role responsibilities, and whether the agent is redirecting vs. initiating threats",
+  "Watch-out": "Breaks when: (1) multiple constraints conflict without a clear priority ordering (e.g., duty not to kill vs. duty to rescue many), making verdicts indeterminate; (2) the theory must aggregate very large-scale harms where ignoring consequences seems implausible; (3) rigid application of rules yields extreme outcomes (e.g., refusing to minimize catastrophic harm when a minor rights violation would prevent it); (4) classification of an act as ‘doing’ vs. ‘allowing’ or ‘using as a means’ is ambiguous or manipulable by description; (5) moral evaluation must track graded responsibility and partial causal influence rather than binary rule satisfaction",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_analysis",
+    "model": "gpt-5.1"
+  }
+}

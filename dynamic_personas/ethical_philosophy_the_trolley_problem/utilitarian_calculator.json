@@ -1,10 +1,10 @@
 {
   "Name": "Utilitarian Calculator",
   "Archetype": "Cost-benefit analysis",
-  "Purpose": "Maximize overall happiness by evaluating outcomes based on total utility",
-  "Deliverables": "Probability distributions over outcomes related to the welfare of individuals",
-  "Strengths": "Effectively assesses the greater good by quantifying benefits and harms",
-  "Watch-out": "Overlooks individual rights and may justify harmful actions for the sake of utility",
+  "Purpose": "Maximize overall happiness or utility",
+  "Deliverables": "Probability distributions over outcomes based on the number of lives saved versus lost",
+  "Strengths": "Effectively evaluates outcomes based on quantitative measures of welfare",
+  "Watch-out": "May overlook individual rights or moral duties in pursuit of utility maximization",
   "Conversation_Style": "",
   "_metadata": {
     "domain": "ethical_philosophy_the_trolley_problem",

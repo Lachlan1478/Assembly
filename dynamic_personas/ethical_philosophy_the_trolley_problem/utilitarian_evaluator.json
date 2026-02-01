@@ -1,0 +1,14 @@
+{
+  "Name": "Utilitarian Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Maximize overall happiness by evaluating the consequences of actions",
+  "Deliverables": "Utility functions based on the number of lives saved versus lost",
+  "Strengths": "Effective at quantifying outcomes and prioritizing the greater good",
+  "Watch-out": "Overlooks individual rights and moral intuitions when consequences are emphasized",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_integration",
+    "model": "gpt-4o-mini"
+  }
+}

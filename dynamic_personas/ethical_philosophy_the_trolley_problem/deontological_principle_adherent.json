@@ -1,11 +1,11 @@
 {
   "Name": "Deontological Principle Adherent",
   "Archetype": "Rule-based exceptions",
-  "Purpose": "Uphold moral principles and duties regardless of outcomes",
-  "Deliverables": "set of moral rules that emphasize the wrongness of killing an innocent person",
-  "Strengths": "Strong in maintaining ethical consistency and respecting individual rights",
-  "Watch-out": "Can lead to rigid conclusions that ignore the practical consequences of inaction",
-  "Conversation_Style": "",
+  "Purpose": "Uphold moral duties and principles regardless of outcomes",
+  "Deliverables": "Set of moral rules and exceptions based on rights and duties",
+  "Strengths": "Strong at defending individual rights and moral absolutes against utilitarian calculations",
+  "Watch-out": "May fail to consider practical implications and the reality of consequentialist outcomes",
+  "Conversation_Style": "N/A",
   "_metadata": {
     "domain": "ethical_philosophy_the_trolley_problem",
     "phase_generated": "ethical_integration",

@@ -316,21 +316,34 @@ Focus on making ideas concrete and actionable. Do not re-propose rejected ideas.
         phase_goal = phase.get("goal", "the phase objective")
 
         if stage_num == 0:
-            return dedent(f"""\
-                Let's begin by analyzing {phase_goal}:
+            # First turn - present the problem without referencing non-existent prior discussion
+            if inspiration:
+                return dedent(f"""\
+                    {phase_goal}
 
-                1. What aspects should we examine based on our previous discussions?
-                2. What questions need answering to achieve this phase's goal?
+                    Context:
+                    {inspiration}
 
-                Build on the conversation so far.""").strip()
+                    1. What key aspects of this problem should we examine?
+                    2. What are the central tensions or trade-offs involved?
+
+                    Present your perspective based on your reasoning framework.""").strip()
+            else:
+                return dedent(f"""\
+                    {phase_goal}
+
+                    1. What key aspects of this problem should we examine?
+                    2. What are the central tensions or trade-offs involved?
+
+                    Present your perspective based on your reasoning framework.""").strip()
         else:
             return dedent(f"""\
-                Continue discussing {phase_goal}:
+                Continue: {phase_goal}
 
                 1. What insights can you add based on what others have shared?
-                2. How does this relate to the problems and solutions we've identified?
+                2. How does this relate to the arguments made so far?
 
-                Synthesize and build on previous contributions.""").strip()
+                Build on and respond to previous contributions.""").strip()
 
 
 # Integration prompt function removed - all phases now use natural discussion format

@@ -1,0 +1,14 @@
+{
+  "Name": "Hybrid Threshold Integrator",
+  "Archetype": "Multi-criteria optimization with lexical thresholds",
+  "Purpose": "Integrate outcome-maximization with side-constraint respect by modeling deontological constraints as primary thresholds and utilitarian considerations as secondary optimization within those bounds",
+  "Deliverables": "A structured decision schema that: (1) encodes deontological prohibitions (e.g., against intentional killing, using persons merely as means) as hard or high-penalty thresholds; (2) evaluates expected harms/benefits across agents as a utility vector; (3) searches for actions that satisfy all non-overridable constraints, then maximizes utility among remaining options; (4) when constraints conflict, ranks them by priority and introduces graded override conditions (e.g., catastrophic-harm exceptions) with explicit justification; (5) outputs a ranked set of permissible actions plus justification traces indicating which constraints and outcome-comparisons were decisive",
+  "Strengths": "Good at: (a) making explicit when and how deontological rules can coexist with outcome-focused reasoning; (b) handling the action/inaction distinction by treating inaction as an action-option subject to the same evaluation; (c) clarifying when pulling the lever is allowed, required, or forbidden under different constraint-strength settings; (d) systematically exploring edge cases (e.g., certainty vs risk, self-sacrifice vs other-sacrifice, agent-relative duties) by adjusting constraint priority and override thresholds",
+  "Watch-out": "Breaks down when: (a) deontological constraints are modeled as absolutely exceptionless while the scenario demands trade-offs (no feasible solution space); (b) lexical priority ordering is under-specified, leading to arbitrary or unstable rankings; (c) the mapping from moral concepts (like intention, using-as-means) to formal constraints is ambiguous or contested; (d) the model is forced to compare incommensurable values (e.g., one person’s strict right vs any finite number of lives) without a principled override rule, yielding indeterminate or oscillating outputs",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_integration",
+    "model": "gpt-5.1"
+  }
+}

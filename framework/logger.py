@@ -16,12 +16,12 @@ class ConversationLogger:
     Logs multi-persona conversations to timestamped session folders.
 
     Creates a new session folder for each run with multiple output files:
-    - full_conversation.json: All exchanges
-    - persona_summaries.json: Persona summaries at each phase
-    - phase_summaries.txt: Facilitator summaries (human-readable)
-    - facilitator_decisions.json: Persona selections and speaker decisions
-    - session_metadata.json: Session info, inspiration, phases, results
-    - readable_transcript.md: Markdown transcript for easy reading
+    - readable_transcript.md: Conversation + outcome summary
+    - readable_transcript_extended.md: Input prompts shown before each response
+    - metadata/full_conversation.json: All exchanges
+    - metadata/persona_summaries.json: Persona summaries at each phase
+    - metadata/facilitator_decisions.json: Persona selections and speaker decisions
+    - metadata/session_metadata.json: Session info, inspiration, phases, results
     """
 
     def __init__(self, base_dir: str = "conversation_logs"):
@@ -38,6 +38,10 @@ class ConversationLogger:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.session_dir = self.base_dir / f"session_{timestamp}"
         self.session_dir.mkdir(exist_ok=True)
+
+        # Create metadata subdirectory for JSON files
+        self.metadata_dir = self.session_dir / "metadata"
+        self.metadata_dir.mkdir(exist_ok=True)
 
         # Initialize data structures
         self.exchanges = []
@@ -191,9 +195,6 @@ class ConversationLogger:
             description="Persona summaries at each phase boundary"
         )
 
-        # Save phase summaries (text file)
-        self._save_phase_summaries()
-
         # Save facilitator decisions
         self._save_json(
             "facilitator_decisions.json",
@@ -211,16 +212,15 @@ class ConversationLogger:
         # Generate readable transcript
         self._generate_transcript()
 
-        # Generate prompt inputs document
-        self._generate_prompt_inputs()
+        # Generate extended transcript with prompt inputs
+        self._generate_extended_transcript()
 
         print(f"\n[Logger] All logs saved to: {self.session_dir}")
         print(f"[Logger] Total exchanges: {len(self.exchanges)}")
-        print(f"[Logger] Total phases: {len(self.phase_summaries)}")
 
     def _save_json(self, filename: str, data: Any, description: str = "") -> None:
-        """Save data as JSON file."""
-        filepath = self.session_dir / filename
+        """Save data as JSON file to metadata directory."""
+        filepath = self.metadata_dir / filename
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         if description:
@@ -257,22 +257,6 @@ class ConversationLogger:
 
         return '\n'.join(wrapped_paragraphs)
 
-    def _save_phase_summaries(self) -> None:
-        """Save phase summaries as readable text file."""
-        filepath = self.session_dir / "phase_summaries.txt"
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write("="*70 + "\n")
-            f.write("PHASE SUMMARIES\n")
-            f.write("="*70 + "\n\n")
-
-            for phase_id, summary in self.phase_summaries.items():
-                f.write(f"Phase: {phase_id.upper()}\n")
-                f.write("-" * 70 + "\n")
-                wrapped_summary = self._wrap_text(summary, width=70)
-                f.write(wrapped_summary + "\n\n")
-
-        print(f"[Logger] Saved phase_summaries.txt: Human-readable phase summaries")
-
     def _generate_transcript(self) -> None:
         """Generate a human-friendly markdown transcript with wrapped text."""
         filepath = self.session_dir / "readable_transcript.md"
@@ -300,11 +284,6 @@ class ConversationLogger:
                     current_phase = phase
                     f.write(f"\n## Phase: {phase.upper()}\n\n")
 
-                    # Add phase summary if available
-                    if phase in self.phase_summaries:
-                        wrapped_phase_summary = self._wrap_text(self.phase_summaries[phase], width=100)
-                        f.write(f"*{wrapped_phase_summary}*\n\n")
-
                 # Exchange
                 speaker = exchange["speaker"]
                 archetype = exchange["archetype"]
@@ -321,7 +300,6 @@ class ConversationLogger:
             # Final summary
             f.write("\n## Session Summary\n\n")
             f.write(f"- **Total Exchanges**: {len(self.exchanges)}\n")
-            f.write(f"- **Total Phases**: {len(self.phase_summaries)}\n")
             f.write(f"- **Duration**: {self.metadata.get('session_start')} to {self.metadata.get('session_end')}\n")
 
             if "ideas" in self.metadata:
@@ -332,55 +310,79 @@ class ConversationLogger:
 
         print(f"[Logger] Saved readable_transcript.md: Human-friendly transcript")
 
-    def _generate_prompt_inputs(self) -> None:
-        """Generate a document showing the complete input prompts sent to each persona."""
-        filepath = self.session_dir / "prompt_inputs.md"
+    def _generate_extended_transcript(self) -> None:
+        """
+        Generate extended transcript showing input prompts before each response.
+
+        Pairs each exchange with the corresponding prompt input by matching
+        phase, turn, and speaker.
+        """
+        filepath = self.session_dir / "readable_transcript_extended.md"
+
+        # Build lookup for prompt inputs: (phase, turn, speaker) -> prompt_input
+        prompt_lookup = {}
+        for prompt_input in self.prompt_inputs:
+            key = (prompt_input["phase"], prompt_input["turn"], prompt_input["speaker"])
+            prompt_lookup[key] = prompt_input
 
         with open(filepath, "w", encoding="utf-8") as f:
             # Header
-            f.write(f"# Persona Prompt Inputs\n\n")
+            f.write(f"# Extended Conversation Transcript\n\n")
             f.write(f"**Session**: {self.metadata.get('timestamp')}\n\n")
-            f.write(f"This document shows the complete input (system message + enhanced prompt) ")
-            f.write(f"sent to each persona for every turn.\n\n")
+
+            if "inspiration" in self.metadata:
+                f.write(f"**Inspiration**:\n```\n")
+                inspiration_text = self._wrap_text(str(self.metadata['inspiration']), width=80)
+                f.write(inspiration_text)
+                f.write("\n```\n\n")
+
+            f.write("This transcript shows the complete input prompt before each persona response.\n\n")
             f.write("---\n\n")
 
-            # Group prompt inputs by phase
+            # Group exchanges by phase
             current_phase = None
-            for prompt_input in self.prompt_inputs:
-                phase = prompt_input["phase"]
+            for exchange in self.exchanges:
+                phase = exchange["phase"]
 
                 # New phase header
                 if phase != current_phase:
                     current_phase = phase
                     f.write(f"\n## Phase: {phase.upper()}\n\n")
 
-                # Prompt input entry
-                speaker = prompt_input["speaker"]
-                archetype = prompt_input["archetype"]
-                system_message = prompt_input["system_message"]
-                enhanced_prompt = prompt_input["enhanced_prompt"]
-                token_count = prompt_input["token_count"]
-                turn = prompt_input["turn"]
+                # Exchange details
+                speaker = exchange["speaker"]
+                archetype = exchange["archetype"]
+                content = exchange["content"]
+                turn = exchange["turn"]
 
                 f.write(f"### Turn {turn}: {speaker} — {archetype}\n\n")
 
-                # System message
-                f.write(f"#### System Message\n\n")
-                f.write(f"```\n{system_message}\n```\n\n")
+                # Look up corresponding prompt input
+                key = (phase, turn, speaker)
+                if key in prompt_lookup:
+                    prompt_input = prompt_lookup[key]
+                    system_message = prompt_input.get("system_message", "")
+                    enhanced_prompt = prompt_input.get("enhanced_prompt", "")
 
-                # Enhanced prompt
-                f.write(f"#### Enhanced Prompt\n\n")
-                f.write(f"```\n{enhanced_prompt}\n```\n\n")
+                    f.write(f"#### Input Prompt\n\n")
+                    f.write(f"**System Message:**\n```\n{system_message}\n```\n\n")
+                    f.write(f"**Context Passed:**\n```\n{enhanced_prompt}\n```\n\n")
 
-                # Token count
-                if token_count > 0:
-                    f.write(f"**Token Count**: {token_count} tokens\n\n")
-
+                # The response
+                f.write(f"#### Response\n\n")
+                wrapped_content = self._wrap_text(content, width=100)
+                f.write(f"{wrapped_content}\n\n")
                 f.write("---\n\n")
 
             # Final summary
-            f.write("\n## Summary\n\n")
-            f.write(f"- **Total Prompt Inputs Logged**: {len(self.prompt_inputs)}\n")
-            f.write(f"- **Total Phases**: {len(set(p['phase'] for p in self.prompt_inputs))}\n")
+            f.write("\n## Session Summary\n\n")
+            f.write(f"- **Total Exchanges**: {len(self.exchanges)}\n")
+            f.write(f"- **Duration**: {self.metadata.get('session_start')} to {self.metadata.get('session_end')}\n")
 
-        print(f"[Logger] Saved prompt_inputs.md: Complete input prompts for each turn")
+            if "ideas" in self.metadata:
+                f.write(f"\n### Generated Ideas\n\n")
+                f.write("```json\n")
+                f.write(json.dumps(self.metadata["ideas"], indent=2))
+                f.write("\n```\n")
+
+        print(f"[Logger] Saved readable_transcript_extended.md: Transcript with prompt inputs")
