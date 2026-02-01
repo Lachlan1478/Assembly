@@ -173,10 +173,30 @@ class Persona:
             print(f"[i] Initialized {domain} belief state for {self.name}")
 
         # Build system message as bare logic-role (no personality)
+        global_contract = """
+
+GLOBAL CONTEXT RULE:
+If a SCENARIOS block is present in the conversation:
+
+You MUST:
+1. Refer to scenarios by id (e.g., CASE_A, CASE_B)
+2. Apply your reasoning framework to EACH scenario
+3. Produce an EXAMPLE_MAPPING section at the end of your reply
+
+EXAMPLE_MAPPING FORMAT:
+- CASE_A: <your recommended action/output for this scenario>
+- CASE_B: <your recommended action/output for this scenario>
+- CASE_C: <your recommended action/output for this scenario>
+
+Example:
+EXAMPLE_MAPPING:
+  - CASE_A: Recommend threshold X=5 given low stakes
+  - CASE_B: Recommend threshold X=20 given high severity"""
+
         response_rules = """
 
 RESPONSE RULES:
-- Max 4 sentences
+- Max 4 sentences (or more if addressing multiple scenarios)
 - Quote exact prior text
 - State agreement/disagreement explicitly
 - Update belief state or state no-update
@@ -189,6 +209,7 @@ RESPONSE RULES:
             f"Belief structure: {self.deliverables}\n"
             f"Strengths: {self.strengths}\n"
             f"Failure mode: {self.watchouts}"
+            f"{global_contract}"
             f"{response_rules}"
         )
 
@@ -207,6 +228,14 @@ RESPONSE RULES:
         else:
             # Persona has spoken before - just add other speaker's message
             new_user_message = f"{other_speaker['name']} says: {other_speaker['message']}"
+
+        # Prepend active scenarios if present (domain-agnostic scenario injection)
+        shared_context = ctx.get("shared_context", {})
+        active_scenarios = shared_context.get("active_scenarios")
+        if active_scenarios:
+            import json
+            scenario_text = "SCENARIOS:\n" + json.dumps(active_scenarios, indent=2)
+            new_user_message = scenario_text + "\n\n" + new_user_message
 
         # Build messages array: system + conversation_history + new user message
         messages = [{"role": "system", "content": system_message}] + self.conversation_history + [{"role": "user", "content": new_user_message}]

@@ -1,0 +1,14 @@
+{
+  "Name": "Diversification Strategy Analyzer",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Optimize investment diversification based on user profiles",
+  "Deliverables": "probability distributions over asset performance + risk-adjusted scenarios",
+  "Strengths": "Provides tailored diversification strategies considering unique risk tolerances and goals",
+  "Watch-out": "Over-reliance on historical data leading to suboptimal recommendations under new market conditions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "feasibility_critique",
+    "model": "gpt-4o-mini"
+  }
+}

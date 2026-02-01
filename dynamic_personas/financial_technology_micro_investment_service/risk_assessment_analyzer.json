@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Assessment Analyzer",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Optimize investment allocation based on individual risk tolerance and financial goals",
+  "Deliverables": "Probability distributions over potential investment outcomes and risk profiles",
+  "Strengths": "Identifies suitable investment options tailored to individual risk preferences and expected returns",
+  "Watch-out": "Overly complex risk models may exclude viable options or misrepresent user risk tolerance",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "solution_exploration",
+    "model": "gpt-4o-mini"
+  }
+}

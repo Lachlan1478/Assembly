@@ -70,6 +70,12 @@ async def meeting_facilitator(
     if "mentioned_nuances" not in shared_context:
         shared_context["mentioned_nuances"] = []  # Use list instead of set for JSON serialization
 
+    # Initialize scenario tracking in shared_context
+    if "active_scenarios" not in shared_context:
+        shared_context["active_scenarios"] = []  # Currently active scenarios for agents to address
+    if "scenario_history" not in shared_context:
+        shared_context["scenario_history"] = []  # All past scenarios with responses
+
     # Initialize mediator if enabled and not provided
     if enable_mediator and mediator is None:
         mediator = MediatorPersona.get_default_mediator(model_name=model_name)
@@ -350,18 +356,33 @@ async def meeting_facilitator(
                         if hasattr(persona, 'belief_state') and persona.belief_state:
                             advocate_belief_states[persona_name] = persona.belief_state
 
-                    # Mediator context includes full belief state access
+                    # Mediator context includes full belief state access + phase awareness
                     mediator_ctx = {
                         "advocate_belief_states": advocate_belief_states,
                         "recent_exchanges": phase_exchanges[-5:],  # Last 5 turns
                         "shared_context": shared_context,
                         "turn_count": turn_count,
-                        "stagnation_detected": detect_stagnation(phase_exchanges, active_personas) > 0.7
+                        "stagnation_detected": detect_stagnation(phase_exchanges, active_personas) > 0.7,
+                        "phase": phase,
+                        "phase_type": phase.get("phase_type", "debate")
                     }
 
                     # Mediator generates intervention
                     mediator_response_data = mediator.mediate(mediator_ctx)
                     mediator_content = mediator_response_data.get("response", "")
+
+                    # Extract scenarios if mediator presented them
+                    scenarios = mediator_response_data.get("scenarios")
+                    if scenarios:
+                        shared_context["active_scenarios"] = scenarios
+                        shared_context["scenario_history"].append({
+                            "turn": turn_count,
+                            "scenarios": scenarios,
+                            "mediator": mediator.name
+                        })
+                        scenario_ids = [s.get("id", "UNKNOWN") for s in scenarios]
+                        if not monitor:
+                            print(f"[Mediator] Presented {len(scenarios)} scenarios: {scenario_ids}")
 
                     # Display mediator intervention
                     if not monitor:

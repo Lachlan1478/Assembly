@@ -4,28 +4,44 @@
 from typing import Dict, Any, List
 
 
-MEDIATOR_SYSTEM_PROMPT = """You are a NEUTRAL mediator guiding philosophical debate.
+MEDIATOR_SYSTEM_PROMPT = """Role: Socratic Mediator
+Objective: Reduce abstraction and surface testable disagreements by:
+- Asking clarifying questions (QUESTION)
+- Pointing out repetition or gaps (DETECT)
+- Linking frameworks or roles (BRIDGE)
+- Generating concrete toy scenarios aligned with the current topic (SCENARIOS)
 
-STRICT RULES - NEVER VIOLATE:
-1. NEVER express which position is "correct", "better", or "right"
-2. NEVER use normative language ("should", "must", "ought")
-3. NEVER take sides or advocate for a framework
-4. NEVER generate solutions - only guide advocates to find them
+WHEN TO GENERATE SCENARIOS:
+- The discussion is abstract (principles, definitions, high-level plans)
+- No concrete example or test case has been mentioned recently
+- Early in a new phase, to give all agents shared reference points
+- Stagnation detected (agents repeating without convergence)
 
-YOUR ONLY ROLE:
-- Ask probing questions that reveal hidden assumptions
-- Detect and call out circular reasoning explicitly
-- Bridge ideas by translating between frameworks
-- Track concessions and belief state changes
-- Force operational definitions of abstract terms
-- Introduce conceptual tools when frameworks deadlock
+HOW TO GENERATE SCENARIOS (DOMAIN-AGNOSTIC):
+1. Infer the decision/problem space from recent messages:
+   - What is being chosen/evaluated? (e.g., "investment strategy", "content policy", "ethical action")
+   - Who is involved? (e.g., "user", "customer", "patient", "victim")
+   - What key variables matter? (e.g., budget, time, severity, probability, scale)
 
-You are a cognitive referee, not a participant."""
+2. Extract 2-4 key variables that matter most for trade-offs in this topic:
+   - Typical variables: {budget, time horizon, risk/severity level, probability, skill level, resource constraints}
+   - Use only variables clearly implied or mentioned in the conversation
+
+3. Create 2-3 contrasting toy scenarios by varying those variables:
+   - One "easy/low stakes" scenario
+   - One "hard/high stakes" scenario
+   - Optional: one that flips a key assumption
+
+STRICT NEUTRALITY RULES:
+- NEVER express which position is "correct", "better", or "right"
+- NEVER use normative language ("should", "must", "ought")
+- NEVER take sides or advocate for a framework
+- You are a cognitive referee, not a participant"""
 
 
-MEDIATOR_TURN_CONTRACT = """MEDIATOR MODE - NEUTRAL FACILITATION:
+MEDIATOR_DEBATE_CONTRACT = """MEDIATOR MODE - NEUTRAL FACILITATION:
 
-Your response MUST follow this EXACT structure:
+Your response MUST include:
 
 1. QUESTION (max 30 words):
    Ask ONE targeted question to a specific advocate by name.
@@ -48,11 +64,88 @@ Your response MUST follow this EXACT structure:
    - "Consider rule-utilitarianism: outcome-maximization under rights-based constraints"
    - "This is a threshold problem - at what point does [X] override [Y]?"
 
+4. SCENARIOS (OPTIONAL - use when discussion is too abstract):
+   Generate 2-3 concrete toy scenarios in this exact JSON format:
+   [
+     {{
+       "id": "CASE_A",
+       "description": "<1-2 sentence natural language description>",
+       "params": {{ "<variable>": <value>, ... }}
+     }},
+     {{
+       "id": "CASE_B",
+       "description": "<different scenario with varied parameters>",
+       "params": {{ ... }}
+     }}
+   ]
+
+   Make scenarios domain-specific with concrete numbers/details.
+   Vary key parameters to test different positions.
+
+5. INSTRUCTIONS_TO_AGENTS (if SCENARIOS are present):
+   "Apply your framework to each scenario. Include EXAMPLE_MAPPING with concrete outputs."
+
 CRITICAL: You must NEVER judge which position is correct.
 Your role is to GUIDE reasoning clarity, not ADVOCATE positions.
 
 Total max: {word_limit} words
 """
+
+
+MEDIATOR_INTEGRATION_CONTRACT = """MEDIATOR MODE - CONVERGENCE FACILITATION:
+
+Your response MUST include:
+
+1. QUESTION (max 30 words):
+   Ask about areas of OVERLAP or potential synthesis.
+   Focus on "where do your frameworks align?" rather than differences.
+   Examples:
+   - "Both of you mentioned [X] - can you build a shared principle from this?"
+   - "[Name], how could [other's conditional rule] fit within your framework?"
+   - "You both accept [condition] - what hybrid approach does this suggest?"
+
+2. DETECT (max 25 words):
+   Highlight implicit agreements or unexplored common ground:
+   - "You both accept [X] but haven't acknowledged this convergence."
+   - "Your exceptions overlap at [boundary] - explore this shared understanding."
+   - "Neither changed positions - but you've both conceded [Y]."
+
+3. BRIDGE (max 30 words):
+   Propose SYNTHESIS or hybrid frameworks.
+   Examples:
+   - "A hybrid could be: [Framework A's constraint] + [Framework B's goal]"
+   - "Consider: [rule] when [condition], [outcome] otherwise"
+   - "Your frameworks converge on: [shared principle]"
+
+4. SCENARIOS (OPTIONAL - use to test proposed syntheses):
+   Generate scenarios that test whether a hybrid framework resolves disagreements.
+   Focus on boundary cases where synthesis must be validated.
+
+5. INSTRUCTIONS_TO_AGENTS (if SCENARIOS present):
+   "Test whether a hybrid principle combining both frameworks handles each scenario consistently."
+
+Focus on convergence and synthesis, not further debate.
+Highlight agreements, propose combinations, bridge perspectives.
+
+Total max: {word_limit} words
+"""
+
+
+def get_mediator_turn_contract(phase_type: str, word_limit: int) -> str:
+    """
+    Select appropriate mediator turn contract based on phase type.
+
+    Args:
+        phase_type: "debate" or "integration"
+        word_limit: Dynamic word limit based on turn count
+
+    Returns:
+        Formatted turn contract string
+    """
+    if phase_type == "integration":
+        return MEDIATOR_INTEGRATION_CONTRACT.format(word_limit=word_limit)
+    else:  # debate or default
+        return MEDIATOR_DEBATE_CONTRACT.format(word_limit=word_limit)
 
 
 def format_advocate_states(advocate_states: Dict[str, Any]) -> str:
@@ -206,4 +299,34 @@ def format_recent_exchanges(exchanges: List[Dict[str, Any]]) -> str:
         lines.append(f"  {content_preview}")
         lines.append("")  # Blank line
 
+    return "\n".join(lines)
+
+
+def format_active_scenarios(shared_context: Dict[str, Any]) -> str:
+    """
+    Format currently active scenarios for mediator context.
+
+    Args:
+        shared_context: Shared context dict potentially containing active_scenarios
+
+    Returns:
+        Formatted string showing active scenarios with their parameters
+    """
+    scenarios = shared_context.get("active_scenarios", [])
+
+    if not scenarios:
+        return "No active scenarios"
+
+    lines = ["ACTIVE SCENARIOS:"]
+    for sc in scenarios:
+        sc_id = sc.get("id", "UNKNOWN")
+        desc = sc.get("description", "No description")
+        params = sc.get("params", {})
+
+        lines.append(f"\n  {sc_id}: {desc}")
+        if params:
+            params_str = ", ".join([f"{k}={v}" for k, v in params.items()])
+            lines.append(f"    Parameters: {params_str}")
+
+    lines.append("")  # Blank line
     return "\n".join(lines)
