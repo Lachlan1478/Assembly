@@ -82,18 +82,13 @@ def generate_dynamic_prompt(
         Stage-appropriate prompt that guides natural discovery process
     """
     phase_id = phase.get("phase_id", "")
-    phase_type = phase.get("phase_type", "debate")  # Check for integration mode
+    phase_type = phase.get("phase_type", "debate")  # Available but not used for format enforcement
     max_turns = phase.get("max_turns", 15)
     inspiration = shared_context.get("inspiration", "")
     ideas_discussed = shared_context.get("ideas_discussed", [])
 
-    # Integration phases override standard prompts
-    if phase_type == "integration":
-        return generate_integration_prompt(
-            phase=phase,
-            turn_count=turn_count,
-            shared_context=shared_context
-        )
+    # All phases use natural discussion format
+    # Phase type controls mediator behavior, not persona response format
 
     # Get current stage info
     stage_info = get_stage_info(phase_id, turn_count, max_turns)
@@ -338,75 +333,5 @@ Focus on making ideas concrete and actionable. Do not re-propose rejected ideas.
                 Synthesize and build on previous contributions.""").strip()
 
 
-def generate_integration_prompt(
-    phase: Dict[str, Any],
-    turn_count: int,
-    shared_context: Dict[str, Any]
-) -> str:
-    """
-    Generate integration-focused prompt that enforces:
-    - Steelmanning opponent views
-    - Finding common ground
-    - Identifying remaining genuine disagreements
-
-    Integration phases are for convergent thinking: synthesis, consensus, decision.
-    Personas should move from "defend the flag" to "build bridges".
-
-    Args:
-        phase: Current phase dict with phase_id, goal, desired_outcome
-        turn_count: Current turn number in phase
-        shared_context: Shared context including ideas_discussed, current_focus, etc.
-
-    Returns:
-        Integration-focused prompt
-    """
-    from src.idea_generation.idea_tracker import (
-        get_ideas_in_play,
-        format_ideas_for_prompt
-    )
-
-    phase_goal = phase.get("goal", "synthesize perspectives and find common ground")
-    desired_outcome = phase.get("desired_outcome", "consensus or clear articulation of remaining disagreements")
-
-    # Get ideas context for startup idea domains
-    ideas_discussed = shared_context.get("ideas_discussed", [])
-    in_play = get_ideas_in_play(ideas_discussed)
-
-    if in_play:
-        # Startup ideas domain
-        ideas_context = format_ideas_for_prompt(in_play, max_count=3)
-        context_section = f"""IDEAS BEING DISCUSSED:
-{ideas_context}
-
-"""
-    else:
-        # Philosophical debate or other domain
-        current_focus = shared_context.get("current_focus") or "the topic we've been discussing"
-        context_section = f"""TOPIC UNDER DISCUSSION:
-{current_focus}
-
-"""
-
-    # Integration phase uses same prompt structure regardless of turn count
-    # The persona's turn contract (in persona.py) handles the actual STEELMAN/SYNTHESIS/RESIDUAL format
-    return dedent(f"""\
-        INTEGRATION PHASE: Synthesis and Convergence
-
-        Goal: {phase_goal}
-        Desired outcome: {desired_outcome}
-
-        {context_section}
-
-        Your task is to synthesize perspectives and find common ground:
-
-        1. STEELMAN the last speaker's strongest point and explain how it affected your belief state
-           (reference specific changes: certainty shift, new conditional rule, exception, or accepted critique)
-
-        2. SYNTHESIZE: Propose a hybrid principle that combines both perspectives
-           (e.g., "outcome-maximization under rights-based constraints")
-
-        3. RESIDUAL DISAGREEMENT: Identify the specific remaining conflict
-           (be concrete, not generic - what exact question or edge case remains unresolved?)
-
-        Focus on synthesis and integration, not further debate.
-        Build bridges between perspectives.""").strip()
+# Integration prompt function removed - all phases now use natural discussion format
+# Phase type controls mediator behavior only, not persona response format

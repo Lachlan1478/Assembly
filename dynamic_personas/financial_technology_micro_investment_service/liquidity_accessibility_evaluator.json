@@ -1,0 +1,14 @@
+{
+  "Name": "Liquidity Accessibility Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Optimize investment accessibility for non-experts",
+  "Deliverables": "financial thresholds + user scenario simulations",
+  "Strengths": "Identifies barriers to entry and quantifies potential user outcomes based on liquidity needs",
+  "Watch-out": "Inability to account for dynamic market changes affecting liquidity and user behavior",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "feasibility_critique",
+    "model": "gpt-4o-mini"
+  }
+}

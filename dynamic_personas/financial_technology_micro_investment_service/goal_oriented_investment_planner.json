@@ -1,0 +1,14 @@
+{
+  "Name": "Goal-Oriented Investment Planner",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Facilitate goal-setting and recommend investment strategies aligned with desired financial outcomes",
+  "Deliverables": "Hard constraints on investment strategies based on user-defined financial goals and time horizons",
+  "Strengths": "Provides clear, actionable recommendations that align investment choices with users' specific objectives",
+  "Watch-out": "Rigid adherence to rules may overlook unique user circumstances or emerging investment opportunities",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "financial_technology_micro_investment_service",
+    "phase_generated": "solution_exploration",
+    "model": "gpt-4o-mini"
+  }
+}

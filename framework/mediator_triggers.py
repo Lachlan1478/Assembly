@@ -28,9 +28,9 @@ def check_mediator_triggers(
     Returns:
         True if mediator should speak next, False otherwise
     """
-    # Never intervene in integration phases (they already use STEELMAN/SYNTHESIS)
-    if phase_type == "integration":
-        return False
+    # Mediator can intervene in all phases (adapts behavior based on phase_type)
+    # Integration phases get convergence-focused mediation
+    # Debate phases get probing/challenging mediation
 
     # Need at least 2 turns before mediator can analyze patterns
     if turn_count < 2:

@@ -70,6 +70,12 @@ async def meeting_facilitator(
     if "mentioned_nuances" not in shared_context:
         shared_context["mentioned_nuances"] = []  # Use list instead of set for JSON serialization
 
+    # Initialize scenario tracking in shared_context
+    if "active_scenarios" not in shared_context:
+        shared_context["active_scenarios"] = []  # Currently active scenarios for agents to address
+    if "scenario_history" not in shared_context:
+        shared_context["scenario_history"] = []  # All past scenarios with responses
+
     # Initialize mediator if enabled and not provided
     if enable_mediator and mediator is None:
         mediator = MediatorPersona.get_default_mediator(model_name=model_name)
@@ -120,6 +126,14 @@ async def meeting_facilitator(
         # Track pending async extractions for this phase
         pending_extractions = []
 
+        # Generate initial prompt from facilitator for this phase (used for native threading)
+        initial_prompt = generate_dynamic_prompt(
+            phase=phase,
+            turn_count=0,
+            phase_exchanges=[],
+            shared_context=shared_context
+        )
+
         # Conversation loop for this phase
         while True:
             # Facilitator decides who should speak next
@@ -165,21 +179,22 @@ async def meeting_facilitator(
                 # Fallback display if no monitor
                 print(f"\n[Speaker] {speaker_persona.name} ({speaker_persona.archetype}) speaking...")
 
-            # Generate dynamic prompt based on conversation state
-            dynamic_prompt = generate_dynamic_prompt(
-                phase=phase,
-                turn_count=turn_count,
-                phase_exchanges=phase_exchanges,
-                shared_context=shared_context
-            )
+            # Build other_speaker from last exchange (for native threading)
+            other_speaker = None
+            if phase_exchanges:
+                last_exchange = phase_exchanges[-1]
+                other_speaker = {
+                    "name": last_exchange["speaker"],
+                    "message": last_exchange["content"]
+                }
 
-            # Build context for this persona's response
+            # Build context for this persona's response (native threading format)
             ctx = {
-                "user_prompt": dynamic_prompt,  # Use dynamic prompt instead of static
+                "initial_prompt": initial_prompt,  # Facilitator's starter for this phase
+                "other_speaker": other_speaker,  # Last speaker's name and message, or None if first
+                "turn_count": turn_count,
                 "phase": phase,
-                "shared_context": shared_context,
-                "recent_exchanges": phase_exchanges,  # Add recent discussion context
-                "turn_count": turn_count  # Add turn count for dynamic word limits
+                "shared_context": shared_context
             }
 
             # Persona generates response using their summary
@@ -341,18 +356,33 @@ async def meeting_facilitator(
                         if hasattr(persona, 'belief_state') and persona.belief_state:
                             advocate_belief_states[persona_name] = persona.belief_state
 
-                    # Mediator context includes full belief state access
+                    # Mediator context includes full belief state access + phase awareness
                     mediator_ctx = {
                         "advocate_belief_states": advocate_belief_states,
                         "recent_exchanges": phase_exchanges[-5:],  # Last 5 turns
                         "shared_context": shared_context,
                         "turn_count": turn_count,
-                        "stagnation_detected": detect_stagnation(phase_exchanges, active_personas) > 0.7
+                        "stagnation_detected": detect_stagnation(phase_exchanges, active_personas) > 0.7,
+                        "phase": phase,
+                        "phase_type": phase.get("phase_type", "debate")
                     }
 
                     # Mediator generates intervention
                     mediator_response_data = mediator.mediate(mediator_ctx)
                     mediator_content = mediator_response_data.get("response", "")
+
+                    # Extract scenarios if mediator presented them
+                    scenarios = mediator_response_data.get("scenarios")
+                    if scenarios:
+                        shared_context["active_scenarios"] = scenarios
+                        shared_context["scenario_history"].append({
+                            "turn": turn_count,
+                            "scenarios": scenarios,
+                            "mediator": mediator.name
+                        })
+                        scenario_ids = [s.get("id", "UNKNOWN") for s in scenarios]
+                        if not monitor:
+                            print(f"[Mediator] Presented {len(scenarios)} scenarios: {scenario_ids}")
 
                     # Display mediator intervention
                     if not monitor:

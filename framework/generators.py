@@ -44,69 +44,37 @@ def generate_personas_for_context(
     if existing_personas:
         existing_context = f"\n\nEXISTING PERSONAS (avoid duplicating these roles):\n" + "\n".join([f"- {p}" for p in existing_personas])
 
-    generation_prompt = f"""You are a conversation designer creating expert personas for a collaborative problem-solving session.
+    generation_prompt = f"""Generate {count} logic-role agents for this domain.
 
-PROBLEM DOMAIN:
-{inspiration}
-
-CURRENT PHASE:
-- Phase: {phase_info.get('phase_id', 'N/A')}
-- Goal: {phase_info.get('goal', 'N/A')}
-- Desired Outcome: {phase_info.get('desired_outcome', 'N/A')}
+DOMAIN: {inspiration}
+PHASE: {phase_info.get('phase_id', 'N/A')}
+GOAL: {phase_info.get('goal', 'N/A')}
 {existing_context}
 
-Generate {count} diverse expert personas who would be most valuable for this specific phase and domain. Each persona should bring a unique perspective and skill set.
+Each agent is a REASONING FUNCTION, not a personality.
 
-For each persona, provide:
+Output format:
+1. **Role**: Function name (e.g., "Utilitarian Calculator", "Rights Constraint Enforcer")
+2. **Objective**: Optimization target or constraint type
+3. **Reasoning_Type**: Logic framework (e.g., "Bayesian weighting", "Rule-based exceptions", "Cost-benefit analysis")
+4. **Belief_Structure**: How this agent represents knowledge (e.g., "probability distributions over outcomes", "hard constraints + exception list")
+5. **Failure_Mode**: What breaks this reasoning pattern
 
-1. **Name**: A clear role name (e.g., "Medical Device Engineer — Product Lead", "Patient Advocate — User Champion")
+NO personality traits. NO warmth. NO conversational style. NO inspirations.
+Pure logical roles.
 
-2. **Archetype**: A memorable character description with real-world inspiration (e.g., "Empathetic problem solver who brings patients' voices into the room (inspired by design thinking pioneers)")
-
-3. **Purpose**: Why this persona exists and what unique value they add to the conversation
-
-4. **Deliverables**: Specific artifacts or insights they produce (be concrete)
-
-5. **Strengths**: 2-3 core competencies that make them excellent at their role
-
-6. **Watch-out**: Potential blind spots or tendencies to watch for
-
-7. **Conversation_Style**: How they interact with others. Should include:
-   - When to reference others by name
-   - How to build on or challenge ideas
-   - When to vary response length (quick reactions vs detailed analysis)
-   - How to disagree constructively
-   - Examples of natural conversational phrases
-
-IMPORTANT GUIDELINES:
-- Make personas DOMAIN-SPECIFIC to "{inspiration.split(':')[0].strip() if ':' in inspiration else 'the problem domain'}"
-- Ensure diverse perspectives (technical, user-focused, business, skeptical, visionary)
-- Make conversation styles natural and engaging, not robotic
-- Avoid generic business roles - be specific to the domain
-- Each persona should complement the others (no overlapping strengths)
-
-Respond ONLY with a JSON object containing a "personas" array:
+Respond ONLY with JSON (map new fields to old schema):
 {{
   "personas": [
     {{
-      "Name": "...",
-      "Archetype": "...",
-      "Purpose": "...",
-      "Deliverables": "...",
-      "Strengths": "...",
-      "Watch-out": "...",
-      "Conversation_Style": "..."
-    }},
-    {{
-      "Name": "...",
-      "Archetype": "...",
-      "Purpose": "...",
-      "Deliverables": "...",
-      "Strengths": "...",
-      "Watch-out": "...",
-      "Conversation_Style": "..."
-    }},
-    ...
+      "Name": "[Role name]",
+      "Archetype": "[Reasoning_Type]",
+      "Purpose": "[Objective]",
+      "Deliverables": "[Belief_Structure]",
+      "Strengths": "[What this reasoning is good at]",
+      "Watch-out": "[Failure_Mode]",
+      "Conversation_Style": "N/A"
+    }}
   ]
 }}"""
 
@@ -116,7 +84,7 @@ Respond ONLY with a JSON object containing a "personas" array:
             messages=[
                 {
                     "role": "system",
-                    "content": "You are an expert at designing diverse, engaging expert personas for collaborative problem-solving sessions."
+                    "content": "You generate logic-role agents. Each agent is a reasoning function with an objective and belief structure. No personality."
                 },
                 {
                     "role": "user",
@@ -124,7 +92,7 @@ Respond ONLY with a JSON object containing a "personas" array:
                 }
             ],
             response_format={"type": "json_object"},
-            temperature=0.8  # Higher creativity for diverse personas
+            temperature=0.8
         )
 
         content = response.choices[0].message.content.strip()
