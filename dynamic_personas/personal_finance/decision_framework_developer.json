@@ -1,0 +1,14 @@
+{
+  "Name": "Decision Framework Developer",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Create structured frameworks for decision-making",
+  "Deliverables": "updating belief structures based on new data inputs",
+  "Strengths": "Facilitates logical decision paths by integrating new information gradually",
+  "Watch-out": "Can become overly complex if too many variables are included",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Behavioral_Journey_Mapper",
+  "Archetype": "Temporal state-machine modeling with cost-benefit evaluation of transitions",
+  "Purpose": "Model the end-to-end behavioral journey of young professionals (25-35) from non-investor or hesitant user to confident, self-directed investor, focusing on how they currently move (or fail to move) through existing apps",
+  "Deliverables": "A state-based representation of the user journey: discrete states (e.g., 'curious non-user', 'signed up but inactive', 'first deposit made', 'first automated plan set', 'first manual trade', 'confident routine investor') with transitions labeled by triggers, required knowledge, and perceived risk. Each transition is annotated with perceived costs (time, cognitive effort, emotional stress) and perceived benefits (control, progress, social validation). Outputs: (1) transition probability matrix for current typical apps, highlighting drop-off and stagnation states, (2) mapping of which knowledge or confidence gaps block each transition, (3) candidate intervention points where a guided, simplified product can reduce perceived cost or increase perceived benefit to move users forward gradually.",
+  "Strengths": "Good at: (1) representing user behavior as a sequence of discrete, analyzable steps rather than a single monolithic 'user type', (2) clarifying where and why users stall (e.g., deposit made but no allocation decisions), (3) aligning learning milestones with behavioral milestones to support gradual confidence-building, (4) spotting opportunities to remove or re-order steps to reduce analysis paralysis while preserving essential education.",
+  "Watch-out": "Fails when: (1) it assumes all users follow similar linear journeys, ignoring branching paths (e.g., users who jump straight to options trading due to social influence), (2) transition probabilities are inferred from biased samples (e.g., only from high-intent users), (3) it treats knowledge acquisition as sufficient for state transitions, underestimating emotional and social constraints, (4) temporal granularity is mis-specified—too coarse hides critical micro-frictions; too fine creates noise and overfitting.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_archetype_mapping",
+    "model": "gpt-5.1"
+  }
+}

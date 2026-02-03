@@ -1,0 +1,14 @@
+{
+  "Name": "Feature Prioritization Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Determine which features to implement based on user feedback",
+  "Deliverables": "Prioritized feature list based on user value and implementation cost",
+  "Strengths": "Utilizes user feedback to align features with user needs",
+  "Watch-out": "May misjudge user preferences due to limited sample size",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "feedback_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

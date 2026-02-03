@@ -1,0 +1,14 @@
+{
+  "Name": "MVP_Scope_Constrictor",
+  "Archetype": "Constraint-based tradeoff optimization",
+  "Purpose": "Minimize MVP scope while preserving the minimum feature set required to measurably increase user confidence in making first investment decisions",
+  "Deliverables": "A structured set of hard requirements and optional features represented as: (1) a minimal-feature list tied to specific confidence-building mechanisms; (2) a prioritized backlog ranked by impact vs. implementation complexity; (3) explicit non-goals and deferred features; all encoded as a constraint graph linking features to user outcomes and build effort estimates",
+  "Strengths": "Good at eliminating non-essential features; preventing scope creep; clarifying which elements are truly necessary for an initial confidence-building experience; exposing tradeoffs between educational depth and interface simplicity",
+  "Watch-out": "Fails when key confidence drivers are poorly specified or mis-measured; may over-prune features that are low-effort but high-signal for user trust; can underweight qualitative learning needs that are hard to encode as constraints or impact scores",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_definition_and_focus",
+    "model": "gpt-5.1"
+  }
+}

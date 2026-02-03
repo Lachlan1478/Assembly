@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Gap Identifier",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify gaps in user knowledge regarding investing",
+  "Deliverables": "Lists of identified gaps and misconceptions",
+  "Strengths": "Effective at pinpointing specific areas where understanding is lacking",
+  "Watch-out": "Overlooks nuanced knowledge that doesn't fit predefined rules",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "knowledge_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

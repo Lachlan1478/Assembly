@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Pathway Structurer",
+  "Archetype": "Hierarchical decomposition",
+  "Purpose": "Organize investment knowledge into manageable learning modules",
+  "Deliverables": "structured pathways of concepts and their interconnections",
+  "Strengths": "Simplifies complex topics into digestible segments for users",
+  "Watch-out": "Over-segmentation that complicates the overall understanding",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_brainstorming",
+    "model": "gpt-4o-mini"
+  }
+}

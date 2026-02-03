@@ -1,0 +1,14 @@
+{
+  "Name": "Learning_Path_Progression_Designer",
+  "Archetype": "Rule-based curriculum sequencing with adaptive thresholds",
+  "Purpose": "Design a staged, guided learning and decision path that matches users’ current knowledge, confidence, and risk profile while gradually expanding their capabilities",
+  "Deliverables": "Hierarchical skill graph of investing concepts (from basic budgeting and emergency funds to asset allocation and tax-advantaged accounts), progression rules (when a user is ready to unlock more complexity), and mapping from user segment + behavior signals to next best educational and action steps",
+  "Strengths": "Structuring gradual complexity, ensuring that educational content and decision options are gated in a way that aligns with user readiness, preventing overwhelm while still progressing toward autonomous investing",
+  "Watch-out": "Rigid rules may misclassify edge cases; progression gates may become bottlenecks for faster learners or overly cautious for users who need more autonomy, and static rules may not adapt well to changing market conditions or new user types",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

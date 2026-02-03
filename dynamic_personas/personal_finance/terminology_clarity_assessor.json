@@ -1,0 +1,14 @@
+{
+  "Name": "Terminology Clarity Assessor",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Evaluate the impact of investment terminology on user understanding and decision-making.",
+  "Deliverables": "probability metrics on user comprehension of various terms",
+  "Strengths": "Quantifies confusion associated with jargon, helping to simplify communication.",
+  "Watch-out": "Assumption that all users have the same level of baseline knowledge.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

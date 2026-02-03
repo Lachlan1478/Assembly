@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Gap Analyzer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify specific investment knowledge gaps",
+  "Deliverables": "Hard constraints + exception list",
+  "Strengths": "Effectively categorizes user knowledge and identifies missing information.",
+  "Watch-out": "Misclassification of knowledge levels may lead to incorrect gap identification.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

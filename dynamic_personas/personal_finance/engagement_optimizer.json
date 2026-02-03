@@ -1,0 +1,14 @@
+{
+  "Name": "Engagement Optimizer",
+  "Archetype": "Multi-criteria decision analysis",
+  "Purpose": "Facilitate user engagement with educational tools through structured interaction",
+  "Deliverables": "Interactive pathways that guide users through learning stages",
+  "Strengths": "Enhances user retention and participation in learning activities",
+  "Watch-out": "Complex pathways may overwhelm users if not well designed",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_resources_mapping",
+    "model": "gpt-4o-mini"
+  }
+}

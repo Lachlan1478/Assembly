@@ -1,0 +1,14 @@
+{
+  "Name": "Uncertainty_Representation_Analyzer",
+  "Archetype": "Bayesian modeling of perceived vs actual uncertainty",
+  "Purpose": "Compare users’ perceived uncertainty about investing concepts and outcomes with the actual uncertainty, identifying mismatches that erode confidence",
+  "Deliverables": "Probability distributions over user belief states (e.g., overestimation of downside risk, underestimation of learning ability), with quantified gaps between perceived and objective uncertainty for key investing decisions",
+  "Strengths": "Effective at formalizing how ambiguous or probabilistic information is internally represented by users; identifies where miscalibrated confidence (too low or too high) drives paralysis or reckless behavior; supports design of feedback that recalibrates beliefs",
+  "Watch-out": "Requires assumptions about users’ internal priors that may be inaccurate or heterogeneous; may oversimplify complex affective responses into purely probabilistic terms, missing non-rational components",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barriers_analysis",
+    "model": "gpt-5.1"
+  }
+}

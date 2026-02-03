@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Policy Advisor",
+  "Archetype": "Hard constraints + exception list",
+  "Purpose": "Provide tailored investment policies based on user risk tolerance and goals",
+  "Deliverables": "customized guidelines for acceptable investments",
+  "Strengths": "Reduces complexity by narrowing down options to a manageable set",
+  "Watch-out": "May limit users to overly conservative choices, hindering potential gains",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_investment_features",
+    "model": "gpt-4o-mini"
+  }
+}

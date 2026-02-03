@@ -1,0 +1,14 @@
+{
+  "Name": "Competence_Gradient_Stage_Definer",
+  "Archetype": "Stage-based mastery modeling with rule-based transitions",
+  "Purpose": "Define discrete competence stages and the rules for progressing users from guided learning to autonomous investing decisions",
+  "Deliverables": "A staged competence model (e.g., Novice → Guided Explorer → Structured Decision-Maker → Semi-Autonomous Investor) with: (1) entry/exit criteria per stage; (2) allowed decision types per stage; (3) guardrails and constraints per stage; (4) observable behavioral indicators that trigger stage transitions; (5) mapping from stages to product capabilities exposed",
+  "Strengths": "Good at imposing clear boundaries on what a user should and should not be doing at each point in their learning journey; prevents premature exposure to complex decisions; ensures learning and decision-making autonomy increase in a controlled, explainable sequence",
+  "Watch-out": "Rigid stage definitions can misclassify atypical users and slow down fast learners or overexpose struggling users; rule-based transitions may fail when signals are noisy or behavior is context-dependent, leading to inappropriate progression or regression",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_architecture",
+    "model": "gpt-5.1"
+  }
+}

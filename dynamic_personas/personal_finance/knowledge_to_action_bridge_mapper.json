@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge-to-Action Bridge Mapper",
+  "Archetype": "If-then operationalization logic with context triggers",
+  "Purpose": "Convert learned investment principles into simple, executable decision rules and routines that users can apply within the app and in real markets",
+  "Deliverables": "Mapping from conceptual knowledge units to concrete if-then rules, checklists, and decision templates, each tagged with applicable contexts (income level, account type, time horizon, risk tolerance) and activation cues inside the product",
+  "Strengths": "Good at closing the gap between understanding and doing, ensuring that each learned concept has an immediately visible and repeatable application in real investment choices",
+  "Watch-out": "Fails when rules are oversimplified or mis-specified for edge cases, causing either inappropriate actions or user confusion when real situations do not fit the provided templates",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_blueprint",
+    "model": "gpt-5.1"
+  }
+}

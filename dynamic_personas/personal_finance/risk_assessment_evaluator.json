@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Assessment Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Identify and quantify the risks associated with investment options",
+  "Deliverables": "risk profiles based on individual financial situations and market conditions",
+  "Strengths": "Effective at highlighting trade-offs and potential downsides of investments",
+  "Watch-out": "Underestimation of emotional factors influencing investment decisions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

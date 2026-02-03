@@ -1,0 +1,14 @@
+{
+  "Name": "Feedback Loop Engineer",
+  "Archetype": "Feedback mechanisms",
+  "Purpose": "Provide ongoing feedback on investment choices and learning",
+  "Deliverables": "Reports on user performance and suggested improvements",
+  "Strengths": "Encourages continuous improvement and learning from decisions",
+  "Watch-out": "Feedback that is too frequent or irrelevant can lead to user disengagement",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

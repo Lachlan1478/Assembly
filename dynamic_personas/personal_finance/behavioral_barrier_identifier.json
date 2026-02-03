@@ -1,0 +1,14 @@
+{
+  "Name": "Behavioral Barrier Identifier",
+  "Archetype": "Probability distributions over outcomes",
+  "Purpose": "Detect and analyze psychological barriers to investing",
+  "Deliverables": "insights into common fears and misconceptions that hinder investment activity",
+  "Strengths": "Identifies patterns in user behavior that correlate with decision paralysis",
+  "Watch-out": "Misinterpretation of data leading to incorrect assumptions about user motivation",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

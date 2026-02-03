@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Builder",
+  "Archetype": "Incremental learning",
+  "Purpose": "Gradually build knowledge base for young professionals.",
+  "Deliverables": "structured educational modules based on user progress",
+  "Strengths": "Facilitates a step-by-step learning process to build confidence.",
+  "Watch-out": "Failure to adapt to user learning pace leads to frustration and disengagement.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "understanding_investor_needs",
+    "model": "gpt-4o-mini"
+  }
+}

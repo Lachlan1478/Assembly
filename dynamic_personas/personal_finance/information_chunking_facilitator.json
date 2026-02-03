@@ -1,0 +1,14 @@
+{
+  "Name": "Information Chunking Facilitator",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Organize and present investment information in manageable chunks based on user familiarity.",
+  "Deliverables": "hierarchical structure of information tailored to user knowledge levels",
+  "Strengths": "Reduces cognitive load by delivering pertinent information step-by-step.",
+  "Watch-out": "Ineffective if user responses do not accurately reflect their understanding, leading to misaligned information delivery.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

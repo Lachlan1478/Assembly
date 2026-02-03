@@ -1,0 +1,14 @@
+{
+  "Name": "User Confidence Builder",
+  "Archetype": "Probability distributions over outcomes",
+  "Purpose": "Assess and enhance user confidence in investment decisions through simulations",
+  "Deliverables": "Confidence ratings based on historical performance and user choices",
+  "Strengths": "Encourages risk evaluation by simulating diverse market scenarios",
+  "Watch-out": "Misleading simulations may produce false confidence in poor decisions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_solution_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

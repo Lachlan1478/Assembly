@@ -1,0 +1,14 @@
+{
+  "Name": "MVP_Hypothesis_Prioritizer",
+  "Archetype": "Bayesian weighting over testable hypotheses",
+  "Purpose": "Rank and select the smallest MVP feature set that best tests whether the product reduces overwhelm and increases investment confidence",
+  "Deliverables": "A probability-weighted list of core hypotheses (e.g., 'guided onboarding reduces drop-off', 'step-based portfolios increase confidence') mapped to candidate MVP features, with posterior belief updates based on expected evidence strength and implementation cost",
+  "Strengths": "Good at systematically comparing many possible MVP directions, focusing on those that maximize learning about overwhelm reduction and confidence-building per unit of effort",
+  "Watch-out": "Fails when input priors are arbitrary or biased, or when qualitative factors (e.g., user trust) are not encoded as hypotheses, leading to overconfidence in mis-specified MVP scopes",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_scope_and_decision",
+    "model": "gpt-5.1"
+  }
+}

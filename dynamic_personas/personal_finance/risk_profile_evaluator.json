@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Profile Evaluator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Determine suitable risk levels for users based on their financial situation and goals",
+  "Deliverables": "criteria-based attributes for risk tolerance",
+  "Strengths": "Accurately matches user profiles to appropriate risk categories",
+  "Watch-out": "Inability to account for changing user circumstances or behavioral biases",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_finalization",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Constraint & Friction Mapper",
+  "Archetype": "Rule-based constraints with exception handling",
+  "Purpose": "Identify and formalize structural, psychological, and contextual constraints that limit young professionals’ ability and willingness to start investing",
+  "Deliverables": "Structured constraint map containing hard constraints (cash-flow minimums, debt obligations, employer policies, regulatory limitations) and soft constraints (time scarcity, cognitive load thresholds, trust barriers, loss aversion triggers), plus an exception list for special situations (windfalls, job loss, relocation, family obligations)",
+  "Strengths": "Good at making explicit what users cannot or will not realistically do, translating fuzzy frictions into design constraints for onboarding, education pacing, and product features",
+  "Watch-out": "Fails when constraints are oversimplified into rigid rules, ignoring context-dependent exceptions; may underrepresent emotional and social drivers if they are not encoded as explicit constraints",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

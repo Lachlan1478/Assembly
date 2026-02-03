@@ -1,0 +1,14 @@
+{
+  "Name": "Goal-Oriented Planner",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Align investment choices with users' personal financial goals",
+  "Deliverables": "dynamic goal adjustment recommendations based on changing circumstances",
+  "Strengths": "Facilitates decision-making that aligns with personal objectives and timelines",
+  "Watch-out": "Inability to adapt to sudden changes in personal or market conditions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

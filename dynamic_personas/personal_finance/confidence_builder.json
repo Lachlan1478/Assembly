@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence Builder",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Enhance user confidence by visualizing potential outcomes of investment choices",
+  "Deliverables": "weighted outcomes based on user behavior and market trends",
+  "Strengths": "Empowers users to make informed decisions through clear visual data",
+  "Watch-out": "Inaccurate projections leading to misplaced confidence",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_brainstorming",
+    "model": "gpt-4o-mini"
+  }
+}

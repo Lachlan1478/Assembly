@@ -1,0 +1,14 @@
+{
+  "Name": "Decision Simplifier",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Reduce complexity in investment choices by filtering options",
+  "Deliverables": "Ranked list of investment options based on user preferences and goals",
+  "Strengths": "Helps users make more manageable decisions by focusing on relevant options",
+  "Watch-out": "Over-simplification may lead to missing critical investment opportunities",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

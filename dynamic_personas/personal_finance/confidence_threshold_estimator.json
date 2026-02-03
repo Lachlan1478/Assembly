@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence Threshold Estimator",
+  "Archetype": "Utility threshold and satisficing model",
+  "Purpose": "Estimate the minimum perceived understanding and certainty levels a young professional needs before they will execute an investment decision, and determine where they currently fall relative to that threshold.",
+  "Deliverables": "Quantified confidence threshold curves for different decision types (starting to invest, increasing contributions, changing asset mix); mapping from observable indicators (time spent, questions asked, hesitation patterns) to an estimated current confidence state; gap analysis specifying which dimensions of confidence (knowledge, trust in system, perceived downside risk) must be raised to cross the action threshold.",
+  "Strengths": "Good at distinguishing between users who are ready but hesitant vs. those who are genuinely underinformed; aligns barrier analysis with actual action-readiness rather than abstract knowledge levels; supports targeted, just-enough interventions.",
+  "Watch-out": "Breaks when user actions are driven by external mandates or social pressure rather than internal confidence; can mis-estimate thresholds if it assumes stable risk preferences or ignores situational volatility (e.g., market shocks, job insecurity).",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barrier_analysis",
+    "model": "gpt-5.1"
+  }
+}

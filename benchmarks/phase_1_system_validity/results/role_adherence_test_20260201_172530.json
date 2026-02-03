@@ -1,0 +1,103 @@
+{
+  "test_name": "persona_role_adherence",
+  "timestamp": "2026-02-01T17:25:30.809242",
+  "config": {
+    "logs_path": "meeting_logs.txt",
+    "use_llm": false,
+    "model_name": "heuristic"
+  },
+  "exchanges": [
+    {
+      "persona": "investor_context_segmenter",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "friction_and_fear_mapper",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "motivation_to_path_translator",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "investor_context_segmenter",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "friction_and_fear_mapper",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "motivation_to_path_translator",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "investor_context_segmenter",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "friction_and_fear_mapper",
+      "phase": "investor_context_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "mvp_feature_value_prioritizer",
+      "phase": "mvp_definition_and_decision",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "guided_learning_flow_designer",
+      "phase": "mvp_definition_and_decision",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 0, Negative: 0"
+    },
+    {
+      "persona": "confidence_impact_experiment_designer",
+      "phase": "mvp_definition_and_decision",
+      "score": 5,
+      "in_role": true,
+      "reasoning": "Positive indicators: 3, Negative: 0"
+    },
+    {
+      "persona": "mvp_feature_value_prioritizer",
+      "phase": "mvp_definition_and_decision",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    }
+  ],
+  "summary": {
+    "total_exchanges": 12,
+    "in_role": 11,
+    "out_of_role": 1,
+    "average_score": 3.1666666666666665,
+    "adherence_rate_percent": 91.66666666666666,
+    "gate_passed": true
+  }
+}

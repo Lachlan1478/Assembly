@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Retention Assessor",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Evaluate and optimize content for maximum retention and understanding",
+  "Deliverables": "probability distributions over knowledge retention rates",
+  "Strengths": "identifies effective teaching methods based on user feedback",
+  "Watch-out": "overgeneralization due to insufficient data",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

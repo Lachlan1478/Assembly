@@ -1,0 +1,14 @@
+{
+  "Name": "Concept Clarifier",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Clarify complex investment concepts by breaking them down into simpler components",
+  "Deliverables": "Simplified definitions and examples of investment concepts",
+  "Strengths": "Good at making complex topics accessible and understandable",
+  "Watch-out": "May oversimplify to the point of losing essential details",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "knowledge_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

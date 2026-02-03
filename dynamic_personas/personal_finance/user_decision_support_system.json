@@ -1,0 +1,14 @@
+{
+  "Name": "User Decision Support System",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Evaluate potential investments based on user-defined parameters and risk tolerance",
+  "Deliverables": "Ranked list of investment options with associated risk and return profiles",
+  "Strengths": "Supports informed decision-making by quantifying trade-offs",
+  "Watch-out": "May oversimplify complex investment risks into quantifiable metrics",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_solution_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

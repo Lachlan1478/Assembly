@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence Level Tracker",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Measure user confidence before and after learning modules",
+  "Deliverables": "quantitative metrics of confidence shifts",
+  "Strengths": "provides clear insights into the effectiveness of educational content",
+  "Watch-out": "failure to account for external factors influencing confidence",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,8 +1,7 @@
 # idea_brainstorm_01a_config.py
 # Configuration module: Mode definitions for different run speeds
 
-#MODEL = "gpt-4.1-mini"
-MODEL = "gpt-4o-mini"
+MODEL = "gpt-5.1"
 
 # Mode configurations for different run speeds
 # phase_selection strategies:
@@ -15,17 +14,17 @@ MODE_CONFIGS = {
         "phase_selection": "bookends",
         "max_turns_per_phase": 3,
         "personas_per_phase": 3,  # Fewer personas for faster testing
-        "model": "gpt-3.5-turbo",
+        "model": "gpt-5.1",
         "enable_summary_updates": False,
         "enable_mediator": False,  # Disable mediator for speed
-        "description": "Quick test (1-2 min) - exploration → decision only"
+        "description": "Quick test (1-2 min) - exploration -> decision only"
     },
     "medium": {
         "phase_selection": "bookends_plus_middle",
         "num_phases": 4,
         "max_turns_per_phase": 5,
         "personas_per_phase": 4,  # Standard persona count
-        "model": "gpt-4o-mini",
+        "model": "gpt-5.1",
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for quality discussions
         "description": "Balanced (3-5 min) - first + middle + decision phases"
@@ -34,7 +33,7 @@ MODE_CONFIGS = {
         "phase_selection": "all",
         "max_turns_per_phase": 8,
         "personas_per_phase": 4,  # Standard persona count
-        "model": "gpt-4o-mini",
+        "model": "gpt-5.1",
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for quality discussions
         "description": "Comprehensive (30-60 min) - full workflow"
@@ -43,7 +42,7 @@ MODE_CONFIGS = {
         "phase_selection": "all",
         "max_turns_per_phase": 15,
         "personas_per_phase": 5,  # More personas for deeper exploration
-        "model": "gpt-4o-mini",
+        "model": "gpt-5.1",
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for deepest exploration
         "description": "Deep exploration (60-90 min) - maximum depth"

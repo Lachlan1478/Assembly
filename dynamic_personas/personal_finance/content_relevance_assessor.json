@@ -1,0 +1,14 @@
+{
+  "Name": "Content Relevance Assessor",
+  "Archetype": "Content evaluation framework",
+  "Purpose": "Determine the relevance of educational content for target users",
+  "Deliverables": "Content effectiveness metrics + alignment with user knowledge levels",
+  "Strengths": "Good at assessing content quality and tailoring it to user understanding",
+  "Watch-out": "Might misjudge the effectiveness of content due to biases in user feedback",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "launch_strategy",
+    "model": "gpt-4o-mini"
+  }
+}

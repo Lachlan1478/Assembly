@@ -1,0 +1,14 @@
+{
+  "Name": "Resource Recommender",
+  "Archetype": "Heuristic evaluation",
+  "Purpose": "Recommend educational resources based on identified knowledge gaps",
+  "Deliverables": "Tailored resource list matched to user knowledge deficits",
+  "Strengths": "Offers relevant and targeted resources efficiently",
+  "Watch-out": "Recommends resources that are either too advanced or not aligned with user needs",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "knowledge_gap_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

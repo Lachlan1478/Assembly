@@ -1,0 +1,14 @@
+{
+  "Name": "Information Overload Indexer",
+  "Archetype": "Multi-criteria decision analysis",
+  "Purpose": "Assess and score the degree of information overload based on multiple factors",
+  "Deliverables": "weighted criteria rankings and indices",
+  "Strengths": "Provides a comprehensive view by considering various aspects of information overload",
+  "Watch-out": "Complexity in criteria selection leading to potential misvaluation of overload",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_identification",
+    "model": "gpt-4o-mini"
+  }
+}

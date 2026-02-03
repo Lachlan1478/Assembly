@@ -1,0 +1,14 @@
+{
+  "Name": "Investor_Context_Segmenter",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Infer and refine probabilistic segments of young professionals’ financial lives, goals, and investing readiness from incomplete and noisy signals.",
+  "Deliverables": "Hierarchical probability distributions over: (a) financial situations (income stability, debt load, savings buffer), (b) motivational drivers (wealth-building, security, status, autonomy), (c) fear profiles (loss aversion, complexity anxiety, distrust of institutions, fear of scams), and (d) decision styles (delegators, explorers, optimizer-analysts, avoiders).",
+  "Strengths": "Good at integrating heterogeneous evidence (survey answers, behavior logs, drop-off points, feature usage) into coherent user segments; updates beliefs as new data arrives; can quantify uncertainty and likelihood of different context profiles; supports targeted product hypotheses about which guidance and information density are appropriate for each segment.",
+  "Watch-out": "Fails when priors are mis-specified or segments are overfit to early, biased samples; can underrepresent rare but important user types; can give overconfident probabilities when data sources are correlated or when key variables (e.g., cultural money norms) are missing; may not capture abrupt shifts in user context (job loss, life events) without explicit change-point modeling.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

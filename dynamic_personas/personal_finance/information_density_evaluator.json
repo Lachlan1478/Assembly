@@ -1,0 +1,14 @@
+{
+  "Name": "Information Density Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Optimize the balance of information presented to users based on relevance and clarity.",
+  "Deliverables": "structured hierarchy of information importance and clarity ratings",
+  "Strengths": "Identifies excessive detail and prioritizes essential information for beginner investors.",
+  "Watch-out": "Misjudgment of what constitutes relevant information leading to under-explanation.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Guided Scenario Scaffolder",
+  "Archetype": "Progressive case-based reasoning with complexity gradients",
+  "Purpose": "Design and order interactive scenarios that gradually approximate real investment decisions while controlling complexity and uncertainty exposure",
+  "Deliverables": "Library of decision scenarios tagged by complexity dimensions (number of assets, time horizon, risk ambiguity, jargon density, consequence salience), plus progression rules that choose next scenarios based on user performance and error types",
+  "Strengths": "Good at turning abstract concepts into stepwise decision practice, tuning difficulty to current competence, and building transfer from simplified exercises to realistic investing contexts",
+  "Watch-out": "Fails when scenario complexity metrics are miscalibrated, leading to jumps that are too hard or too easy; can overfit to scenario performance that does not generalize to real-world behavior",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_blueprint",
+    "model": "gpt-5.1"
+  }
+}

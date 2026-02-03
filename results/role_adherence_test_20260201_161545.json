@@ -1,0 +1,173 @@
+{
+  "test_name": "persona_role_adherence",
+  "timestamp": "2026-02-01T16:15:45.440288",
+  "config": {
+    "logs_path": "C:\\Users\\User\\OneDrive\\Programming\\Assembly\\benchmarks\\phase_1_system_validity\\..\\..\\meeting_logs.txt",
+    "use_llm": false,
+    "model_name": "heuristic"
+  },
+  "exchanges": [
+    {
+      "persona": "need identifier",
+      "phase": "understanding_investor_needs",
+      "score": 5,
+      "in_role": true,
+      "reasoning": "Positive indicators: 6, Negative: 0"
+    },
+    {
+      "persona": "goal analyzer",
+      "phase": "understanding_investor_needs",
+      "score": 4,
+      "in_role": true,
+      "reasoning": "Positive indicators: 2, Negative: 0"
+    },
+    {
+      "persona": "concern assessor",
+      "phase": "understanding_investor_needs",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 1, Negative: 0"
+    },
+    {
+      "persona": "need identifier",
+      "phase": "understanding_investor_needs",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 0, Negative: 0"
+    },
+    {
+      "persona": "need identifier",
+      "phase": "understanding_investor_needs",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 0, Negative: 0"
+    },
+    {
+      "persona": "concern assessor",
+      "phase": "understanding_investor_needs",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 0, Negative: 0"
+    },
+    {
+      "persona": "cognitive load evaluator",
+      "phase": "information_overload_analysis",
+      "score": 5,
+      "in_role": true,
+      "reasoning": "Positive indicators: 3, Negative: 0"
+    },
+    {
+      "persona": "information simplifier",
+      "phase": "information_overload_analysis",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 1, Negative: 0"
+    },
+    {
+      "persona": "cognitive load evaluator",
+      "phase": "information_overload_analysis",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 1, Negative: 0"
+    },
+    {
+      "persona": "cognitive load evaluator",
+      "phase": "information_overload_analysis",
+      "score": 5,
+      "in_role": true,
+      "reasoning": "Positive indicators: 3, Negative: 0"
+    },
+    {
+      "persona": "cognitive load evaluator",
+      "phase": "information_overload_analysis",
+      "score": 4,
+      "in_role": true,
+      "reasoning": "Positive indicators: 2, Negative: 0"
+    },
+    {
+      "persona": "content sequencer",
+      "phase": "educational_content_design",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "content personalizer",
+      "phase": "educational_content_design",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "engagement tracker",
+      "phase": "educational_content_design",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "content sequencer",
+      "phase": "educational_content_design",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "content sequencer",
+      "phase": "educational_content_design",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "content sequencer",
+      "phase": "educational_content_design",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "risk profile evaluator",
+      "phase": "solution_finalization",
+      "score": 4,
+      "in_role": true,
+      "reasoning": "Positive indicators: 2, Negative: 0"
+    },
+    {
+      "persona": "progress milestone setter",
+      "phase": "solution_finalization",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "investment strategy recommender",
+      "phase": "solution_finalization",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "risk profile evaluator",
+      "phase": "solution_finalization",
+      "score": 4,
+      "in_role": true,
+      "reasoning": "Positive indicators: 2, Negative: 0"
+    },
+    {
+      "persona": "investment strategy recommender",
+      "phase": "solution_finalization",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    }
+  ],
+  "summary": {
+    "total_exchanges": 36,
+    "in_role": 16,
+    "out_of_role": 6,
+    "average_score": 3.4545454545454546,
+    "adherence_rate_percent": 72.72727272727273,
+    "gate_passed": false
+  }
+}

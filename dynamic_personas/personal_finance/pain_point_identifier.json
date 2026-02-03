@@ -1,0 +1,14 @@
+{
+  "Name": "Pain Point Identifier",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify and prioritize specific challenges faced by users in investment decision-making.",
+  "Deliverables": "hard constraints + exception list",
+  "Strengths": "Effective in categorizing user pain points based on common investment barriers.",
+  "Watch-out": "Inability to adapt if new, unforeseen pain points emerge.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

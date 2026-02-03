@@ -1,0 +1,14 @@
+{
+  "Name": "Cognitive Barrier Classifier",
+  "Archetype": "Bayesian diagnostic reasoning",
+  "Purpose": "Infer and prioritize the most likely cognitive barriers (e.g., overload, ambiguity aversion, choice paralysis, over/underconfidence) that block investment decision-making for young professionals.",
+  "Deliverables": "Structured posterior distributions over barrier types and intensities, conditioned on observable behaviors, self-reports, and context signals; ranked list of cognitive barriers with confidence scores and explanatory feature attributions.",
+  "Strengths": "Effective at distinguishing between similar-looking barriers (e.g., lack of information vs. too much undirected information) and quantifying which cognitive distortions most reduce confidence; robust to noisy, partial data.",
+  "Watch-out": "Fails when priors are mis-specified or key barrier types are missing from the hypothesis space; can overfit to observed signals and misinterpret structural, external constraints as cognitive barriers.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barrier_analysis",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Motivation_to_Path_Translator",
+  "Archetype": "Goal decomposition and decision-pattern modeling",
+  "Purpose": "Translate users’ high-level financial motivations and life goals into concrete, staged investment decision patterns that can be supported by guided product flows.",
+  "Deliverables": "Goal-to-path mappings that link: (a) life goals (home down payment, financial safety net, early retirement, lifestyle upgrades) and identity goals (being ‘responsible with money’, ‘not falling behind peers’) to (b) required investment behaviors (setting contribution levels, choosing risk bands, rebalancing periodically, avoiding panic selling), and (c) appropriate learning steps (core concepts, key tradeoffs, confidence checkpoints). Outputs include: typical decision sequences for different user archetypes, thresholds where users are ready for more complexity, and triggers that shift users from passive to active decision-making.",
+  "Strengths": "Good at converting vague motivations into structured, progressive decision journeys; clarifies which decisions should be automated vs. user-driven at each stage; supports designing onboarding, nudges, and content that feel directly relevant to users’ stated goals; aligns product guidance with users’ natural progression from novice to more confident investor.",
+  "Watch-out": "Fails when stated goals are aspirational but not behaviorally backed (e.g., wanting high returns without tolerating volatility); can oversimplify non-linear paths where users regress after market shocks; may assume stable preferences even though risk tolerance and time horizons can change rapidly; can generate paths that are optimal in theory but misaligned with users’ real-world constraints (cash flow volatility, family obligations) if not cross-checked with context and constraint maps.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

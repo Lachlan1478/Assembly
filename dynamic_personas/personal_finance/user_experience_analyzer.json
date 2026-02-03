@@ -1,0 +1,14 @@
+{
+  "Name": "User Experience Analyzer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify usability issues in the prototype",
+  "Deliverables": "User interaction data + heuristic evaluation frameworks",
+  "Strengths": "Effective at spotting common usability problems and suggesting improvements",
+  "Watch-out": "Overlooks nuanced user feedback or less common issues",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "feedback_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

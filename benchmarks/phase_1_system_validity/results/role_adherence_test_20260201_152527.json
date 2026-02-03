@@ -1,0 +1,18 @@
+{
+  "test_name": "persona_role_adherence",
+  "timestamp": "2026-02-01T15:25:27.659615",
+  "config": {
+    "logs_path": "C:\\Users\\User\\OneDrive\\Programming\\Assembly\\benchmarks\\phase_1_system_validity\\..\\..\\meeting_logs.txt",
+    "use_llm": false,
+    "model_name": "heuristic"
+  },
+  "exchanges": [],
+  "summary": {
+    "total_exchanges": 36,
+    "in_role": 0,
+    "out_of_role": 0,
+    "average_score": 0,
+    "adherence_rate_percent": 0,
+    "gate_passed": false
+  }
+}

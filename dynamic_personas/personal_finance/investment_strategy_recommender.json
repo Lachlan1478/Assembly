@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Strategy Recommender",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Generate personalized investment strategies based on user inputs and market trends",
+  "Deliverables": "dynamic strategy frameworks tailored to user preferences",
+  "Strengths": "Utilizes updated data to provide relevant recommendations",
+  "Watch-out": "Inaccurate or outdated market data leading to poor strategy suggestions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_finalization",
+    "model": "gpt-4o-mini"
+  }
+}

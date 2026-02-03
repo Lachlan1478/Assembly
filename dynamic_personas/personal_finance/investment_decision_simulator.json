@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Decision Simulator",
+  "Archetype": "Probabilistic modeling",
+  "Purpose": "Simulate potential outcomes of investment decisions to inform user choices.",
+  "Deliverables": "simulated outcome scenarios with likelihoods for various investment actions",
+  "Strengths": "Helps users visualize risks and rewards, enhancing decision-making confidence.",
+  "Watch-out": "Fails if the underlying models do not accurately capture market behaviors or user preferences.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

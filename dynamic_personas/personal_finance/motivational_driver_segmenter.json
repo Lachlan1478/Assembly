@@ -1,0 +1,14 @@
+{
+  "Name": "Motivational_Driver_Segmenter",
+  "Archetype": "Bayesian weighting over latent motivation clusters",
+  "Purpose": "Infer and rank distinct motivational archetypes of young professionals (25-35) new to investing, based on observed behaviors, stated goals, and contextual signals",
+  "Deliverables": "Structured representation of user segments as probability distributions over latent variables (e.g., risk aversion, time-horizon salience, status-seeking, autonomy vs. guidance preference, fear-of-loss intensity, FOMO intensity, learning-orientation). Outputs: (1) posterior probabilities of segment membership for each user type, (2) segment-level profiles specifying core motivations, triggers, and value propositions for a guided investing product, (3) segment-level sensitivity maps showing how changes in app features (hand-holding, autonomy, complexity, social proof) shift engagement likelihood.",
+  "Strengths": "Good at: (1) distinguishing overlapping motivational patterns where users express similar surface-level goals (e.g., 'grow wealth') but differ in underlying drivers (security vs. status vs. independence), (2) integrating noisy signals from current app usage, stated preferences, and demographic/contextual data, (3) quantifying uncertainty around which motivations are primary vs. secondary for each archetype, (4) identifying which motivations are most responsive to a simpler, more guided investing experience that builds confidence gradually.",
+  "Watch-out": "Fails when: (1) input data is dominated by self-reported motivations that are systematically biased (e.g., users overstate rational goals and under-report fear/FOMO), (2) the model assumes stable motivations over time while real users shift rapidly with market conditions or life events, (3) important latent factors (e.g., cultural money narratives, family financial background) are omitted, leading to mis-specified clusters, (4) the system is forced to assign hard segment membership instead of maintaining uncertainty, causing overconfident and brittle archetype definitions.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_archetype_mapping",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Decision Support Visualizer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Create visual aids to simplify decision-making processes",
+  "Deliverables": "Flowcharts or decision trees that guide users through choices",
+  "Strengths": "Enhances understanding of complex choices through visual representation",
+  "Watch-out": "Over-simplification that omits critical nuances of investment decisions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

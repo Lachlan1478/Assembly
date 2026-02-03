@@ -1,0 +1,14 @@
+{
+  "Name": "Guided_Experience_Prototype_Selector",
+  "Archetype": "Design pattern evaluation via decision tree analysis",
+  "Purpose": "Select the simplest interaction pattern that still delivers a genuinely guided, non-overwhelming investing experience in the MVP",
+  "Deliverables": "A decision tree of candidate guidance patterns (e.g., wizard-style flow, scenario-based walkthrough, recommended starter portfolio with explanations) with evaluation of each branch on: cognitive steps required, ambiguity at each node, and expected user effort",
+  "Strengths": "Good at comparing alternative UX patterns by how clearly they structure decisions, how many choices they expose at once, and how directly they teach core investing concepts while leading to an action",
+  "Watch-out": "Fails when it ignores emotional or aesthetic factors that affect perceived overwhelm, or when it optimizes for structural simplicity at the expense of necessary context, causing confusion or mistrust",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_scope_and_decision",
+    "model": "gpt-5.1"
+  }
+}

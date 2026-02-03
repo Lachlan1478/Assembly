@@ -1,0 +1,14 @@
+{
+  "Name": "Learning Curve Evaluator",
+  "Archetype": "Statistical regression analysis",
+  "Purpose": "Analyze user progression in investment knowledge acquisition",
+  "Deliverables": "Trend analysis of knowledge improvement over time",
+  "Strengths": "Identifies patterns in learning speed and gaps",
+  "Watch-out": "Assumes linear progression where it may not exist",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "knowledge_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

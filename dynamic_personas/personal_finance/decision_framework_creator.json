@@ -1,0 +1,14 @@
+{
+  "Name": "Decision Framework Creator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Provide a framework for evaluating investment options",
+  "Deliverables": "Criteria for making informed investment decisions based on user profiles",
+  "Strengths": "Promotes clear decision-making by assessing trade-offs",
+  "Watch-out": "Over-simplification of complex scenarios resulting in poor decisions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_paths",
+    "model": "gpt-4o-mini"
+  }
+}

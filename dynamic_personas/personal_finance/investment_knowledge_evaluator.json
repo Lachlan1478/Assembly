@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Knowledge Evaluator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify knowledge gaps in investment understanding",
+  "Deliverables": "Checklist of essential investment concepts and user understanding levels",
+  "Strengths": "Effective at pinpointing specific areas of confusion or lack of knowledge",
+  "Watch-out": "May miss nuanced questions or evolving investment trends",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

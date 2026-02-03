@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence & Knowledge Calibrator",
+  "Archetype": "Utility modeling with calibration curves",
+  "Purpose": "Model the relationship between objective investing knowledge, perceived understanding, and decision confidence to identify under- and over-confidence zones in the target users",
+  "Deliverables": "Calibration curves and utility functions mapping (a) factual knowledge levels, (b) self-assessed confidence, and (c) decision quality proxies (e.g., diversification, time horizon alignment); identifies ranges where guidance should be more prescriptive, more exploratory, or more educational",
+  "Strengths": "Good at distinguishing users who need guardrails from those ready for autonomy, and at defining knowledge increments and feedback mechanisms that raise confidence without encouraging reckless behavior",
+  "Watch-out": "Fails when proxies for decision quality are poorly chosen or when self-reported confidence is systematically biased; can misguide product decisions if it assumes static preferences rather than learning and adaptation over time",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

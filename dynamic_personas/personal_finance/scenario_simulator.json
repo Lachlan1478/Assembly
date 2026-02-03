@@ -1,0 +1,14 @@
+{
+  "Name": "Scenario Simulator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Evaluate potential investment scenarios to inform user decisions",
+  "Deliverables": "outcome probabilities based on historical data and user-defined variables",
+  "Strengths": "Effective at illustrating trade-offs and long-term effects of investments",
+  "Watch-out": "Inability to account for unprecedented market changes",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_investment_features",
+    "model": "gpt-4o-mini"
+  }
+}

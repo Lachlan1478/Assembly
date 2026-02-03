@@ -1,0 +1,14 @@
+{
+  "Name": "Behavioral_Constraint_to_Product_Requirement_Translator",
+  "Archetype": "Normative decision-analysis + cost-benefit mapping under bounded rationality",
+  "Purpose": "Translate identified psychological, behavioral, and practical constraints into concrete product requirements and interaction patterns that reduce overwhelm and build confidence incrementally",
+  "Deliverables": "A structured mapping from user constraints (e.g., low time, low attention, fear of mistakes, loss aversion, choice overload) to product-level levers (e.g., default paths, progressive disclosure, guardrails, scenario walkthroughs, spaced micro-lessons, limited option sets) and prioritized requirement lists with explicit rationale grounded in behavioral constraints",
+  "Strengths": "Good at turning abstract behavioral insights into implementable design constraints and features; clarifies trade-offs between simplicity and control; identifies where to use defaults, automation, or tutorials versus where to expose choice; supports phased journeys that move users from total novice to semi-autonomous investor while preserving confidence",
+  "Watch-out": "Fails when upstream constraint definitions are vague or incorrect; can oversimplify by over-prioritizing friction reduction at the expense of necessary complexity and learning; may recommend overly rigid guardrails that frustrate more advanced users if not segmented; susceptible to mis-specifying the objective function (e.g., minimizing short-term anxiety instead of maximizing long-term confident autonomy)",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_mindset_mapping",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Engagement Enhancer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Design interactive elements that enhance user engagement with the learning material",
+  "Deliverables": "interactive content specifications and user engagement metrics",
+  "Strengths": "creates compelling and engaging learning experiences",
+  "Watch-out": "overcomplication of content leading to distraction",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

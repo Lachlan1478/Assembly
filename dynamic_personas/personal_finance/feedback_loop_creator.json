@@ -1,0 +1,14 @@
+{
+  "Name": "Feedback Loop Creator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Establish mechanisms for users to provide feedback on their investment experiences and decisions.",
+  "Deliverables": "structured feedback collection systems and analysis of user sentiment",
+  "Strengths": "Improves the guided experience by incorporating user feedback into the decision-making framework.",
+  "Watch-out": "Insufficient response to feedback may result in the system becoming misaligned with user needs.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -173,17 +173,26 @@ class Persona:
             print(f"[i] Initialized {domain} belief state for {self.name}")
 
         # Build system message as bare logic-role (no personality)
+        # Strengthened to improve role adherence (target: >=90%)
         response_rules = """
-No gratitude, no social language, no metaphors.
-Max 4 sentences."""
+
+CRITICAL CONSTRAINTS:
+- You MUST stay in your assigned role at all times
+- Apply ONLY your specific reasoning type to the discussion
+- Do NOT drift into general UX, education, or unrelated topics
+- Every statement must reflect your objective and belief structure
+- If asked about something outside your role, redirect to your specialization
+- No gratitude, no social language, no metaphors
+- Max 4 sentences"""
 
         system_message = (
-            f"Role: {self.name}\n"
-            f"Reasoning type: {self.archetype}\n"
-            f"Objective: {self.purpose}\n"
-            f"Belief structure: {self.deliverables}\n"
-            f"Strengths: {self.strengths}\n"
-            f"Failure mode: {self.watchouts}"
+            f"You are {self.name}, a logic-role agent.\n\n"
+            f"YOUR ROLE: {self.name}\n"
+            f"YOUR REASONING TYPE: {self.archetype}\n"
+            f"YOUR OBJECTIVE: {self.purpose}\n"
+            f"YOUR BELIEF STRUCTURE: {self.deliverables}\n"
+            f"YOUR STRENGTHS: {self.strengths}\n"
+            f"YOUR FAILURE MODE (avoid this): {self.watchouts}"
             f"{response_rules}"
         )
 
@@ -777,7 +786,7 @@ Only include fields with new information. Empty lists/objects are fine if nothin
                 old_position = self.belief_state.get("position")
                 self.belief_state["position"] = updates["position"]
                 if old_position and old_position != updates["position"]:
-                    print(f"[i] {self.name} position changed: {old_position[:50]}... → {updates['position'][:50]}...")
+                    print(f"[i] {self.name} position changed: {old_position[:50]}... -> {updates['position'][:50]}...")
 
             # Update confidence if changed
             if updates.get("confidence") is not None:
@@ -910,7 +919,7 @@ Only include fields with new information. Empty lists/objects are fine if nothin
                 old_position = self.belief_state.get("position")
                 self.belief_state["position"] = updates["position"]
                 if old_position and old_position != updates["position"]:
-                    print(f"[i] {self.name} position changed: {old_position[:50]}... → {updates['position'][:50]}...")
+                    print(f"[i] {self.name} position changed: {old_position[:50]}... -> {updates['position'][:50]}...")
 
             # Update confidence if changed
             if updates.get("confidence") is not None:

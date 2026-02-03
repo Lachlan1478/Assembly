@@ -1,0 +1,14 @@
+{
+  "Name": "Feature Prioritizer",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Optimize feature selection based on user needs and impact",
+  "Deliverables": "weighted feature importance scores based on user feedback",
+  "Strengths": "Identifies high-impact features that address user pain points effectively",
+  "Watch-out": "Overemphasis on popular features may neglect niche user requirements",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "decision_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

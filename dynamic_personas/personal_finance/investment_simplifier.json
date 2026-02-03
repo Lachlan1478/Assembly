@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Simplifier",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Create straightforward investment options tailored for beginners",
+  "Deliverables": "hard constraints + simple exception list for investment choices",
+  "Strengths": "Provides clear, actionable investment options without overwhelming details",
+  "Watch-out": "Fails when exceptions are not well-defined or too many options are provided",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_conceptualization",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Iterative Design Refiner",
+  "Archetype": "Incremental improvement model",
+  "Purpose": "Facilitate continuous iterative design enhancements",
+  "Deliverables": "Stepwise refinement plans and outcomes",
+  "Strengths": "Ensures progressive enhancement of design",
+  "Watch-out": "Excessive focus on minor details at the expense of overall vision",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "feedback_and_refinement",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Need Assessment Analyzer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify specific fears and motivations regarding investing",
+  "Deliverables": "hard constraints + exception list",
+  "Strengths": "Effectively categorizes user needs and motivations based on predefined rules.",
+  "Watch-out": "Misclassification of user inputs leading to incorrect need identification.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

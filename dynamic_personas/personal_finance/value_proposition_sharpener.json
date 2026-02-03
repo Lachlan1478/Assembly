@@ -1,0 +1,14 @@
+{
+  "Name": "Value Proposition Sharpener",
+  "Archetype": "Cost-benefit and differentiation analysis",
+  "Purpose": "Define a precise, defensible value proposition and positioning for the startup that directly addresses analysis paralysis and distinguishes the solution from existing investment apps",
+  "Deliverables": "A structured comparison of user-perceived costs and benefits across alternatives (do nothing, generic broker app, robo-advisor, education-only tools), a clear core promise statement, and a minimal feature set tightly coupled to that promise",
+  "Strengths": "Good at eliminating feature creep by tying each proposed feature to a specific user benefit related to confidence-building or simplicity; clarifies why this product is meaningfully different (e.g., ‘guided first-steps investing coach’ vs ‘another brokerage app’)",
+  "Watch-out": "May discard features that have long-term strategic value but weak immediate cost-benefit justification; can push toward a narrow proposition that underestimates the importance of emotional or aspirational appeal beyond rational trade-offs",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_synthesis",
+    "model": "gpt-5.1"
+  }
+}

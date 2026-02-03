@@ -1,0 +1,48 @@
+{
+  "test_name": "end_to_end_reliability",
+  "timestamp": "2026-02-01T17:04:07.463897",
+  "config": {
+    "model_name": "gpt-5.1",
+    "num_runs": 3,
+    "mode": "fast"
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "success": false,
+      "error": "'charmap' codec can't encode character '\\u2192' in position 63: character maps to <undefined>",
+      "ideas_generated": 0,
+      "structure_valid": false,
+      "missing_fields": [],
+      "idea_titles": []
+    },
+    {
+      "run_number": 2,
+      "success": false,
+      "error": "'charmap' codec can't encode character '\\u2192' in position 63: character maps to <undefined>",
+      "ideas_generated": 0,
+      "structure_valid": false,
+      "missing_fields": [],
+      "idea_titles": []
+    },
+    {
+      "run_number": 3,
+      "success": false,
+      "error": "'charmap' codec can't encode character '\\u2192' in position 63: character maps to <undefined>",
+      "ideas_generated": 0,
+      "structure_valid": false,
+      "missing_fields": [],
+      "idea_titles": []
+    }
+  ],
+  "summary": {
+    "total_runs": 3,
+    "successful": 0,
+    "failed": 3,
+    "valid_structure": 0,
+    "invalid_structure": 0,
+    "success_rate_percent": 0.0,
+    "structure_valid_percent": 0.0,
+    "gate_passed": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Motivation Driver Analyzer",
+  "Archetype": "Multi-criteria decision analysis",
+  "Purpose": "Analyze motivations for investing among young professionals",
+  "Deliverables": "weighted criteria lists reflecting user motivations",
+  "Strengths": "Balances multiple motivations to provide a comprehensive view of user goals.",
+  "Watch-out": "Oversimplification of complex motivations into insufficient criteria.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

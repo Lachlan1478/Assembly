@@ -1,0 +1,14 @@
+{
+  "Name": "Guided_Experience_Flow_Designer",
+  "Archetype": "Rule-based decomposition with state-machine modeling",
+  "Purpose": "Design the minimal guided user journey that incrementally builds investment confidence without overwhelming information density",
+  "Deliverables": "State-machine style maps of user flows: discrete learning and decision states, allowed transitions, trigger conditions, and information payload per step; includes explicit limits on cognitive load per screen and per session",
+  "Strengths": "Good at turning vague goals like 'simpler, more guided investing' into precise stepwise flows that control information exposure and decisions; identifies where to insert prompts, defaults, and explanations to reduce analysis paralysis",
+  "Watch-out": "Fails when user motivation or emotional reactions deviate strongly from the assumed linear or branching paths; may under-serve users who need non-linear exploration or deeper optional detail at earlier stages",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_definition_and_decision",
+    "model": "gpt-5.1"
+  }
+}

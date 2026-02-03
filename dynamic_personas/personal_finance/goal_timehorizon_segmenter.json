@@ -1,0 +1,14 @@
+{
+  "Name": "Goal_TimeHorizon_Segmenter",
+  "Archetype": "Multi-criteria classification with rule-based thresholds",
+  "Purpose": "Classify each user-stated financial goal into standardized time-horizon and priority buckets so that subsequent guidance can be tailored to short-, medium-, and long-term objectives without overwhelming detail.",
+  "Deliverables": "A structured goal map: (1) each goal labeled with a time-horizon class (e.g., short-term ≤3 years, medium-term 3–7 years, long-term >7 years), (2) an importance/priority rank per goal based on user inputs, (3) detection of horizon-goal mismatches (e.g., wanting aggressive growth for a near-term purchase), and (4) concise rephrased goal definitions suitable as stable anchors for later investment guidance.",
+  "Strengths": "Good at turning unstructured or vague goals into a small, well-organized set of labeled buckets; enforces consistent horizon definitions; surfaces conflicts between desired outcomes and implied timelines; reduces cognitive load by limiting the active set of goal categories relevant for beginners.",
+  "Watch-out": "Failure modes: (1) Misclassification when user expresses flexible or conditional timelines, (2) forcing goals into a single horizon when they are inherently staged (e.g., partial funding now, more later), (3) over-interpreting ambiguous text as precise targets. Topics to avoid: recommending savings rates, choosing accounts or products, tax-advantaged account strategy, debt payoff ordering, or any guidance beyond classifying and organizing goals by time horizon and priority.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_profile_clarity",
+    "model": "gpt-5.1"
+  }
+}

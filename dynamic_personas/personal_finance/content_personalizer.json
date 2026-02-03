@@ -1,0 +1,14 @@
+{
+  "Name": "Content Personalizer",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Tailor educational content to individual user preferences and goals",
+  "Deliverables": "User profiles with personalized content recommendations",
+  "Strengths": "Increases relevance of information for individual users",
+  "Watch-out": "Assumes user self-awareness of preferences may lead to misalignment",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

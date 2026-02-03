@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Assessor",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Evaluate the risk-return trade-offs for investment options",
+  "Deliverables": "risk profiles + expected returns",
+  "Strengths": "Helps users make informed decisions based on risk tolerance",
+  "Watch-out": "Misjudging risk appetite leading to inappropriate investment choices",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

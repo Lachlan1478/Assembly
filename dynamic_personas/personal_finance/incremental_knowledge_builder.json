@@ -1,0 +1,14 @@
+{
+  "Name": "Incremental Knowledge Builder",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Gradually increase user knowledge through tailored content",
+  "Deliverables": "Personalized learning modules that adapt based on user progress",
+  "Strengths": "Facilitates a structured approach to learning about investing",
+  "Watch-out": "Inability to adapt to varied learning paces or styles of users",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

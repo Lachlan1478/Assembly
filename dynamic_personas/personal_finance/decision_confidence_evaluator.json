@@ -1,0 +1,14 @@
+{
+  "Name": "Decision Confidence Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Measure and enhance confidence in investment decisions",
+  "Deliverables": "metrics on user confidence vs. decision outcomes",
+  "Strengths": "Identifies correlations between information received and decision-making confidence.",
+  "Watch-out": "May provide misleading signals if external market factors are overlooked.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_exploration",
+    "model": "gpt-4o-mini"
+  }
+}

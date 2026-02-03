@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Strategy Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Assess and recommend optimal investment strategies based on user profiles.",
+  "Deliverables": "matrix of potential returns vs. risks for various strategies",
+  "Strengths": "Provides clear recommendations with quantified risks and returns.",
+  "Watch-out": "Fails if user data is incomplete or misrepresented, leading to inappropriate recommendations.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

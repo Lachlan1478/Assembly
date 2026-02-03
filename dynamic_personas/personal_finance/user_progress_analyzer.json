@@ -1,0 +1,14 @@
+{
+  "Name": "User Progress Analyzer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Evaluate user progress and adapt guidance based on learning milestones.",
+  "Deliverables": "progress metrics and customized suggestions for the next steps",
+  "Strengths": "Effectively tailors advice to user learning pace, ensuring gradual knowledge building.",
+  "Watch-out": "Breaks if the learning milestones are incorrectly defined or if user engagement data is missing.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

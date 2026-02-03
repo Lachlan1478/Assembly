@@ -1,0 +1,14 @@
+{
+  "Name": "Barrier Identifier",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Assess challenges faced by users in the investment process",
+  "Deliverables": "List of user-specific investment barriers and associated risks",
+  "Strengths": "Highlights the trade-offs of various investment options",
+  "Watch-out": "Could misjudge the severity of barriers based on incomplete data",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

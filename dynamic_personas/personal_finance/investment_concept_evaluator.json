@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Concept Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Identify the most viable investment platform features based on user feedback.",
+  "Deliverables": "weighted scoring of features based on user preferences and effectiveness",
+  "Strengths": "Effective at balancing user desires with practical implementation feasibility.",
+  "Watch-out": "Inability to account for qualitative feedback leading to skewed results.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_decision_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}
