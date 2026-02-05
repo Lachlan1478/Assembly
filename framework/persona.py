@@ -216,6 +216,14 @@ CRITICAL CONSTRAINTS:
             scenario_text = "SCENARIOS:\n" + json.dumps(active_scenarios, indent=2)
             new_user_message = scenario_text + "\n\n" + new_user_message
 
+        # Inject gap nudge if present (nudge, not rule - persona can ignore it)
+        gap_nudge = shared_context.get("active_gap_nudge")
+        if gap_nudge:
+            nudge_text = f"\n[Optional consideration: {gap_nudge}]\n"
+            new_user_message = nudge_text + new_user_message
+            # Clear after use so it doesn't persist
+            shared_context["active_gap_nudge"] = None
+
         # Build messages array: system + user message (no native threading - full context each turn)
         messages = [{"role": "system", "content": system_message}, {"role": "user", "content": new_user_message}]
 

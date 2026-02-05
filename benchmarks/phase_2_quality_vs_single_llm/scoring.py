@@ -3,7 +3,7 @@
 
 import json
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Dict
 
 
 @dataclass
@@ -245,6 +245,145 @@ def check_phase2_gate(results: dict) -> dict:
     }
 
 
+def compare_n_scores(scores: Dict[str, IdeaScore]) -> dict:
+    """
+    Compare N idea scores (supports 2-way, 3-way, or more comparisons).
+
+    Args:
+        scores: Dictionary mapping labels (e.g., "A", "B", "C") to IdeaScore objects
+
+    Returns:
+        Comparison results dictionary with winner, rankings, and per-criteria breakdown
+    """
+    if not scores:
+        return {"error": "No scores provided"}
+
+    labels = list(scores.keys())
+    totals = {label: score.total for label, score in scores.items()}
+
+    # Find winner(s)
+    max_total = max(totals.values())
+    winners = [label for label, total in totals.items() if total == max_total]
+
+    # Rank all entries
+    ranked = sorted(totals.items(), key=lambda x: x[1], reverse=True)
+    rankings = {label: rank + 1 for rank, (label, _) in enumerate(ranked)}
+
+    # Per-criteria comparison
+    criteria = ["novelty", "feasibility", "specificity", "commercial_clarity"]
+    criteria_comparison = {}
+    for criterion in criteria:
+        criterion_scores = {label: getattr(score, criterion) for label, score in scores.items()}
+        max_criterion = max(criterion_scores.values())
+        criterion_winners = [label for label, val in criterion_scores.items() if val == max_criterion]
+        criteria_comparison[criterion] = {
+            "scores": criterion_scores,
+            "winner": criterion_winners[0] if len(criterion_winners) == 1 else "Tie",
+            "winners": criterion_winners,
+        }
+
+    return {
+        "totals": totals,
+        "winner": winners[0] if len(winners) == 1 else "Tie",
+        "winners": winners,
+        "rankings": rankings,
+        "criteria_comparison": criteria_comparison,
+        "score_details": {label: score.to_dict() for label, score in scores.items()},
+    }
+
+
+def aggregate_n_way_results(comparisons: list[dict], approach_mapping: Dict[str, str] = None) -> dict:
+    """
+    Aggregate multiple N-way comparison results.
+
+    Args:
+        comparisons: List of comparison result dictionaries from compare_n_scores
+        approach_mapping: Optional mapping from labels to approach names
+                         (e.g., {"A": "assembly", "B": "iterative", "C": "single_shot"})
+
+    Returns:
+        Aggregated results with win rates per approach
+    """
+    if not comparisons:
+        return {"error": "No comparisons provided"}
+
+    # Collect all labels across comparisons
+    all_labels = set()
+    for comp in comparisons:
+        all_labels.update(comp.get("totals", {}).keys())
+
+    # Initialize counters
+    win_counts = {label: 0 for label in all_labels}
+    total_scores = {label: 0 for label in all_labels}
+    appearance_counts = {label: 0 for label in all_labels}
+
+    # Aggregate
+    for comp in comparisons:
+        totals = comp.get("totals", {})
+        winners = comp.get("winners", [])
+
+        for label, total in totals.items():
+            total_scores[label] += total
+            appearance_counts[label] += 1
+
+        for winner in winners:
+            win_counts[winner] += 1 / len(winners)  # Split wins for ties
+
+    # Calculate rates and averages
+    results = {
+        "total_comparisons": len(comparisons),
+        "by_label": {},
+        "by_approach": {},
+    }
+
+    for label in all_labels:
+        count = appearance_counts[label]
+        if count > 0:
+            results["by_label"][label] = {
+                "wins": win_counts[label],
+                "win_rate": win_counts[label] / count * 100,
+                "avg_score": total_scores[label] / count,
+                "appearances": count,
+            }
+
+    # If approach mapping provided, also aggregate by approach name
+    if approach_mapping:
+        approach_wins = {}
+        approach_scores = {}
+        approach_counts = {}
+
+        for comp in comparisons:
+            # Get this comparison's mapping (may vary if anonymized)
+            comp_mapping = comp.get("mapping", approach_mapping)
+            totals = comp.get("totals", {})
+            winners = comp.get("winners", [])
+
+            for label, approach in comp_mapping.items():
+                if approach not in approach_wins:
+                    approach_wins[approach] = 0
+                    approach_scores[approach] = 0
+                    approach_counts[approach] = 0
+
+                if label in totals:
+                    approach_scores[approach] += totals[label]
+                    approach_counts[approach] += 1
+
+                if label in winners:
+                    approach_wins[approach] += 1 / len(winners)
+
+        for approach in approach_wins:
+            count = approach_counts[approach]
+            if count > 0:
+                results["by_approach"][approach] = {
+                    "wins": approach_wins[approach],
+                    "win_rate": approach_wins[approach] / count * 100,
+                    "avg_score": approach_scores[approach] / count,
+                    "appearances": count,
+                }
+
+    return results
+
+
 def load_and_score_results(results_file: str) -> None:
     """
     Load comparison results and interactively score them.
@@ -321,13 +460,102 @@ def load_and_score_results(results_file: str) -> None:
     print(f"\nScored results saved to: {output_file}")
 
 
+def load_and_score_three_way_results(results_file: str) -> None:
+    """
+    Load 3-way comparison results and interactively score them.
+
+    Args:
+        results_file: Path to three_way_comparison results JSON file
+    """
+    with open(results_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    comparisons = data.get("comparisons", [])
+    scored_comparisons = []
+
+    for i, comparison in enumerate(comparisons):
+        print(f"\n{'='*60}")
+        print(f"COMPARISON {i+1}/{len(comparisons)}: {comparison.get('prompt_id', 'Unknown')}")
+        print(f"{'='*60}")
+
+        # Show all three ideas (anonymized as A, B, C)
+        for label in ["A", "B", "C"]:
+            idea_key = f"idea_{label.lower()}"
+            print(f"\n--- IDEA {label} ---")
+            idea = comparison.get(idea_key)
+            if idea:
+                print(json.dumps(idea, indent=2))
+            else:
+                print("(No idea generated)")
+
+        # Score all three
+        scores = {}
+        for label in ["A", "B", "C"]:
+            if comparison.get(f"idea_{label.lower()}"):
+                print(f"\n--- SCORE IDEA {label} ---")
+                scores[label] = score_idea_interactive()
+
+        # Compare
+        if len(scores) >= 2:
+            result = compare_n_scores(scores)
+            result["prompt_id"] = comparison.get("prompt_id")
+            result["mapping"] = comparison.get("mapping", {})
+
+            scored_comparisons.append(result)
+
+            print(f"\nWinner: {result['winner']}")
+            print(f"Rankings: {result['rankings']}")
+            print(f"Totals: {result['totals']}")
+
+    # Aggregate and show final results
+    if scored_comparisons:
+        # Get approach mapping from first comparison
+        sample_mapping = scored_comparisons[0].get("mapping", {})
+        aggregated = aggregate_n_way_results(scored_comparisons, sample_mapping)
+
+        print(f"\n{'='*60}")
+        print("FINAL 3-WAY RESULTS")
+        print(f"{'='*60}")
+
+        print("\nBy Approach:")
+        for approach, stats in aggregated.get("by_approach", {}).items():
+            print(f"  {approach}:")
+            print(f"    Wins: {stats['wins']:.1f}")
+            print(f"    Win rate: {stats['win_rate']:.1f}%")
+            print(f"    Avg score: {stats['avg_score']:.2f}")
+
+        # Save scored results
+        output_file = results_file.replace(".json", "_scored.json")
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "comparisons": scored_comparisons,
+                "aggregated": aggregated,
+            }, f, indent=2)
+        print(f"\nScored results saved to: {output_file}")
+    else:
+        print("\nNo valid comparisons to aggregate.")
+
+
 if __name__ == "__main__":
     import sys
+    import argparse
 
-    if len(sys.argv) > 1:
-        # Score existing results file
-        load_and_score_results(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Score benchmark comparison results")
+    parser.add_argument("results_file", nargs="?", help="Path to results JSON file")
+    parser.add_argument(
+        "--mode",
+        choices=["two_way", "three_way"],
+        default="two_way",
+        help="Scoring mode: two_way or three_way (default: two_way)"
+    )
+    args = parser.parse_args()
+
+    if args.results_file:
+        if args.mode == "three_way":
+            load_and_score_three_way_results(args.results_file)
+        else:
+            load_and_score_results(args.results_file)
     else:
         # Print rubric for reference
         print_scoring_rubric()
-        print("\nUsage: python scoring.py <results_file.json>")
+        print("\nUsage: python scoring.py <results_file.json> [--mode two_way|three_way]")

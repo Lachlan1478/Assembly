@@ -20,6 +20,7 @@ from src.idea_generation.idea_tracker import (
     extract_idea_concept_async,
     detect_rejections_async
 )
+from src.idea_generation.gap_detection import compute_coverage_gaps
 
 
 async def meeting_facilitator(
@@ -331,6 +332,19 @@ async def meeting_facilitator(
                     print(f"[i] Fast mode: Skipping summary updates")
 
             turn_count += 1
+
+            # Every 4 turns, compute and inject gap nudge (nudge, not rule)
+            if turn_count > 0 and turn_count % 4 == 0:
+                gap_nudge = compute_coverage_gaps(
+                    phase_exchanges=phase_exchanges,
+                    active_personas=active_personas,
+                    phase=phase,
+                    turn_count=turn_count
+                )
+                if gap_nudge:
+                    shared_context["active_gap_nudge"] = gap_nudge
+                    if not monitor:
+                        print(f"[i] Gap nudge computed: {gap_nudge[:80]}...")
 
             # Check if mediator should intervene
             if enable_mediator and mediator is not None:

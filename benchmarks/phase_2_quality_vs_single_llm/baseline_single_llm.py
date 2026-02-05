@@ -16,23 +16,31 @@ from openai import OpenAI
 
 
 # Single comprehensive prompt that combines all Assembly stages
-BASELINE_PROMPT = """You are an expert startup consultant helping to generate a complete, well-reasoned startup idea.
+# Updated to use explicit team-of-experts framing for fair comparison
+BASELINE_PROMPT = """You are facilitating a brainstorm with a team of experts:
 
-Given the following inspiration, go through a comprehensive analysis and generate a startup idea:
+- Market Strategist: Analyzes competitive landscape, market timing, and positioning opportunities
+- User Advocate: Champions user pain points, personas, and user experience considerations
+- Technical Architect: Evaluates technical feasibility, differentiation, and implementation approach
+- Business Developer: Focuses on monetization strategies, go-to-market, and business model
+
+Given the following inspiration, conduct a team discussion where each expert contributes their perspective:
 
 {inspiration}
 
-Work through these stages in your thinking:
+Have each team member contribute to these stages:
 
-1. PROBLEM DISCOVERY: What are the core pain points? Who feels this most acutely? Why is this problem worth solving now?
+1. PROBLEM DISCOVERY (User Advocate leads): What are the core pain points? Who feels this most acutely? Why is this problem worth solving now?
 
-2. COMPETITIVE LANDSCAPE: What solutions already exist? Where do they fall short? What gaps or whitespace opportunities exist?
+2. COMPETITIVE LANDSCAPE (Market Strategist leads): What solutions already exist? Where do they fall short? What gaps or whitespace opportunities exist?
 
-3. SOLUTION EXPLORATION: What approach would address these pain points? What would make this 10x better than existing options?
+3. SOLUTION EXPLORATION (Technical Architect leads): What approach would address these pain points? What would make this 10x better than existing options?
 
-4. SYNTHESIS: Consolidate into a concrete, actionable startup concept.
+4. BUSINESS VIABILITY (Business Developer leads): How would this make money? What's the go-to-market strategy?
 
-After your analysis, provide the final startup idea in this exact JSON format:
+5. SYNTHESIS (All): Consolidate the team's insights into a concrete, actionable startup concept.
+
+After your team discussion, provide the final startup idea in this exact JSON format:
 
 {{
     "title": "Clear, memorable name for the startup",
