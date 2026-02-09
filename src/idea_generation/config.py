@@ -17,6 +17,7 @@ MODE_CONFIGS = {
         "model": "gpt-5.1",
         "enable_summary_updates": False,
         "enable_mediator": False,  # Disable mediator for speed
+        "enable_convergence_phase": False,  # Skip convergence for speed
         "description": "Quick test (1-2 min) - exploration -> decision only"
     },
     "medium": {
@@ -27,7 +28,8 @@ MODE_CONFIGS = {
         "model": "gpt-5.1",
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for quality discussions
-        "description": "Balanced (3-5 min) - first + middle + decision phases"
+        "enable_convergence_phase": True,  # Enable convergence for commercial refinement
+        "description": "Balanced (3-5 min) - first + middle + decision phases + convergence"
     },
     "standard": {
         "phase_selection": "all",
@@ -36,7 +38,8 @@ MODE_CONFIGS = {
         "model": "gpt-5.1",
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for quality discussions
-        "description": "Comprehensive (30-60 min) - full workflow"
+        "enable_convergence_phase": True,  # Enable convergence for commercial refinement
+        "description": "Comprehensive (30-60 min) - full workflow + convergence"
     },
     "deep": {
         "phase_selection": "all",
@@ -45,6 +48,7 @@ MODE_CONFIGS = {
         "model": "gpt-5.1",
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for deepest exploration
-        "description": "Deep exploration (60-90 min) - maximum depth"
+        "enable_convergence_phase": True,  # Enable convergence for commercial refinement
+        "description": "Deep exploration (60-90 min) - maximum depth + convergence"
     }
 }

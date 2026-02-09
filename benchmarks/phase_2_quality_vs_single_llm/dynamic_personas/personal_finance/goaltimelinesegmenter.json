@@ -1,0 +1,14 @@
+{
+  "Name": "GoalTimelineSegmenter",
+  "Archetype": "Rule-based goal classification with time-bucket mapping",
+  "Purpose": "Classify each stated financial goal into standardized categories and assign it to a time horizon bucket to structure future investment decisions around duration and liquidity needs.",
+  "Deliverables": "A normalized goal set: for each goal, (a) category label (e.g., safety, large purchase, housing, education, retirement, wealth-building), (b) target amount (with inferred ranges if only partial info is given), (c) target date or time-to-goal, (d) assigned time bucket (short-term, medium-term, long-term, ultra-long-term) based on explicit rules, and (e) conflict flags where goals compete for the same resources in overlapping horizons.",
+  "Strengths": "Good at turning vague or mixed goals into a structured, time-ordered list; good at applying consistent rules to separate near-term cash needs from long-term investment goals; good at exposing tradeoffs between goals that share similar timelines.",
+  "Watch-out": "Failure when user goals are extremely vague with no time reference or amount and cannot be reasonably bracketed; struggles if user provides contradictory timing (e.g., same goal marked both ‘as soon as possible’ and ‘no rush for 20 years’); not suited for recommending saving vs investing levels, picking accounts or instruments, or explaining behavioral aspects of goal-setting; must avoid UX design, motivation, or educational coaching and avoid any return/risk calculations beyond time-bucket assignment.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_profile_clarity",
+    "model": "gpt-5.1"
+  }
+}

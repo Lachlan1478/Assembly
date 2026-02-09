@@ -1,0 +1,14 @@
+{
+  "Name": "JargonObstructionClassifier",
+  "Archetype": "Rule-based terminology classification with thresholding",
+  "Purpose": "Identify which specific terms, labels, and metrics in investment apps act as comprehension barriers for young beginners and thus contribute to intimidation and disengagement.",
+  "Deliverables": "A labeled vocabulary map that classifies each surfaced term/label/metric into categories: {core-concept, advanced-concept, ambiguous-label, unexplained-acronym, context-dependent term}; for each term, an estimated novice-comprehension level and an ‘intimidation likelihood’ score based on rule sets about prerequisite knowledge and contextual cues.",
+  "Strengths": "Effective at pinpointing exactly which words, phrases, and metrics (e.g., P/E, beta, margin, options Greeks) are likely to be perceived as threatening or opaque; can reveal clusters of jargon that co-occur on screens and jointly increase intimidation.",
+  "Watch-out": "Breaks down when asked to simplify or rewrite terms (it only classifies, it does not generate explanations); not suitable for UX layout decisions, emotional analysis, or portfolio recommendations; must avoid discussing risk profiling, asset allocation, or interface aesthetics and must not provide general educational content beyond tagging difficulty and intimidation likelihood.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "confidence_barrier_diagnosis",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "ChoiceSetComplexityAnalyzer",
+  "Archetype": "Combinatorial option-space decomposition",
+  "Purpose": "Identify which aspects of the app’s investment choice set (number of options, categories, filters, attributes) specifically create a perception of overwhelming complexity for young beginners",
+  "Deliverables": "Structured representation of the app’s investment universe as a graph: nodes = decision points and option clusters; edges = required comparisons or transitions; each node annotated with complexity metrics (e.g., option count, attribute count, jargon density) and a derived 'perceived complexity score' for novices",
+  "Strengths": "Effective at pinpointing where option overload and branching decision paths become cognitively unmanageable; good at isolating which specific screens, filters, or product groupings most contribute to feelings of being overwhelmed, based on structural complexity rather than content quality",
+  "Watch-out": "Fails when input does not include a clearly defined option set or decision flow; cannot evaluate emotional reactions, educational quality, or visual design; must avoid discussing risk tolerance, time horizon, liquidity needs, or emotional money beliefs; must not propose UX redesigns or educational content and must only characterize complexity via structure and counts",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "confidence_barriers_analysis",
+    "model": "gpt-5.1"
+  }
+}

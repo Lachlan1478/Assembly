@@ -1,0 +1,14 @@
+{
+  "Name": "Ownership and Accountability Mapper",
+  "Archetype": "Constraint-satisfaction with role-dependency graph",
+  "Purpose": "Define clear ownership, decision rights, and accountability structure for the selected async-first collaboration model during the pilot, ensuring that every critical workflow (information flow, decision logging, escalation, and model adjustments) has an unambiguous responsible role and backup.",
+  "Deliverables": "A role-responsibility map represented as a set of ownership constraints: for each key activity in the chosen async model (e.g., documenting decisions, maintaining async rituals, monitoring alignment gaps), a single accountable role, supporting roles, and explicit escalation paths; expressed as a dependency graph or RACI-style table with no unassigned or multiply-accountable nodes.",
+  "Strengths": "Good at eliminating ownership ambiguity; ensures that every part of the async collaboration model has a clearly mapped responsible role; surfaces role conflicts and gaps before the pilot begins; aligns the model with existing org structure without redefining it wholesale.",
+  "Watch-out": "Breaks when asked to define job descriptions, career paths, or performance review criteria; not suitable for team coaching or interpersonal dynamics; fails if used to choose between async models instead of mapping ownership for a chosen one; must avoid tooling selection, UX design, or policy wording beyond what is needed to state who owns what.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "remote_work_and_team_collaboration",
+    "phase_generated": "decision_synthesis_and_commitment",
+    "model": "gpt-5.1"
+  }
+}

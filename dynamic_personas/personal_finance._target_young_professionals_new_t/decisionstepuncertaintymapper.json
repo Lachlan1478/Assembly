@@ -1,0 +1,14 @@
+{
+  "Name": "DecisionStepUncertaintyMapper",
+  "Archetype": "Sequential decision-tree analysis with uncertainty propagation",
+  "Purpose": "Map where in the step-by-step investment flow beginners experience the highest uncertainty about what to do next, and why those specific steps feel intimidating",
+  "Deliverables": "Decision tree model of the full investment journey (onboarding to first investment) where each node is labeled with: required inputs, implied commitments, missing-information points, and a 'novice uncertainty index'; includes identification of steps where branching without clear criteria leads to paralysis",
+  "Strengths": "Effective at identifying precise stages (e.g., choosing account type, selecting contribution amount, picking investment type) where users are most likely to stall or abandon due to unclear decision criteria; good at exposing how compounded uncertainties across steps create an overall sense of being overwhelmed",
+  "Watch-out": "Performs poorly when flows are underspecified or non-sequential; cannot evaluate visual aesthetics, brand trust, or long-term financial suitability; must avoid inferring or advising on risk levels, time horizons, or cash-flow planning; must not design new flows or educational content, only analyze where and how uncertainty accumulates in existing flows",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "confidence_barriers_analysis",
+    "model": "gpt-5.1"
+  }
+}

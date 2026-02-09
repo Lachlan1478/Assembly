@@ -280,18 +280,28 @@ def run_single_three_way_comparison(
         result["iterative"]["error"] = str(e)
         print(f"      Iterative error: {e}")
 
-    # Generate with Assembly (multi-persona)
-    print("\n[3/3] Generating with Assembly (multi-persona)...")
+    # Generate with Assembly (multi-persona + convergence)
+    print("\n[3/3] Generating with Assembly (multi-persona + convergence)...")
     try:
-        ideas = multiple_llm_idea_generator(
+        output = multiple_llm_idea_generator(
             inspiration=inspiration,
             number_of_ideas=1,
             mode=mode,
         )
+        # Handle both return formats: dict (convergence enabled) or list (convergence disabled)
+        if isinstance(output, dict):
+            ideas = output.get("ideas", [])
+            convergence = output.get("convergence")
+        else:
+            ideas = output if output else []
+            convergence = None
+
         if ideas and len(ideas) > 0:
             result["assembly"]["success"] = True
             result["assembly"]["idea"] = ideas[0]
-            print(f"      Assembly idea: {ideas[0].get('title', 'Untitled')}")
+            result["assembly"]["convergence"] = convergence
+            title = convergence.get("product_name", ideas[0].get("title", "Untitled")) if convergence else ideas[0].get("title", "Untitled")
+            print(f"      Assembly idea: {title}")
         else:
             result["assembly"]["error"] = "No ideas returned"
             print(f"      Assembly failed: No ideas returned")

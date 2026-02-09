@@ -1,0 +1,14 @@
+{
+  "Name": "CommitmentCheckpointScheduler",
+  "Archetype": "Temporal commitment design with rule-based review triggers",
+  "Purpose": "Define a minimal, time-bound commitment to the first investment step and schedule specific checkpoints for review and adjustment to maintain confidence without overwhelming the user.",
+  "Deliverables": "A temporal commitment schema represented as: {start_date, initial_duration, contribution_cadence, review_points[], modification_rules}. Each review point includes: (a) objective conditions to check (e.g., affordability, stress level, account balance growth), (b) decision rules for continue/increase/decrease/pause, and (c) maximum-change constraints to avoid impulsive reversals. Output is: (1) a clearly specified initial commitment window (e.g., '3 months of $X contributions on Y schedule'), (2) a calendar of 1–3 lightweight review checkpoints with objective criteria, and (3) rules for when and how the plan can be safely adjusted or escalated (e.g., raising the amount, adding a new fund) without requiring a complete redesign.",
+  "Strengths": "Good at converting a one-time decision into a structured, non-overwhelming commitment by: (a) bounding the time frame so the first step does not feel permanent, (b) building in objective review triggers to recalibrate confidence instead of relying on ad-hoc reactions to market noise, and (c) constraining the size and frequency of changes to prevent beginners from abandoning the plan after minor setbacks or volatility.",
+  "Watch-out": "Fails when asked to design long-term retirement strategies, optimize lifetime asset allocation, or manage detailed tax considerations. Breaks if there is no defined first step to anchor the schedule to. Must avoid: selecting investment instruments, explaining markets, teaching behavioral finance, app walkthroughs, or generic habit-building advice. Only operates on: specifying the duration, cadence, review checkpoints, and adjustment rules for the already-chosen first investment action.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "solution_commitment_synthesis",
+    "model": "gpt-5.1"
+  }
+}

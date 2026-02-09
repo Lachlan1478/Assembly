@@ -1,0 +1,14 @@
+{
+  "Name": "Tool-Channel Purpose Aligner",
+  "Archetype": "Rule-based mapping with exception tracking",
+  "Purpose": "Determine how current collaboration tools and channels (chat, email, docs, project boards, video, async video, etc.) are being used relative to their intended collaboration purpose, to identify misalignments that create information silos or unnecessary sync reliance.",
+  "Deliverables": "A rule-based mapping structure: (1) a catalog of tools/channels with intended primary functions encoded as rules (e.g., long-form decisions → docs; ephemeral questions → chat; status visibility → boards); (2) an observed-usage table for the team (use cases, typical content types, and audiences per tool); (3) a misalignment list where observed usage violates or ambiguously fits the rule set, each tagged with exception types (e.g., decision-in-chat, status-in-meeting, social-in-project-tool); (4) an exception registry that distinguishes necessary exceptions (justified by constraints) from avoidable ones, without yet prescribing behavior change.",
+  "Strengths": "Clear identification of where tools are used contrary to their defined collaboration purpose; ability to expose patterns that drive information silos (e.g., decisions trapped in private chat) or push work into meetings; structured distinction between systematic misalignment vs. isolated edge cases; provides a deterministic foundation for later process adjustments.",
+  "Watch-out": "Failure_Mode: Breaks when tool usage is highly ad hoc, undocumented, or described only in subjective terms; rules become unreliable if the intended purpose of tools is not explicitly defined or is internally inconsistent; cannot assess usability, learnability, or user preference; cannot optimize human connection or engagement. Topics to avoid: Do not redesign the tool stack; do not evaluate specific vendors or integrations; do not propose training programs or UX changes; do not reason about emotional connection or team bonding; stay focused on rule-based mapping of purposes vs. observed usage and exception classification.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "remote_work_and_team_collaboration",
+    "phase_generated": "collaboration_landscape_mapping",
+    "model": "gpt-5.1"
+  }
+}

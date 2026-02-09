@@ -2,8 +2,14 @@
 # Evaluation criteria and scoring functions for Phase 2 benchmark
 
 import json
+import re
 from dataclasses import dataclass
 from typing import Optional, Dict
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from openai import OpenAI
 
 
 @dataclass
@@ -149,6 +155,117 @@ def score_idea(
         specificity=specificity,
         commercial_clarity=commercial_clarity,
         notes=notes,
+    )
+
+
+LLM_JUDGE_PROMPT = """You are an expert startup evaluator scoring a business idea.
+
+SCORING RUBRIC (score each 1-5):
+
+NOVELTY - Is the idea non-obvious or differentiated?
+  1: Completely generic - could find this idea anywhere
+  2: Slight twist on common idea
+  3: Decent differentiation from existing solutions
+  4: Novel angle or combination that's not obvious
+  5: Highly original, unique insight or approach
+
+FEASIBILITY - Could this realistically be built and sold?
+  1: Impossible or wildly impractical to build
+  2: Significant technical or market barriers
+  3: Challenging but achievable with resources
+  4: Clearly buildable with known technology
+  5: Straightforward to build and bring to market
+
+SPECIFICITY - Are ICP, problem, and solution concrete?
+  1: Vague platitudes, no concrete details
+  2: Some specifics but major gaps
+  3: Reasonable detail on ICP, problem, or solution
+  4: Clear and concrete on most dimensions
+  5: Highly specific ICP, problem, solution, and use case
+
+COMMERCIAL_CLARITY - Is monetization obvious and credible?
+  1: No idea how this makes money
+  2: Vague monetization concept
+  3: Reasonable business model outlined
+  4: Clear revenue model and pricing strategy
+  5: Obvious path to revenue with validated willingness to pay
+
+ORIGINAL DOMAIN/INSPIRATION:
+{inspiration}
+
+IDEA TO EVALUATE:
+{idea}
+
+Score this idea. Be rigorous and honest. Respond ONLY with valid JSON:
+{{
+  "novelty": <1-5>,
+  "feasibility": <1-5>,
+  "specificity": <1-5>,
+  "commercial_clarity": <1-5>,
+  "notes": "<brief justification for scores>"
+}}"""
+
+
+def score_idea_llm(
+    idea: dict,
+    inspiration: str,
+    model: str = "gpt-5.1",
+) -> IdeaScore:
+    """
+    Score an idea using an LLM as judge.
+
+    Args:
+        idea: The idea dictionary to score
+        inspiration: Original domain/context for the idea
+        model: Model to use for scoring
+
+    Returns:
+        IdeaScore with LLM-provided scores
+    """
+    client = OpenAI()
+
+    idea_text = json.dumps(idea, indent=2) if isinstance(idea, dict) else str(idea)
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a rigorous startup evaluator. Score ideas honestly using the provided rubric. Output only valid JSON."
+            },
+            {
+                "role": "user",
+                "content": LLM_JUDGE_PROMPT.format(
+                    inspiration=inspiration,
+                    idea=idea_text
+                )
+            }
+        ],
+        temperature=0.3,
+    )
+
+    content = response.choices[0].message.content
+
+    # Extract JSON from response
+    try:
+        start = content.find('{')
+        end = content.rfind('}')
+        if start != -1 and end != -1:
+            scores = json.loads(content[start:end+1])
+        else:
+            raise ValueError("No JSON found in response")
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"[!] Failed to parse LLM judge response: {e}")
+        print(f"    Raw response: {content[:200]}")
+        # Default to middle scores
+        scores = {"novelty": 3, "feasibility": 3, "specificity": 3, "commercial_clarity": 3, "notes": "Parse error - default scores"}
+
+    return IdeaScore(
+        novelty=max(1, min(5, scores.get("novelty", 3))),
+        feasibility=max(1, min(5, scores.get("feasibility", 3))),
+        specificity=max(1, min(5, scores.get("specificity", 3))),
+        commercial_clarity=max(1, min(5, scores.get("commercial_clarity", 3))),
+        notes=scores.get("notes", ""),
     )
 
 
