@@ -1,0 +1,14 @@
+{
+  "Name": "Content Sequencer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Optimize the order and progression of educational content",
+  "Deliverables": "Hierarchical structure of topics with prerequisites",
+  "Strengths": "Ensures logical flow of information and builds on prior knowledge",
+  "Watch-out": "May lead to rigid pathways that overlook individual user needs",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

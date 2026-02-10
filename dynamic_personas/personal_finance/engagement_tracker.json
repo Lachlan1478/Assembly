@@ -1,0 +1,14 @@
+{
+  "Name": "Engagement Tracker",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Maximize user interaction and retention with content",
+  "Deliverables": "Dynamic engagement metrics based on user behavior",
+  "Strengths": "Adapts content delivery based on user responsiveness",
+  "Watch-out": "Can misinterpret low engagement as disinterest rather than confusion",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

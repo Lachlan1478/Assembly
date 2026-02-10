@@ -1,0 +1,211 @@
+{
+  "test_name": "end_to_end_reliability",
+  "timestamp": "2026-02-01T14:11:40.821331",
+  "config": {
+    "model_name": "gpt-4o-mini",
+    "num_runs": 10,
+    "mode": "medium"
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 2,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 3,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 4,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 5,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 6,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 7,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 8,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 9,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    },
+    {
+      "run_number": 10,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": false,
+      "missing_fields": [
+        "title",
+        "description",
+        "target_users",
+        "primary_outcome",
+        "must_haves",
+        "constraints",
+        "non_goals"
+      ],
+      "idea_titles": [
+        "Untitled"
+      ]
+    }
+  ],
+  "summary": {
+    "total_runs": 10,
+    "successful": 10,
+    "failed": 0,
+    "valid_structure": 0,
+    "invalid_structure": 10,
+    "success_rate_percent": 100.0,
+    "structure_valid_percent": 0.0,
+    "gate_passed": false
+  }
+}

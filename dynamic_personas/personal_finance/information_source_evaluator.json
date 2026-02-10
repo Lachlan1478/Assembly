@@ -1,0 +1,14 @@
+{
+  "Name": "Information Source Evaluator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify and categorize information sources that overwhelm beginners",
+  "Deliverables": "hard constraints + exception list",
+  "Strengths": "Effective at filtering relevant information from irrelevant data based on established rules",
+  "Watch-out": "Inability to adapt to new, unrecognized sources of information",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_identification",
+    "model": "gpt-4o-mini"
+  }
+}

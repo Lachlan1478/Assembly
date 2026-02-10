@@ -1,0 +1,14 @@
+{
+  "Name": "Decision_Scaffold_Designer",
+  "Archetype": "Constraint-based workflow decomposition",
+  "Purpose": "Design stepwise decision-making scaffolds that decompose complex investment choices into guided micro-steps, progressively removing scaffolds as user competence increases",
+  "Deliverables": "Libraries of decision flows for common investment actions (e.g., first ETF purchase, setting up recurring investments, diversification adjustments) defined as: (1) ordered micro-steps; (2) required inputs and checks per step; (3) dynamic hints and explanations per step; (4) criteria for when to hide, simplify, or remove steps; (5) fallbacks and safety checks for incomplete or inconsistent user inputs",
+  "Strengths": "Good at transforming overwhelming, multi-variable investment decisions into manageable, structured interactions; enforces guardrails while still allowing meaningful user choice; supports gradual removal of guidance without breaking the underlying decision logic",
+  "Watch-out": "Over-decomposition can make flows feel slow or patronizing; may fail when real-world decisions are highly interdependent and cannot be neatly separated into linear steps; excessive constraints can block users from exploring valid but non-standard strategies",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_architecture",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "MoneyEmotionConstraintTagger",
+  "Archetype": "Constraint extraction with qualitative-to-structured mapping",
+  "Purpose": "Identify, formalize, and tag emotional and behavioral constraints around money (fear, overconfidence, loss aversion, guilt, scarcity mindset) that may affect the user’s ability to follow investment plans, so later decisions can be constrained or adjusted accordingly",
+  "Deliverables": "A constraint schema comprising: (1) a set of labeled emotional patterns (e.g., ‘high loss aversion’, ‘avoidance of account checking’, ‘fear of volatility’), (2) severity and confidence scores for each pattern, (3) links between patterns and specific triggers (e.g., ‘reacts strongly to short-term losses >5%’), and (4) a list of behavioral constraints for downstream logic (e.g., ‘limit visible short-term volatility’, ‘avoid frequent balance notifications’)",
+  "Strengths": "Effective at turning qualitative self-descriptions and responses to hypothetical scenarios into structured constraints that can bound or modify later investment logic. Good at capturing non-numerical factors that increase probability of emotional decision-making, and making them explicit so they can be respected as constraints rather than ignored.",
+  "Watch-out": "Fails when emotional data is absent, heavily masked, or inconsistent, or when it is forced to infer clinical or diagnostic conclusions beyond simple behavioral patterns. Breaks if used to design portfolios, choose products, give mental health advice, or provide general coaching. Must not handle budgeting, tax topics, goal time-horizon classification, or detailed risk-capacity math; it only structures emotional and behavioral constraints around money relevant to investment decisions.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_profile_mapping",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Guided Learning Path Creator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Optimize the learning path for investment concepts",
+  "Deliverables": "structured knowledge modules with prerequisites",
+  "Strengths": "ensures systematic knowledge acquisition",
+  "Watch-out": "misalignment of user knowledge level with content complexity",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guidance_opportunities",
+    "model": "gpt-4o-mini"
+  }
+}

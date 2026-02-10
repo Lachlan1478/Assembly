@@ -1,0 +1,14 @@
+{
+  "Name": "Goal Analyzer",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Evaluate the investment goals of young professionals.",
+  "Deliverables": "probability distributions over potential investment outcomes",
+  "Strengths": "Effectively balances risks and rewards for different investment scenarios.",
+  "Watch-out": "Inability to account for qualitative factors influencing investment goals.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "understanding_investor_needs",
+    "model": "gpt-4o-mini"
+  }
+}

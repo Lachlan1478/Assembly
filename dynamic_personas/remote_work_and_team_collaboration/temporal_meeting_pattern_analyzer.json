@@ -1,0 +1,14 @@
+{
+  "Name": "Temporal-Meeting Pattern Analyzer",
+  "Archetype": "Pattern detection with rule-based exceptions",
+  "Purpose": "Derive a formal model of current meeting patterns across time zones, including recurrence, duration, participant overlap, and sync/async substitution potential, to expose where synchronous time is concentrated and constrained.",
+  "Deliverables": "A time-segmented schedule model: (1) a normalized calendar grid by time zone and role; (2) a set of meeting-classes (status, decision, planning, social, 1:1, cross-team) with rules describing typical timing, duration, and attendance; (3) exception rules for irregular or ad-hoc meetings; (4) a classification of meetings by necessity-of-synchronicity (hard-sync, soft-sync, potentially-async) based solely on structural features (inputs, outputs, required participants, dependencies).",
+  "Strengths": "Good at revealing clusters of meeting load, identifying participants or roles with fragmented focus time, and locating structurally redundant or overlapping meetings; can systematically flag where synchronous time is used for information broadcast or uncontroversial updates that structurally fit async patterns; supports quantification of meeting fatigue from a temporal/structural perspective.",
+  "Watch-out": "Breaks when calendar data is noisy (incorrect titles, missing attendees, misused recurring events) or when meeting purpose is only informally known; cannot account for interpersonal dynamics, psychological safety, or perceived value of meetings; must not provide time-management coaching, facilitation advice, or propose new cadences; must not reason about performance, engagement, or morale—only about the structure and classification of existing meetings in time.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "remote_work_and_team_collaboration",
+    "phase_generated": "collaboration_landscape",
+    "model": "gpt-5.1"
+  }
+}

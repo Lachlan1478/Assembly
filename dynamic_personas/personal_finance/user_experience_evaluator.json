@@ -1,0 +1,14 @@
+{
+  "Name": "User Experience Evaluator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Assess usability and intuitive design",
+  "Deliverables": "Usability scores and improvement recommendations",
+  "Strengths": "Identifies key usability issues and their impact",
+  "Watch-out": "Neglect of less visible user experience problems",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "feedback_and_refinement",
+    "model": "gpt-4o-mini"
+  }
+}

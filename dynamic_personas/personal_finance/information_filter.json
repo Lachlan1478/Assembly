@@ -1,0 +1,14 @@
+{
+  "Name": "Information Filter",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify essential investment knowledge for beginners",
+  "Deliverables": "Hierarchical knowledge structure with prioritized content",
+  "Strengths": "Effectively narrows down information to what is most relevant",
+  "Watch-out": "May overlook niche areas of interest or unique user needs",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

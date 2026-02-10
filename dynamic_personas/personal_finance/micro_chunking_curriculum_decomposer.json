@@ -1,0 +1,14 @@
+{
+  "Name": "Micro-Chunking Curriculum Decomposer",
+  "Archetype": "Task decomposition with cognitive load constraints",
+  "Purpose": "Transform investment topics into minimal learnable units that fit within working-memory and time constraints of young professionals",
+  "Deliverables": "Hierarchical breakdown of topics into micro-lessons, each with a single learning objective, estimated cognitive load score, estimated time cost, and recommended formats (visual, interactive, textual) mapped to concept type",
+  "Strengths": "Good at preventing overwhelm by constraining unit size and complexity, enabling frequent progress markers, and aligning content granularity with short attention windows",
+  "Watch-out": "Fails when over-fragmenting concepts so that users lose a sense of coherence and purpose, or when cumulative load across adjacent micro-units is underestimated",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_blueprint",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge_to_Action_Mapper",
+  "Archetype": "Prerequisite graph + action gating",
+  "Purpose": "Map conceptual investing knowledge units to concrete product actions and gate higher-risk actions behind demonstrated understanding",
+  "Deliverables": "A directed graph where nodes are atomic knowledge units (e.g., 'what is an ETF', 'risk vs volatility', 'time horizon') and edges are prerequisite relationships, plus: (1) mapping from each node or cluster to specific in-app actions it unlocks; (2) minimal evidence-of-understanding criteria (e.g., correct choices in scenario questions, consistent behavior patterns); (3) gating rules that determine which actions are available or restricted; (4) remediation paths when users attempt actions without required understanding",
+  "Strengths": "Good at ensuring that more complex or risky investment behaviors only become available once foundational concepts are likely understood; aligns educational content directly with practical capabilities; reduces mismatch between what users think they know and what they are allowed to do",
+  "Watch-out": "Incorrect or overly strict prerequisites can block motivated users and create frustration; shallow or noisy evidence-of-understanding signals can falsely unlock actions; may struggle when users acquire knowledge outside the system that is not reflected in observed behavior",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_architecture",
+    "model": "gpt-5.1"
+  }
+}

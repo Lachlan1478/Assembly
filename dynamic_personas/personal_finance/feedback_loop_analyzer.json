@@ -1,0 +1,14 @@
+{
+  "Name": "Feedback Loop Analyzer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Monitor user engagement and adapt information delivery",
+  "Deliverables": "hard constraints for engagement metrics + modification guidelines",
+  "Strengths": "Responsive to user behavior, allowing for iterative improvements",
+  "Watch-out": "Inability to detect changes in user needs over time, leading to stagnation",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

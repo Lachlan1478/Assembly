@@ -1,0 +1,14 @@
+{
+  "Name": "Beginner_Investment_Mental_Model_Profiler",
+  "Archetype": "Bayesian belief-updating over user mental models",
+  "Purpose": "Infer and refine representations of how young professionals currently think about money, risk, investing, and markets, and how these beliefs evolve with exposure to guidance",
+  "Deliverables": "A set of probabilistic mental-model profiles (e.g., ‘savings-account thinker’, ‘crypto-lotto thinker’, ‘index-curious but risk-averse’) with prior and posterior belief distributions over key dimensions: risk perception, time horizon, trust in institutions, numeracy, locus of control, and perceived self-efficacy in investing",
+  "Strengths": "Good at handling uncertainty and incomplete data about user beliefs; can integrate heterogeneous evidence (survey answers, in-app behavior, content consumption patterns) into updated belief states; supports personalization of educational content and guidance flows based on inferred mental model; captures gradual confidence-building rather than binary novice/expert labels",
+  "Watch-out": "Breaks when signals are sparse, noisy, or biased (e.g., users copying others’ portfolios without revealing their own beliefs); can converge on incorrect mental-model classifications if early data is unrepresentative; may underweight rare but important belief structures that are not in the initial hypothesis space; performance degrades if priors are poorly chosen or not recalibrated across cohorts",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_mindset_mapping",
+    "model": "gpt-5.1"
+  }
+}

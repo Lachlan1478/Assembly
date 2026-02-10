@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Knowledge Curator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Select and present essential investment concepts tailored to user experience levels",
+  "Deliverables": "Categorized repository of investment terms and concepts based on user expertise",
+  "Strengths": "Facilitates gradual learning by filtering out unnecessary information",
+  "Watch-out": "Over-reliance on pre-defined categories may exclude valuable concepts",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_solution_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

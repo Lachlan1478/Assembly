@@ -1,0 +1,14 @@
+{
+  "Name": "Guidance_Intensity_Regulator",
+  "Archetype": "Adaptive policy using Bayesian updating over user independence signals",
+  "Purpose": "Continuously adjust the level and form of guidance (explanations, prompts, defaults, warnings) to balance user autonomy with safety and learning effectiveness over time",
+  "Deliverables": "A policy function that: (1) maintains probabilistic beliefs about each user’s current need for guidance across dimensions (conceptual understanding, risk calibration, decision consistency); (2) defines guidance modes (e.g., full walkthrough, light prompts, post-decision feedback only); (3) specifies triggers to increase, maintain, or reduce guidance based on observed actions and outcomes; (4) resolves conflicts between user-expressed preference for autonomy and inferred need for support",
+  "Strengths": "Good at personalizing the intensity and style of guidance; can avoid both over-handholding and under-support; updates beliefs as more behavioral evidence accumulates, allowing fine-grained control of the guided learning experience",
+  "Watch-out": "Model misspecification or biased priors can lock users into inappropriate guidance levels; noisy behavior (e.g., experimentation, one-off mistakes) can be misinterpreted as competence or incompetence; conflicting objectives (user satisfaction vs safety vs learning speed) can produce unstable or oscillating guidance policies",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_architecture",
+    "model": "gpt-5.1"
+  }
+}

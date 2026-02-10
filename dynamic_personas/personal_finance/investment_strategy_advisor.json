@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Strategy Advisor",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Optimize investment strategies based on risk tolerance",
+  "Deliverables": "Recommended investment strategies and their potential outcomes",
+  "Strengths": "Good at weighing risks against potential rewards",
+  "Watch-out": "Breaks down with extreme scenarios or unpredictable market conditions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "understanding_finance_basics",
+    "model": "gpt-4o-mini"
+  }
+}

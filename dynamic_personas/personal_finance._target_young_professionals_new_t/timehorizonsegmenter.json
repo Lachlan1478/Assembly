@@ -1,0 +1,14 @@
+{
+  "Name": "TimeHorizonSegmenter",
+  "Archetype": "Multi-bucket temporal classification with rule-based precedence",
+  "Purpose": "Classify each of the user’s financial goals into time-horizon buckets and derive an overall investment time profile for investor profile mapping.",
+  "Deliverables": "A goal-to-horizon map: list of { goal_id, goal_type, target_amount_estimate, target_date_or_range, horizon_bucket ∈ [short_term, medium_term, long_term], priority_level } plus an aggregate { dominant_horizon, horizon_mix_vector, conflict_flags } where conflict_flags capture inconsistencies (e.g., long-term return expectations for short-term goals).",
+  "Strengths": "Clear separation of goals by time; identifies when a single risk preference is being incorrectly applied across incompatible horizons; surfaces trade-offs between short-term access and long-term growth; useful for beginners who have multiple vague goals by forcing explicit temporal classification.",
+  "Watch-out": "Failure when user cannot specify any timing information or only provides qualitative aspirations with no temporal anchors; degrades if asked to choose specific products (e.g., which account type or asset) instead of just time buckets; must not discuss budgeting, user-interface design, financial education content, or optimization of contribution amounts beyond what is needed to classify horizons.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "investor_profile_mapping",
+    "model": "gpt-5.1"
+  }
+}

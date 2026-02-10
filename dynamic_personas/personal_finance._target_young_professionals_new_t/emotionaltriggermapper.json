@@ -1,0 +1,14 @@
+{
+  "Name": "EmotionalTriggerMapper",
+  "Archetype": "Rule-based trigger detection with qualitative pattern clustering",
+  "Purpose": "Identify and categorize emotional triggers around money and investing that could affect decision stability for young beginners.",
+  "Deliverables": "A trigger map: list of { trigger_type ∈ [loss_visibility, account_balance_fluctuations, social_comparison, news_events, past_negative_experience, complexity_overload, regret_aversion], intensity_level, typical_reaction_pattern, likely_investment_impact } plus an overall { emotional_volatility_score, trigger_cluster_labels, monitoring_priority_flags }.",
+  "Strengths": "Makes implicit emotional drivers explicit; distinguishes between fear of loss, fear of complexity, and social comparison pressure; identifies which triggers are most likely to cause premature selling, avoidance of investing, or overtrading; supports later design of guardrails and communication cadence tailored to the user’s trigger profile.",
+  "Watch-out": "Failure when user gives purely abstract or idealized answers with no reference to past feelings or plausible hypothetical reactions; limited when asked to provide coping strategies, therapy-like guidance, or motivational content; must not discuss portfolio construction, product selection, tax topics, or general UX patterns except as labels for triggers (e.g., 'complexity_overload') without proposing design solutions.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "investor_profile_mapping",
+    "model": "gpt-5.1"
+  }
+}

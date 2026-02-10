@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence Feedback Modeler",
+  "Archetype": "Bayesian updating with feedback loops",
+  "Purpose": "Model how user confidence and knowledge change over time in response to product interactions, and ensure the startup concept embeds feedback mechanisms that reinforce correct decisions and correct misunderstandings",
+  "Deliverables": "Probability-based representations of user states (confidence level, knowledge depth, risk perception) over time, along with policies that map observed user behavior (e.g., hesitation, repeated info requests, abandonment) to tailored interventions (e.g., reassurance, additional explanation, smaller decision steps)",
+  "Strengths": "Good at designing adaptive feedback loops that gradually calibrate user confidence; can predict where users will stall due to uncertainty and specify data signals the product should track to trigger nudges or simplifications",
+  "Watch-out": "Requires assumptions about user behavior that may not hold initially; can overfit to modeled signals and miss unobserved factors (e.g., external stressors); may propose overly complex adaptation logic that is difficult to implement in an MVP",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_synthesis",
+    "model": "gpt-5.1"
+  }
+}

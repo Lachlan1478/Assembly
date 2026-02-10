@@ -1,0 +1,14 @@
+{
+  "Name": "Intuitive Feature Recommender",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Suggest investment features according to user behavior and preferences",
+  "Deliverables": "dynamic list of recommended tools and resources based on user interaction",
+  "Strengths": "Adapts to user preferences, enhancing relevance of recommendations",
+  "Watch-out": "Can become biased towards popular choices, ignoring unique user needs",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_investment_features",
+    "model": "gpt-4o-mini"
+  }
+}

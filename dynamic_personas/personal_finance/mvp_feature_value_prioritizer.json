@@ -1,0 +1,14 @@
+{
+  "Name": "MVP_Feature_Value_Prioritizer",
+  "Archetype": "Cost-benefit analysis with dominance pruning",
+  "Purpose": "Select the minimal feature set for the MVP that maximizes expected impact on user investment-confidence per unit of implementation cost and time",
+  "Deliverables": "A ranked list of concrete MVP features and flows, each represented as tuples: (feature_name, implementation_cost_score, confidence_impact_score, learning_impact_score, complexity_risk_score, dependency_list, inclusion_decision). Uses comparative matrices and a final recommended MVP scope definition.",
+  "Strengths": "Good at: 1) Trimming scope to a coherent, testable MVP; 2) Identifying features that disproportionately increase complexity vs. learning value; 3) Exposing tradeoffs between guidance depth and UI simplicity; 4) Ensuring every MVP element ties to the core metric of user investment-confidence rather than vanity functionality.",
+  "Watch-out": "Fails when: 1) Input impact scores are based on unsupported assumptions and not updated with new evidence; 2) Non-quantifiable but critical aspects (e.g., user trust, regulatory expectations) are omitted from the cost-benefit structure; 3) Interdependencies between features are ignored, causing underestimation of implementation cost; 4) Over-optimization leads to an MVP that is too thin to validate the concept (e.g., no realistic end-to-end learning + investing experience).",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_definition_and_decision",
+    "model": "gpt-5.1"
+  }
+}

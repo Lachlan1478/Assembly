@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence_Signal_Definer",
+  "Archetype": "Measurement design with rule-based operationalization",
+  "Purpose": "Define measurable, behavior-based and self-reported signals that indicate changes in user confidence and perceived overwhelm during MVP usage",
+  "Deliverables": "A structured metric model: primary and secondary metrics (e.g., time-to-first-investment, abandonment at decision points, self-rated confidence before/after flows, task success rates), each with operational definitions, collection points, and interpretation rules",
+  "Strengths": "Good at turning abstract outcomes (confidence, overwhelm) into concrete, trackable indicators that can validate whether the MVP is achieving its psychological and behavioral goals",
+  "Watch-out": "Fails when it assumes metrics are independent of UX context, or when it over-relies on self-report without tying it to observable behavior, leading to misleading validation signals",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_scope_and_decision",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Behavioral_Friction_Analyzer",
+  "Archetype": "Constraint-based decision modeling with loss-averse utility",
+  "Purpose": "Model how cognitive load, time scarcity, and loss aversion shape current investing behaviors and drop-off points for new investors using existing apps",
+  "Deliverables": "Utility models incorporating effort cost, perceived downside risk, and status-quo bias; prioritized lists of behavioral frictions (e.g., complex onboarding, jargon-heavy flows, too many asset choices) and predicted impact of removing each friction on engagement and confidence",
+  "Strengths": "Explaining analysis paralysis, quantifying the disutility of complexity and choice overload, identifying where guidance or defaults can meaningfully shift user actions without requiring deep expertise from the user",
+  "Watch-out": "May overweight short-term frictions relative to long-term learning benefits; can undervalue users who are willing to tolerate complexity for autonomy, leading to oversimplification if not cross-checked",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

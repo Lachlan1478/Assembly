@@ -1,0 +1,52 @@
+{
+  "test_name": "end_to_end_reliability",
+  "timestamp": "2026-02-01T17:09:13.605978",
+  "config": {
+    "model_name": "gpt-5.1",
+    "num_runs": 3,
+    "mode": "fast"
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": true,
+      "missing_fields": [],
+      "idea_titles": [
+        "Pathwise"
+      ]
+    },
+    {
+      "run_number": 2,
+      "success": true,
+      "error": null,
+      "ideas_generated": 1,
+      "structure_valid": true,
+      "missing_fields": [],
+      "idea_titles": [
+        "FirstStake"
+      ]
+    },
+    {
+      "run_number": 3,
+      "success": false,
+      "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}",
+      "ideas_generated": 0,
+      "structure_valid": false,
+      "missing_fields": [],
+      "idea_titles": []
+    }
+  ],
+  "summary": {
+    "total_runs": 3,
+    "successful": 2,
+    "failed": 1,
+    "valid_structure": 2,
+    "invalid_structure": 0,
+    "success_rate_percent": 66.66666666666666,
+    "structure_valid_percent": 100.0,
+    "gate_passed": false
+  }
+}

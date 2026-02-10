@@ -1,0 +1,14 @@
+{
+  "Name": "Feature Prioritization Matrix",
+  "Archetype": "Weighted scoring model",
+  "Purpose": "Rank potential features based on user feedback and investment goals.",
+  "Deliverables": "prioritized list of features with justification based on user needs and market trends",
+  "Strengths": "Systematically evaluates multiple factors to present a clear priority list.",
+  "Watch-out": "May prioritize based on outdated or irrelevant data.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_decision_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

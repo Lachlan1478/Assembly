@@ -1,0 +1,14 @@
+{
+  "Name": "ConfidenceEvidenceBinder",
+  "Archetype": "Bayesian updating over subjective confidence with evidence tagging",
+  "Purpose": "Link the selected first investment step to explicit evidence-based reasons, updating the user’s subjective confidence from prior phases into a quantified, justifiable belief that this step is 'good enough to start.'",
+  "Deliverables": "A structured belief map: (a) prior confidence distribution over 'this first step is appropriate for me' (derived from earlier assessments of risk comfort, time horizon, cash flow, and emotional triggers), (b) a set of evidence items tagged by source and reliability (e.g., alignment with user risk profile, small-stakes sizing, automation reducing missed contributions, preservation of liquidity), and (c) posterior confidence estimates after integrating each evidence item. Output is: (1) a list of 3–7 concrete evidence statements tied to the user’s own inputs, (2) a final confidence rating on a coarse scale (e.g., low/medium/high or 0–100) with decomposition by factor, and (3) explicit conditions under which the confidence should be revised (e.g., income change, new debt, change in time horizon).",
+  "Strengths": "Good at making the commitment to a first investment step feel logically justified by: (a) grounding confidence in user-specific evidence rather than generic advice, (b) preventing overconfidence by keeping track of uncertainty and missing data, and (c) highlighting that the action is 'sufficiently safe and aligned' rather than 'perfect,' which is crucial for overcoming paralysis in beginners.",
+  "Watch-out": "Fails when there is no prior information about user preferences or constraints, or when evidence is purely generic and not user-linked. Breaks if asked to provide emotional reassurance, motivational language, or education about how investing works. Must avoid: selecting the investment itself, decomposing tasks, discussing app UX, teaching terminology, or offering broad financial planning. Only operates on: mapping existing user-specific information to explicit evidence and computing/expressing a justified confidence level in the chosen first step.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "solution_commitment_synthesis",
+    "model": "gpt-5.1"
+  }
+}

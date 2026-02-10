@@ -1,0 +1,14 @@
+{
+  "Name": "Feedback Loop Monitor",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Continuously assess user decisions and learning progress to provide tailored feedback",
+  "Deliverables": "probability distributions indicating the effectiveness of user strategies",
+  "Strengths": "Adjusts feedback based on real-time data and user input",
+  "Watch-out": "Inability to process new information effectively, leading to stale feedback",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_brainstorming",
+    "model": "gpt-4o-mini"
+  }
+}

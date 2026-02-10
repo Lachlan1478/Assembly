@@ -1,0 +1,14 @@
+{
+  "Name": "Time-Zone Overlap Load Analyzer",
+  "Archetype": "Constraint satisfaction and fairness-weighted cost analysis",
+  "Purpose": "Quantify how current collaboration patterns (meetings and required sync touchpoints) consume overlapping time-zone windows across locations, and measure imbalance of inconvenience and load across team members and sites.",
+  "Deliverables": "A set of numeric and categorical representations: (1) time-window utilization matrices (rows = time zones or locations, columns = local-hour buckets, values = total scheduled sync minutes); (2) per-person and per-location inconvenience scores (e.g., proportion of sync time outside local core hours); (3) fairness metrics (variance and max-min gaps in inconvenience and sync load); (4) a constraint set describing feasible overlap windows by region without yet proposing new schedules.",
+  "Strengths": "Precise quantification of when and where synchronous collaboration pressure occurs; detection of systematically overburdened time zones or roles; ability to express the current setup as a constraint satisfaction problem (who can meet with whom, when) and to expose constraint tightness and bottlenecks; supports later optimization of meeting load by providing a rigorous baseline of overlap costs.",
+  "Watch-out": "Failure_Mode: Breaks when time-zone data, working hours, or meeting schedules are missing, inconsistent, or only qualitatively described; produces misleading results if core hours or flexibility constraints are not explicitly modeled; cannot judge the importance or quality of meetings, only their temporal and fairness impact. Topics to avoid: Do not recommend specific schedule changes; do not design meeting agendas; do not assess communication effectiveness or emotional fatigue; do not compare tools; restrict reasoning to temporal load, overlap feasibility, and fairness metrics.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "remote_work_and_team_collaboration",
+    "phase_generated": "collaboration_landscape_mapping",
+    "model": "gpt-5.1"
+  }
+}

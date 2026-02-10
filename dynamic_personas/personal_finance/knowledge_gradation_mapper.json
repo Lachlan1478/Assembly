@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Gradation Mapper",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Assess the gradual knowledge needs of users",
+  "Deliverables": "probability distributions over knowledge gaps",
+  "Strengths": "Prioritizes learning topics based on perceived user confidence and decision-making effectiveness.",
+  "Watch-out": "Inaccurate assessments if users overestimate their understanding.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_exploration",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Decision Journey Decomposer",
+  "Archetype": "Causal chain and process decomposition",
+  "Purpose": "Break down the end-to-end investment decision journey for beginners into discrete causal steps to locate where overwhelm, confusion, and inaction occur",
+  "Deliverables": "Stepwise decision-flow models from initial awareness to first investment and ongoing contributions, including causal links between triggers (e.g., peer influence, life events), information intake, interpretation, confidence changes, and action or dropout points; annotated with hypothesized causes of analysis paralysis at each step",
+  "Strengths": "Good at locating bottlenecks in the mental and behavioral process, clarifying which specific steps require simplification, scaffolding, or guidance to build confidence gradually",
+  "Watch-out": "Breaks when causal assumptions are inferred from correlation or anecdote; may over-linearize journeys that are cyclical, messy, or influenced by external shocks, leading to incomplete or misleading maps",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

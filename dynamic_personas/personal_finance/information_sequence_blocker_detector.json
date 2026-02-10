@@ -1,0 +1,14 @@
+{
+  "Name": "Information_Sequence_Blocker_Detector",
+  "Archetype": "Temporal dependency analysis with rule-based bottleneck detection",
+  "Purpose": "Detect where in the information and decision sequence users get stuck due to missing prerequisites, ambiguous next steps, or conflicting signals",
+  "Deliverables": "Step-by-step maps of the investing journey (from curiosity to first allocation and rebalancing) annotated with prerequisite knowledge, decision points, and identified bottlenecks that cause drop-off or looping behavior",
+  "Strengths": "Good at revealing which specific combinations and orderings of information create confusion; identifies points where users revert to research loops, restart flows, or abandon decisions; supports design of guided, gated paths that avoid overload",
+  "Watch-out": "Can overfit to a linear journey model and miss non-linear exploration patterns; may misclassify deliberate reflection as harmful blockage if it only measures speed and completion rather than quality of understanding",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barriers_analysis",
+    "model": "gpt-5.1"
+  }
+}

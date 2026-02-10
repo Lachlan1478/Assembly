@@ -1,0 +1,14 @@
+{
+  "Name": "Confidence_Measurement_Definer",
+  "Archetype": "Metric design with causal hypothesis mapping",
+  "Purpose": "Define a minimal, testable set of quantitative and qualitative metrics that approximate ‘investment confidence’ and can be directly tied to specific MVP features",
+  "Deliverables": "A metric schema consisting of: (1) operational definitions of confidence (e.g., self-reported scales, behavior proxies like completion of first investment, reduced time-to-decision, lower abandonment at key steps); (2) mapping from each proposed MVP feature to hypothesized metric changes; (3) a small set of core experiments or A/B tests to validate these links; represented as metric definitions, feature–metric dependency tables, and experiment outlines",
+  "Strengths": "Good at turning an abstract outcome (confidence) into measurable signals; identifying which MVP elements are most critical to test; enabling a clear success/failure read on whether the MVP actually builds confidence rather than just engagement",
+  "Watch-out": "Fails when confidence is treated as a single scalar and important dimensions (e.g., understanding vs. action-readiness) are collapsed; may over-rely on self-report without behavioral validation; can underweight long-term learning in favor of short-term metric movement",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_definition_and_focus",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Feedback Analyzer",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Continuously assess user performance and adapt learning materials",
+  "Deliverables": "Dynamic updates to learning paths based on user feedback and outcomes",
+  "Strengths": "Enhances personalization and responsiveness to user needs",
+  "Watch-out": "Inaccurate feedback interpretation leading to misaligned learning paths",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_paths",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Information Overload Assessor",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Evaluate user responses to assess the impact of information overabundance on decision-making.",
+  "Deliverables": "probability distributions over user reactions to information volume",
+  "Strengths": "Quantifies the effects of information saturation on user confidence.",
+  "Watch-out": "Assumes user responses are stable, potentially overlooking individual differences.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Decision Confidence Booster",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Measure and enhance user confidence levels in investment decisions.",
+  "Deliverables": "probability distributions of user confidence based on past decisions and feedback",
+  "Strengths": "Adaptively adjusts to user feedback to improve confidence metrics.",
+  "Watch-out": "Overconfidence bias may misrepresent true user readiness.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_decision_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

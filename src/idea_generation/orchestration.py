@@ -20,6 +20,7 @@ from src.idea_generation.idea_tracker import (
     extract_idea_concept_async,
     detect_rejections_async
 )
+from src.idea_generation.gap_detection import compute_coverage_gaps
 
 
 async def meeting_facilitator(
@@ -75,6 +76,9 @@ async def meeting_facilitator(
         shared_context["active_scenarios"] = []  # Currently active scenarios for agents to address
     if "scenario_history" not in shared_context:
         shared_context["scenario_history"] = []  # All past scenarios with responses
+
+    # Store inspiration in shared_context for prompt generation
+    shared_context["inspiration"] = inspiration
 
     # Initialize mediator if enabled and not provided
     if enable_mediator and mediator is None:
@@ -188,13 +192,14 @@ async def meeting_facilitator(
                     "message": last_exchange["content"]
                 }
 
-            # Build context for this persona's response (native threading format)
+            # Build context for this persona's response (full history format)
             ctx = {
                 "initial_prompt": initial_prompt,  # Facilitator's starter for this phase
                 "other_speaker": other_speaker,  # Last speaker's name and message, or None if first
                 "turn_count": turn_count,
                 "phase": phase,
-                "shared_context": shared_context
+                "shared_context": shared_context,
+                "exchanges": phase_exchanges  # Full conversation history from all participants
             }
 
             # Persona generates response using their summary
@@ -327,6 +332,19 @@ async def meeting_facilitator(
                     print(f"[i] Fast mode: Skipping summary updates")
 
             turn_count += 1
+
+            # Every 4 turns, compute and inject gap nudge (nudge, not rule)
+            if turn_count > 0 and turn_count % 4 == 0:
+                gap_nudge = compute_coverage_gaps(
+                    phase_exchanges=phase_exchanges,
+                    active_personas=active_personas,
+                    phase=phase,
+                    turn_count=turn_count
+                )
+                if gap_nudge:
+                    shared_context["active_gap_nudge"] = gap_nudge
+                    if not monitor:
+                        print(f"[i] Gap nudge computed: {gap_nudge[:80]}...")
 
             # Check if mediator should intervene
             if enable_mediator and mediator is not None:

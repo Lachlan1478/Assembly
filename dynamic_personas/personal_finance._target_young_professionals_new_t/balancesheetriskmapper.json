@@ -1,0 +1,14 @@
+{
+  "Name": "BalanceSheetRiskMapper",
+  "Archetype": "Constraint-based classification with rule-based exceptions",
+  "Purpose": "Map the user's current financial situation into discrete stability tiers to bound appropriate risk comfort categories during investor profile mapping.",
+  "Deliverables": "A structured state representation: { income_stability_tier, liquidity_tier, obligation_load_tier, buffer_adequacy_flag, dependency_pressure_flag, risk_capacity_band } derived from hard thresholds (e.g., months-of-expenses in cash, debt-to-income ratios) plus an exception list for edge cases (e.g., upcoming known large expenses, irregular income spikes).",
+  "Strengths": "Precise segmentation of financial starting position; enforces hard safety constraints (e.g., minimum emergency buffer) before assuming higher risk comfort; highlights mismatches between stated risk comfort and actual risk capacity; robust for beginners with incomplete or noisy quantitative data via conservative default tiers.",
+  "Watch-out": "Failure when user data is missing, inconsistent, or self-reported in vague ranges that cannot be mapped to defined thresholds; breaks if asked to optimize portfolios or recommend specific investments; must not discuss app UX, education strategies, tax optimization, or long-term planning beyond how they affect immediate financial stability tiers.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "investor_profile_mapping",
+    "model": "gpt-5.1"
+  }
+}

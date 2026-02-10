@@ -11,6 +11,7 @@ from framework.generators import generate_phases_for_domain
 from src.idea_generation.config import MODE_CONFIGS, MODEL
 from src.idea_generation.orchestration import meeting_facilitator
 from src.idea_generation.extraction import extract_ideas_with_llm
+from src.idea_generation.convergence import run_convergence_phase, format_convergence_output
 
 
 def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
@@ -193,14 +194,56 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
             model_name=config["model"]
         )
 
-    # Log final ideas to metadata
+    # Log final ideas to metadata (Assembly output)
     logger.log_metadata("ideas", business_ideas)
+
+    # === CONVERGENCE PHASE ===
+    # Optional final refinement phase that produces commercially sharp output
+    convergence_result = None
+    if config.get("enable_convergence_phase", False):
+        print("\n" + "=" * 60)
+        print("CONVERGENCE PHASE: Refining into commercial spec...")
+        print("=" * 60)
+
+        convergence_result = run_convergence_phase(
+            inspiration=inspiration,
+            logs=logs,
+            ideas_discussed=final_context.get("ideas_discussed", []),
+            raw_ideas=business_ideas,
+            model=config["model"],
+            verbose=True
+        )
+
+        if convergence_result.get("success"):
+            convergence_output = convergence_result.get("convergence_output", {})
+
+            # Log convergence output
+            logger.log_metadata("convergence_output", convergence_output)
+            logger.log_metadata("convergence_turns", convergence_result.get("turns", []))
+
+            # Display formatted output
+            print("\n" + format_convergence_output(convergence_output))
+        else:
+            print(f"\n[!] Convergence phase failed: {convergence_result.get('error', 'Unknown error')}")
+            logger.log_metadata("convergence_error", convergence_result.get("error"))
+    else:
+        print("\n[i] Convergence phase disabled (enable with enable_convergence_phase=True)")
 
     # Save all comprehensive logs
     logger.save_all()
+
+    # Build final return value
+    result = {
+        "ideas": business_ideas,
+        "convergence": convergence_result.get("convergence_output") if convergence_result else None
+    }
 
     # Return ideas (or empty list with warning)
     if not business_ideas:
         print("[!] Warning: No ideas could be extracted from conversation")
 
-    return business_ideas
+    # For backwards compatibility, return just ideas if convergence disabled
+    if not config.get("enable_convergence_phase", False):
+        return business_ideas
+
+    return result

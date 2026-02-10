@@ -10,6 +10,33 @@ from typing import Dict, List, Any, Optional
 from openai import OpenAI
 
 
+def sanitize_for_console(text: str) -> str:
+    """Replace Unicode characters that can't be displayed on Windows console."""
+    if not text:
+        return text
+    # Replace common problematic Unicode characters with ASCII equivalents
+    replacements = {
+        '\u2192': '->',  # →
+        '\u2190': '<-',  # ←
+        '\u2194': '<->',  # ↔
+        '\u2019': "'",   # '
+        '\u2018': "'",   # '
+        '\u201c': '"',   # "
+        '\u201d': '"',   # "
+        '\u2013': '-',   # –
+        '\u2014': '--',  # —
+        '\u2011': '-',   # ‑ (non-breaking hyphen)
+        '\u2010': '-',   # ‐ (hyphen)
+        '\u00a0': ' ',   # non-breaking space
+        '\u2026': '...', # … (ellipsis)
+        '\u00b7': '*',   # · (middle dot)
+        '\u2022': '*',   # • (bullet)
+    }
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    return text
+
+
 def generate_personas_for_context(
     inspiration: str,
     phase_info: Dict[str, Any],
@@ -55,13 +82,19 @@ Each agent is a REASONING FUNCTION, not a personality.
 
 Output format:
 1. **Role**: Function name (e.g., "Utilitarian Calculator", "Rights Constraint Enforcer")
-2. **Objective**: Optimization target or constraint type
+2. **Objective**: Optimization target or constraint type - BE SPECIFIC to the phase goal
 3. **Reasoning_Type**: Logic framework (e.g., "Bayesian weighting", "Rule-based exceptions", "Cost-benefit analysis")
 4. **Belief_Structure**: How this agent represents knowledge (e.g., "probability distributions over outcomes", "hard constraints + exception list")
 5. **Failure_Mode**: What breaks this reasoning pattern
+6. **Stay_In_Role**: Explicit instruction on what topics to AVOID (to prevent drift)
 
 NO personality traits. NO warmth. NO conversational style. NO inspirations.
-Pure logical roles.
+Pure logical roles that ONLY discuss their specific domain.
+
+IMPORTANT: Each agent must have a NARROW focus. They should NOT discuss:
+- General UX/education topics (unless that's their specific role)
+- Topics outside their reasoning type
+- Vague recommendations without applying their specific framework
 
 Respond ONLY with JSON (map new fields to old schema):
 {{
@@ -69,10 +102,10 @@ Respond ONLY with JSON (map new fields to old schema):
     {{
       "Name": "[Role name]",
       "Archetype": "[Reasoning_Type]",
-      "Purpose": "[Objective]",
+      "Purpose": "[Objective - specific to phase goal]",
       "Deliverables": "[Belief_Structure]",
       "Strengths": "[What this reasoning is good at]",
-      "Watch-out": "[Failure_Mode]",
+      "Watch-out": "[Failure_Mode + topics to avoid]",
       "Conversation_Style": "N/A"
     }}
   ]
@@ -237,7 +270,8 @@ Respond ONLY with a JSON object:
         print(f"[OK] Generated {len(phases)} custom phases for domain")
         for phase in phases:
             phase_type_label = f"[{phase.get('phase_type', 'debate').upper()}]"
-            print(f"     - {phase_type_label} {phase.get('phase_id')}: {phase.get('goal')}")
+            goal = sanitize_for_console(phase.get('goal', ''))
+            print(f"     - {phase_type_label} {phase.get('phase_id')}: {goal}")
 
         return phases
 

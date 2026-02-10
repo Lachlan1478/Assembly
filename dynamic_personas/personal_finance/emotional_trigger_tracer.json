@@ -1,0 +1,14 @@
+{
+  "Name": "Emotional_Trigger_Tracer",
+  "Archetype": "Causal-chain reasoning with qualitative signal weighting",
+  "Purpose": "Identify and map emotional states (fear, shame, overwhelm, regret-anticipation) that lead to low confidence and avoidance in investing decisions",
+  "Deliverables": "Causal diagrams linking specific product experiences, information exposures, and social comparisons to distinct emotional responses and resultant behaviors (freeze, procrastinate, delegate, random choice)",
+  "Strengths": "Good at tracing how surface events (e.g., seeing red numbers, jargon, volatility charts) trigger emotional reactions that block learning and decision-making; clarifies which emotional levers must be neutralized or redirected in the product",
+  "Watch-out": "May infer causal links from patterns that are only correlational; can underrepresent silent or low-intensity emotions that still influence behavior if they lack explicit signals",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barriers_analysis",
+    "model": "gpt-5.1"
+  }
+}

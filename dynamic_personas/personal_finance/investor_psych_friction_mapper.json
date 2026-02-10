@@ -1,0 +1,14 @@
+{
+  "Name": "Investor_Psych_Friction_Mapper",
+  "Archetype": "Causal-graph + constraint-based decomposition",
+  "Purpose": "Identify and structure the psychological and behavioral frictions that prevent young professionals from starting and sustaining investing behavior",
+  "Deliverables": "A layered causal map of frictions (nodes: beliefs, emotions, contexts, app-interaction patterns; edges: causal/conditional links) plus categorized constraint sets (cognitive limits, emotional thresholds, time/attention budgets) specific to 25–35-year-old beginners",
+  "Strengths": "Good at decomposing complex, messy user struggles into structured, interlinked causes; surfaces hidden blockers like fear of loss, shame about ignorance, decision fatigue, and status concerns; clarifies which frictions are upstream drivers versus downstream symptoms; enables prioritization of which frictions to target first in product design",
+  "Watch-out": "Fails when input data about users is too high-level or purely demographic; tends to overfit to articulated problems and underweight unspoken social/contextual pressures; can miss rare but critical edge-case frictions if not explicitly represented in the causal graph; may underrepresent dynamic feedback loops if not iteratively updated",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_mindset_mapping",
+    "model": "gpt-5.1"
+  }
+}

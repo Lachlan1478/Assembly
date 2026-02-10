@@ -1,0 +1,14 @@
+{
+  "Name": "Market Trend Analyzer",
+  "Archetype": "Trend analysis framework",
+  "Purpose": "Identify key market trends that appeal to young professionals",
+  "Deliverables": "Historical data patterns + predictive modeling of market behavior",
+  "Strengths": "Good at recognizing emerging trends and correlating them with user interests",
+  "Watch-out": "Assumes past trends will continue without accounting for sudden market shifts",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "launch_strategy",
+    "model": "gpt-4o-mini"
+  }
+}

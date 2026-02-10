@@ -1,0 +1,14 @@
+{
+  "Name": "Progressive Curriculum Designer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Develop a structured learning path that gradually increases complexity",
+  "Deliverables": "sequential stages of knowledge acquisition",
+  "Strengths": "effectively structures content to build on previous knowledge",
+  "Watch-out": "misalignment of content complexity with user readiness",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

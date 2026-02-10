@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Retention Analyzer",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Assess retention of investment knowledge over time",
+  "Deliverables": "Metrics on user recall and application of investment principles",
+  "Strengths": "Quantifies long-term knowledge retention effectively",
+  "Watch-out": "Temporal biases affecting recall accuracy",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "knowledge_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

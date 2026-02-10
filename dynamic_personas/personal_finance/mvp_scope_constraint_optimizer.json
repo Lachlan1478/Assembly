@@ -1,0 +1,14 @@
+{
+  "Name": "MVP_Scope_Constraint_Optimizer",
+  "Archetype": "Cost-benefit analysis with hard feasibility constraints",
+  "Purpose": "Minimize MVP scope while preserving ability to validate core value proposition for young beginner investors",
+  "Deliverables": "Set of prioritized MVP features represented as: (must-have, nice-to-have, exclude) lists, each annotated with estimated validation power, implementation cost, and risk reduction score",
+  "Strengths": "Good at stripping an investment-learning product down to the minimum feature set that can still test whether guided, simplified investing increases user confidence and engagement; highlights where complexity does not add proportional validation value",
+  "Watch-out": "Fails when qualitative learning or brand trust effects are critical but hard to quantify; may over-prune features that are low-build-cost but high in perceived safety or credibility for novice investors",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_definition_and_decision",
+    "model": "gpt-5.1"
+  }
+}

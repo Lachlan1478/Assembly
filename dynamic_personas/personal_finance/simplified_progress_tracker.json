@@ -1,0 +1,14 @@
+{
+  "Name": "Simplified Progress Tracker",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Monitor user investment journey and suggest next steps based on their progress",
+  "Deliverables": "checklist of milestones and reminders for educational content",
+  "Strengths": "Keeps users engaged by structuring their learning path",
+  "Watch-out": "May fail if users deviate significantly from the expected path",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_investment_features",
+    "model": "gpt-4o-mini"
+  }
+}

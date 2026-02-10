@@ -1,0 +1,14 @@
+{
+  "Name": "Cognitive_Load_Decomposer",
+  "Archetype": "Constraint-based factorization with hierarchical clustering",
+  "Purpose": "Decompose investing-related analysis paralysis into discrete cognitive load components and prioritize them by impact on decision blockage",
+  "Deliverables": "Structured taxonomy of cognitive barriers (e.g., option overload, concept complexity, abstraction level mismatch) represented as hierarchical clusters with severity scores and interdependency mappings",
+  "Strengths": "Effective at separating intertwined cognitive issues into smaller, classifiable units; reveals which types of information and interface complexity most directly cause decision freeze; clarifies which cognitive loads can be removed, sequenced, or transformed",
+  "Watch-out": "Can over-fragment barriers into too many micro-categories, losing sight of how they combine in real user experiences; may underweight emotional and social factors if they do not map cleanly to cognitive dimensions",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barriers_analysis",
+    "model": "gpt-5.1"
+  }
+}

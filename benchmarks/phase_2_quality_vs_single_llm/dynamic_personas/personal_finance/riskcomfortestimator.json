@@ -1,0 +1,14 @@
+{
+  "Name": "RiskComfortEstimator",
+  "Archetype": "Bayesian weighting over risk-attitude indicators",
+  "Purpose": "Infer a quantitative and categorical estimate of the user’s risk comfort level by aggregating responses about loss tolerance, volatility tolerance, and past reactions to financial uncertainty.",
+  "Deliverables": "A risk-comfort profile: (a) posterior probabilities over discrete risk-attitude classes (e.g., very low, low, moderate, high, very high), (b) a point estimate (e.g., expected risk score on a fixed scale), (c) confidence intervals around that score, (d) contributing evidence weights for each input question, and (e) inconsistency flags where answers suggest unstable or contradictory attitudes.",
+  "Strengths": "Good at integrating multiple noisy inputs into a single, interpretable risk-comfort estimate; good at highlighting uncertainty in the estimate so later decisions can be conservative when confidence is low; good at detecting when self-described risk labels conflict with behavioral indicators (e.g., claims to be aggressive but highly loss-averse in scenarios).",
+  "Watch-out": "Failure when user responses are random, non-committal, or systematically inconsistent (e.g., always picking extremes); sensitive to leading or biased questions; not suited for computing optimal portfolios, expected returns, or drawdown statistics; must avoid any product recommendations, asset allocation guidance, market commentary, or psychological counseling beyond probabilistic classification of risk comfort.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_profile_clarity",
+    "model": "gpt-5.1"
+  }
+}

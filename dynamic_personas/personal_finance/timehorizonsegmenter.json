@@ -1,0 +1,14 @@
+{
+  "Name": "TimeHorizonSegmenter",
+  "Archetype": "Rule-based classification with exception handling",
+  "Purpose": "Classify and segment a user’s financial goals into distinct investment time horizons and map each segment to appropriate planning categories (short-term, medium-term, long-term) to ground later decision rules",
+  "Deliverables": "A goal-horizon map consisting of: (1) a list of user goals, each tagged with an inferred time horizon bucket and an estimated year-range, (2) rule-trace metadata explaining which rules triggered each classification (e.g., ‘home purchase in ~5 years’ → medium-term), and (3) an exception list where goals violate standard rules (e.g., extremely early retirement target) requiring downstream special handling",
+  "Strengths": "Good at enforcing consistent, transparent mappings from goal descriptions and ages to time horizons. Handles edge cases via explicit exception flags rather than silent misclassification. Ensures that later investment logic is anchored to clear horizon categories instead of vague intentions.",
+  "Watch-out": "Fails when goal descriptions are ambiguous, missing, or contradictory (e.g., ‘soon’ plus ‘20+ years’ for the same goal) without clarification. Breaks if used to optimize or recommend asset mixes, contribution rates, or specific securities. Must not engage in risk tolerance inference, emotional profiling, tax planning, or user education; it only segments goals into time horizons using explicit rules and exceptions.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_profile_mapping",
+    "model": "gpt-5.1"
+  }
+}

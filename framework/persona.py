@@ -173,61 +173,40 @@ class Persona:
             print(f"[i] Initialized {domain} belief state for {self.name}")
 
         # Build system message as bare logic-role (no personality)
-        global_contract = """
-
-GLOBAL CONTEXT RULE:
-If a SCENARIOS block is present in the conversation:
-
-You MUST:
-1. Refer to scenarios by id (e.g., CASE_A, CASE_B)
-2. Apply your reasoning framework to EACH scenario
-3. Produce an EXAMPLE_MAPPING section at the end of your reply
-
-EXAMPLE_MAPPING FORMAT:
-- CASE_A: <your recommended action/output for this scenario>
-- CASE_B: <your recommended action/output for this scenario>
-- CASE_C: <your recommended action/output for this scenario>
-
-Example:
-EXAMPLE_MAPPING:
-  - CASE_A: Recommend threshold X=5 given low stakes
-  - CASE_B: Recommend threshold X=20 given high severity"""
-
+        # Strengthened to improve role adherence (target: >=90%)
         response_rules = """
 
-RESPONSE RULES:
-- Max 4 sentences (or more if addressing multiple scenarios)
-- Quote exact prior text
-- State agreement/disagreement explicitly
-- Update belief state or state no-update
-- No gratitude, no social language, no metaphors"""
+CRITICAL CONSTRAINTS:
+- You MUST stay in your assigned role at all times
+- Apply ONLY your specific reasoning type to the discussion
+- Do NOT drift into general UX, education, or unrelated topics
+- Every statement must reflect your objective and belief structure
+- If asked about something outside your role, redirect to your specialization
+- No gratitude, no social language, no metaphors
+- Max 4 sentences"""
 
         system_message = (
-            f"Role: {self.name}\n"
-            f"Reasoning type: {self.archetype}\n"
-            f"Objective: {self.purpose}\n"
-            f"Belief structure: {self.deliverables}\n"
-            f"Strengths: {self.strengths}\n"
-            f"Failure mode: {self.watchouts}"
-            f"{global_contract}"
+            f"You are {self.name}, a logic-role agent.\n\n"
+            f"YOUR ROLE: {self.name}\n"
+            f"YOUR REASONING TYPE: {self.archetype}\n"
+            f"YOUR OBJECTIVE: {self.purpose}\n"
+            f"YOUR BELIEF STRUCTURE: {self.deliverables}\n"
+            f"YOUR STRENGTHS: {self.strengths}\n"
+            f"YOUR FAILURE MODE (avoid this): {self.watchouts}"
             f"{response_rules}"
         )
 
-        # Build new user message
-        # First turn: just initial_prompt
-        # Subsequent turns for first speaker: initial_prompt (already in history) + other speaker's message
-        # Subsequent turns for others: other speaker's message
-        if not self.conversation_history:
-            # First time this persona speaks
-            if other_speaker:
-                # Not the first speaker in the conversation
-                new_user_message = f"{initial_prompt}\n\n{other_speaker['name']} says: {other_speaker['message']}"
-            else:
-                # First speaker in the conversation
-                new_user_message = initial_prompt
+        # Build new user message with full multi-party history
+        # Each turn rebuilds context from scratch using all participants' exchanges
+        exchanges = ctx.get("exchanges", [])
+
+        if not exchanges:
+            # First turn - just initial_prompt
+            new_user_message = initial_prompt
         else:
-            # Persona has spoken before - just add other speaker's message
-            new_user_message = f"{other_speaker['name']} says: {other_speaker['message']}"
+            # Subsequent turns - include full conversation history from all participants
+            formatted_history = self._format_full_history(exchanges)
+            new_user_message = f"{initial_prompt}\n\n---\n\nCONVERSATION SO FAR:\n{formatted_history}"
 
         # Prepend active scenarios if present (domain-agnostic scenario injection)
         shared_context = ctx.get("shared_context", {})
@@ -237,8 +216,16 @@ RESPONSE RULES:
             scenario_text = "SCENARIOS:\n" + json.dumps(active_scenarios, indent=2)
             new_user_message = scenario_text + "\n\n" + new_user_message
 
-        # Build messages array: system + conversation_history + new user message
-        messages = [{"role": "system", "content": system_message}] + self.conversation_history + [{"role": "user", "content": new_user_message}]
+        # Inject gap nudge if present (nudge, not rule - persona can ignore it)
+        gap_nudge = shared_context.get("active_gap_nudge")
+        if gap_nudge:
+            nudge_text = f"\n[Optional consideration: {gap_nudge}]\n"
+            new_user_message = nudge_text + new_user_message
+            # Clear after use so it doesn't persist
+            shared_context["active_gap_nudge"] = None
+
+        # Build messages array: system + user message (no native threading - full context each turn)
+        messages = [{"role": "system", "content": system_message}, {"role": "user", "content": new_user_message}]
 
         # Log prompt input if callback provided
         if prompt_logger:
@@ -261,9 +248,7 @@ RESPONSE RULES:
 
         content = completion.choices[0].message.content.strip()
 
-        # Append to conversation history
-        self.conversation_history.append({"role": "user", "content": new_user_message})
-        self.conversation_history.append({"role": "assistant", "content": content})
+        # No longer append to conversation history - we rebuild full context each turn
 
         return {
             "persona": self.name,
@@ -809,7 +794,7 @@ Only include fields with new information. Empty lists/objects are fine if nothin
                 old_position = self.belief_state.get("position")
                 self.belief_state["position"] = updates["position"]
                 if old_position and old_position != updates["position"]:
-                    print(f"[i] {self.name} position changed: {old_position[:50]}... → {updates['position'][:50]}...")
+                    print(f"[i] {self.name} position changed: {old_position[:50]}... -> {updates['position'][:50]}...")
 
             # Update confidence if changed
             if updates.get("confidence") is not None:
@@ -942,7 +927,7 @@ Only include fields with new information. Empty lists/objects are fine if nothin
                 old_position = self.belief_state.get("position")
                 self.belief_state["position"] = updates["position"]
                 if old_position and old_position != updates["position"]:
-                    print(f"[i] {self.name} position changed: {old_position[:50]}... → {updates['position'][:50]}...")
+                    print(f"[i] {self.name} position changed: {old_position[:50]}... -> {updates['position'][:50]}...")
 
             # Update confidence if changed
             if updates.get("confidence") is not None:

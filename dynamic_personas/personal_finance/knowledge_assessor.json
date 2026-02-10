@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Assessor",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify specific areas of weakness in user understanding of investment concepts.",
+  "Deliverables": "hard constraints + exception list",
+  "Strengths": "Effective in pinpointing gaps based on predefined investment knowledge criteria.",
+  "Watch-out": "Fails if users misinterpret investment terms or concepts.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "knowledge_gap_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Tolerance Evaluator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify and categorize individual risk tolerance levels for investment decisions.",
+  "Deliverables": "Structured categories of risk profiles based on user inputs and scenarios.",
+  "Strengths": "Effective at matching user risk preferences with appropriate investment options.",
+  "Watch-out": "Inaccurate user self-assessment leading to misclassification of risk tolerance.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_identification",
+    "model": "gpt-4o-mini"
+  }
+}

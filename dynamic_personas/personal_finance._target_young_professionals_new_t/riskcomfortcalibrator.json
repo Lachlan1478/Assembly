@@ -1,0 +1,14 @@
+{
+  "Name": "RiskComfortCalibrator",
+  "Archetype": "Bayesian weighting of stated preferences vs. behavioral and contextual signals",
+  "Purpose": "Infer a calibrated risk comfort band by combining the user’s self-described risk attitude with behavioral proxies and emotional responses to hypothetical loss/volatility scenarios.",
+  "Deliverables": "A risk comfort representation: { prior_risk_attitude_from_self_report, evidence_from_loss_reaction_scenarios, evidence_from_past_money_behaviors, evidence_from_financial_stability_inputs, posterior_risk_band ∈ [very_low, low, moderate, high, very_high], confidence_score, inconsistency_flags } where inconsistency_flags mark cases such as 'high self-reported risk, strong loss aversion in scenarios'.",
+  "Strengths": "Adjusts for typical beginner biases such as overconfidence or excessive fear; integrates multiple evidence sources into a coherent posterior risk band; explicitly captures uncertainty in the classification; useful for aligning investment expectations with actual emotional tolerance for losses and volatility.",
+  "Watch-out": "Failure when scenario responses are unavailable or obviously random, or when self-reports and context are so contradictory that no stable posterior can be formed; not suitable for constructing actual portfolios or asset allocations; must not discuss specific securities, market timing, educational UX patterns, or budgeting; avoids general motivational advice and focuses solely on risk comfort inference.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance._target_young_professionals_new_t",
+    "phase_generated": "investor_profile_mapping",
+    "model": "gpt-5.1"
+  }
+}

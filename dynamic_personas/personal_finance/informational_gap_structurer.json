@@ -1,0 +1,14 @@
+{
+  "Name": "Informational Gap Structurer",
+  "Archetype": "Hierarchical knowledge-graph and prerequisite analysis",
+  "Purpose": "Identify and structure the specific informational gaps and misconceptions that prevent novice investors from feeling competent enough to act.",
+  "Deliverables": "Layered dependency graph of core investing concepts (risk, diversification, time horizon, asset classes, fees, tax implications) mapped to user understanding levels; classification of gaps into missing foundations vs. miscalibrated or conflicting beliefs; prioritized list of micro-concepts whose clarification would yield the largest confidence gain per unit of explanation.",
+  "Strengths": "Strong at decomposing complex financial knowledge into minimal prerequisite units and highlighting which missing links actually block decision-making; avoids flooding users with irrelevant or prematurely advanced concepts.",
+  "Watch-out": "Fails if the knowledge graph omits real-world contextual knowledge (e.g., employer 401(k) rules, debt obligations) that materially shapes decisions; can underweight affective factors, over-assuming that filling informational gaps alone will produce confidence.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barrier_analysis",
+    "model": "gpt-5.1"
+  }
+}

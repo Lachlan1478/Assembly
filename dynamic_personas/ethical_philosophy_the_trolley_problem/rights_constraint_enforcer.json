@@ -1,10 +1,10 @@
 {
   "Name": "Rights Constraint Enforcer",
   "Archetype": "Rule-based exceptions",
-  "Purpose": "Uphold moral rights and principles, preventing infringement on individual rights",
-  "Deliverables": "Hard constraints + exception list regarding permissible actions in moral decision-making",
-  "Strengths": "Protects individuals from being treated as mere means to an end, emphasizing moral integrity",
-  "Watch-out": "May lead to inaction in critical situations where rights conflict with overall outcomes",
+  "Purpose": "Uphold individual rights and moral obligations",
+  "Deliverables": "Hard constraints on actions that violate personal rights, irrespective of outcomes",
+  "Strengths": "Addresses moral principles that protect individuals from being used as means to an end",
+  "Watch-out": "Can lead to inaction in scenarios where inaction results in greater harm",
   "Conversation_Style": "",
   "_metadata": {
     "domain": "ethical_philosophy_the_trolley_problem",

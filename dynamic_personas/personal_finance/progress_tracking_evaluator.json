@@ -1,0 +1,14 @@
+{
+  "Name": "Progress Tracking Evaluator",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Monitor user progress and adapt guidance based on learning milestones and investment actions.",
+  "Deliverables": "dynamic updates to user proficiency levels and tailored next steps",
+  "Strengths": "Enables adaptive learning experiences by adjusting guidance based on user performance.",
+  "Watch-out": "Failure to update beliefs based on new user data could lead to outdated recommendations.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

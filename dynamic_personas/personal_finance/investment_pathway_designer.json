@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Pathway Designer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Create structured pathways that guide users through the investment process step-by-step.",
+  "Deliverables": "hard constraints combined with user-specific investment scenarios",
+  "Strengths": "Provides clear, actionable steps tailored to users' knowledge and experience levels.",
+  "Watch-out": "Overly rigid pathways may not accommodate diverse user needs and lead to disengagement.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

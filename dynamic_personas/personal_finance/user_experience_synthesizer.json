@@ -1,0 +1,14 @@
+{
+  "Name": "User Experience Synthesizer",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Consolidate user testing results to refine user interface for clarity.",
+  "Deliverables": "criteria-based adjustments to UI components based on user interaction metrics",
+  "Strengths": "Quickly identifies specific elements causing confusion or frustration.",
+  "Watch-out": "Rigid rule application may overlook unique user scenarios.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "final_decision_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

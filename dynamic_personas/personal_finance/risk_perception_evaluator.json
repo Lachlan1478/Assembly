@@ -1,0 +1,14 @@
+{
+  "Name": "Risk Perception Evaluator",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Evaluate user fears associated with investment risk",
+  "Deliverables": "probability distributions over risk perceptions",
+  "Strengths": "Accurately assesses and quantifies varying levels of risk tolerance among users.",
+  "Watch-out": "Overconfidence in probability estimates leading to underestimation of real risk.",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

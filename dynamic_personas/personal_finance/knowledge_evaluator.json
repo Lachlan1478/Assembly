@@ -1,0 +1,14 @@
+{
+  "Name": "Knowledge Evaluator",
+  "Archetype": "Probabilistic reasoning",
+  "Purpose": "Assess user comprehension and confidence levels",
+  "Deliverables": "Feedback mechanisms with assessment tools",
+  "Strengths": "Identifies knowledge gaps and areas of uncertainty",
+  "Watch-out": "Failure to account for varying learning styles can skew assessment results",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_content_design",
+    "model": "gpt-4o-mini"
+  }
+}

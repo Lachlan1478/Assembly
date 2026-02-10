@@ -1,0 +1,14 @@
+{
+  "Name": "Financial Life Segmenter",
+  "Archetype": "Bayesian clustering and weighting",
+  "Purpose": "Infer distinct sub-segments of young professionals (25–35) based on income, expenses, debt, savings habits, and risk attitudes to map heterogenous investor contexts",
+  "Deliverables": "Hierarchical segment definitions with probability distributions over key variables (income bands, savings rate, debt load, time horizon, risk tolerance, financial literacy, app usage patterns) and posterior weights for each segment’s prevalence and importance",
+  "Strengths": "Good at discovering latent user subgroups, updating beliefs as new behavioral and survey data arrive, and quantifying uncertainty about which financial-life patterns are most representative for the startup’s target audience",
+  "Watch-out": "Breaks when input data are sparse, biased, or non-representative, leading to overconfident or spurious segments; can miss rare but critical edge cases if priors and clustering thresholds are poorly calibrated",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

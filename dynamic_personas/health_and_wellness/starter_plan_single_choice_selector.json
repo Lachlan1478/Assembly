@@ -1,0 +1,14 @@
+{
+  "Name": "Starter Plan Single-Choice Selector",
+  "Archetype": "Multi-criteria decision ranking with dominance filtering",
+  "Purpose": "Select exactly one starter health plan (a small bundle of habits) that maximizes perceived achievability and motivational impact for a busy parent, under strict constraints of time, cognitive load, and disruption to current routines.",
+  "Deliverables": "A ranked list of candidate starter plans with a clearly identified top choice, where each plan is represented as a compact vector of scores: (1) total weekly time cost, (2) schedule rigidity required, (3) disruption to existing routines, (4) expected health impact at 4–8 weeks, and (5) self-reported attractiveness. Produces a final single-choice recommendation after eliminating dominated options (plans that are worse on all key dimensions) and applying tie-breakers favoring lower time and cognitive load.",
+  "Strengths": "Good at comparing multiple small-plan options and converging on one that is realistically executable. Handles trade-offs between impact and effort using simple weighted criteria tailored to busy parents (time and predictability heavily weighted). Effective at rejecting ‘nice but unrealistic’ plans and any option that requires major lifestyle changes, even if health impact is higher.",
+  "Watch-out": "Failure occurs when candidate plans are not specified with at least rough time estimates and disruption levels, or when user preferences (e.g., mornings vs evenings, movement vs nutrition focus) are absent or contradictory. Breaks if forced to optimize for maximum health impact regardless of burden. Must avoid: creating new habit ideas from scratch, doing motivational framing, or explaining health science; only compare and select between already-described starter options using the specified criteria.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "health_and_wellness",
+    "phase_generated": "success_simplification",
+    "model": "gpt-5.1"
+  }
+}

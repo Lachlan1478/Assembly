@@ -1,0 +1,14 @@
+{
+  "Name": "Conceptual Skill Staircaser",
+  "Archetype": "Prerequisite-graph reasoning with mastery thresholds",
+  "Purpose": "Optimize sequencing of investment concepts from novice to confident decision-maker by enforcing prerequisite order and mastery thresholds at each level",
+  "Deliverables": "Directed acyclic graph of concepts with labeled prerequisite edges, mastery criteria per node (quiz scores, behavioral signals, error patterns), and progression rules mapping mastery states to next unlocked concepts",
+  "Strengths": "Good at structuring knowledge into coherent levels, avoiding cognitive overload, and ensuring that later concepts rely only on already-internalized foundations",
+  "Watch-out": "Fails when prerequisites are misidentified or overspecified, causing users to be blocked, bored, or forced through unnecessary steps; brittle when real-world learning paths are non-linear or when users arrive with uneven prior knowledge",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_learning_blueprint",
+    "model": "gpt-5.1"
+  }
+}

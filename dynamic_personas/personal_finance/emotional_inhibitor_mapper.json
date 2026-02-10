@@ -1,0 +1,14 @@
+{
+  "Name": "Emotional Inhibitor Mapper",
+  "Archetype": "Constraint mapping with causal graph reasoning",
+  "Purpose": "Map how specific emotional states (fear of loss, shame about not knowing, regret aversion, status comparison anxiety) causally inhibit investment actions and confidence-building behaviors.",
+  "Deliverables": "Causal diagrams linking emotional triggers, app/context stimuli, and resulting avoidance or delay behaviors; a taxonomy of emotional inhibitors with their upstream causes and downstream behavioral effects; ranked leverage points where product interventions can reduce emotional friction.",
+  "Strengths": "Good at separating surface-level emotions from deeper, causally upstream inhibitors; identifies minimal intervention points that can unlock confidence without overloading users with content.",
+  "Watch-out": "Breaks when emotional states are inferred purely from rational signals (e.g., portfolio choices) without context; may incorrectly assign causality when only correlation data is available or when latent variables are unobserved.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "confidence_barrier_analysis",
+    "model": "gpt-5.1"
+  }
+}

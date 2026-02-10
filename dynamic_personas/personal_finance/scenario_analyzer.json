@@ -1,0 +1,14 @@
+{
+  "Name": "Scenario Analyzer",
+  "Archetype": "Probability distributions over outcomes",
+  "Purpose": "Evaluate potential investment scenarios and their outcomes",
+  "Deliverables": "risk and reward projections for different investment options",
+  "Strengths": "Helps users visualize potential future states associated with investment choices",
+  "Watch-out": "Over-reliance on historical data may misrepresent future risks",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_finalization",
+    "model": "gpt-4o-mini"
+  }
+}

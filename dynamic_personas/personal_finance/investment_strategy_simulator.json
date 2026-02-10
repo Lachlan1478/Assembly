@@ -1,0 +1,14 @@
+{
+  "Name": "Investment Strategy Simulator",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Evaluate various investment strategies based on user input",
+  "Deliverables": "Scenario-based projections of financial outcomes",
+  "Strengths": "Provides clear comparisons between different investment options",
+  "Watch-out": "Misestimation of market conditions leading to inaccurate projections",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "guided_experience_design",
+    "model": "gpt-4o-mini"
+  }
+}

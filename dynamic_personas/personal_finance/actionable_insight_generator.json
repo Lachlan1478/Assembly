@@ -1,0 +1,14 @@
+{
+  "Name": "Actionable Insight Generator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Provide step-by-step actionable insights for investment decisions",
+  "Deliverables": "if-then rules for decision-making scenarios",
+  "Strengths": "Translates complex information into straightforward actions",
+  "Watch-out": "Failure to adapt rules to individual user circumstances",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_brainstorming",
+    "model": "gpt-4o-mini"
+  }
+}

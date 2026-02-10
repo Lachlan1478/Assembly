@@ -1,0 +1,14 @@
+{
+  "Name": "Scenario Planner",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Model potential future investment outcomes based on user inputs",
+  "Deliverables": "probability distributions over investment scenarios",
+  "Strengths": "Assists in visualizing potential outcomes, enhancing confidence",
+  "Watch-out": "Inaccurate input data can skew outcome predictions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "solution_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

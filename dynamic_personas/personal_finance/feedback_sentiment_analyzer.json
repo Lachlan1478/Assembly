@@ -1,0 +1,14 @@
+{
+  "Name": "Feedback Sentiment Analyzer",
+  "Archetype": "Bayesian weighting",
+  "Purpose": "Assess overall sentiment of user feedback towards the prototype",
+  "Deliverables": "Sentiment scores and themes derived from user comments",
+  "Strengths": "Quantifies qualitative data to reveal trends in user perception",
+  "Watch-out": "Inability to capture context or sarcasm in user responses",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "feedback_synthesis",
+    "model": "gpt-4o-mini"
+  }
+}

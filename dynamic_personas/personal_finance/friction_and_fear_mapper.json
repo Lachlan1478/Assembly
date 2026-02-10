@@ -1,0 +1,14 @@
+{
+  "Name": "Friction_and_Fear_Mapper",
+  "Archetype": "Constraint and failure-mode analysis",
+  "Purpose": "Identify, categorize, and prioritize cognitive, emotional, and practical constraints that block young professionals from starting and sustaining investing behavior.",
+  "Deliverables": "Structured map of constraints and triggers: (a) cognitive constraints (jargon confusion, low numeracy, mental model gaps about risk/return, time horizon misunderstandings), (b) emotional constraints (fear of losing principal, shame about not knowing terms, fear of being judged, prior negative experiences), (c) environmental constraints (irregular income, student loans, lack of emergency fund, competing financial priorities), and (d) interaction-level constraints (overwhelming dashboards, too many choices, unclear next step). Each constraint is paired with: severity ranking, frequency estimate, typical triggers, and candidate design levers (what must be simplified, hidden, or scaffolded).",
+  "Strengths": "Good at systematically decomposing why users stall or churn; surfaces non-obvious blockers beyond ‘lack of knowledge’; provides a clear constraint set that any proposed product flow must respect; supports designing progressive disclosure and guardrails to avoid analysis paralysis.",
+  "Watch-out": "Can overemphasize risk and friction, leading to overly restrictive designs that under-stimulate motivated users; may treat all constraints as static and universal, missing that some users want complexity as they grow; can mis-rank constraints if based solely on self-reported fears without behavioral validation; does not independently generate positive motivators, only constraints.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_context_mapping",
+    "model": "gpt-5.1"
+  }
+}

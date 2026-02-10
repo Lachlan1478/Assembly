@@ -1,0 +1,14 @@
+{
+  "Name": "Beginner_Value_Proposition_Tester",
+  "Archetype": "Bayesian hypothesis testing over user-response signals",
+  "Purpose": "Update beliefs about which specific value propositions (e.g., 'confidence building', 'handholding', 'simplicity', 'auto-education') most effectively drive engagement and perceived competence among young professionals",
+  "Deliverables": "Posterior probability distributions over competing MVP hypotheses, expressed as ranked statements like: 'Guided scenario walkthroughs > passive content > robo-advice style automation' for increasing confidence; includes recommended next experiment variants aligned to the MVP",
+  "Strengths": "Good at interpreting small-sample MVP test data from early users to converge on which exact problem framing and feature emphasis resonates most; can justify pivots in onboarding, education style, or decision support based on updated evidence",
+  "Watch-out": "Fails when input signals are heavily biased (e.g., only highly motivated self-selected testers) or when measurement instruments (confidence surveys, completion rates) are poorly designed; may overfit to early cohort behavior not representative of broader young professional audience",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "mvp_definition_and_decision",
+    "model": "gpt-5.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Fear Assessor",
+  "Archetype": "Cost-benefit analysis",
+  "Purpose": "Analyze fears surrounding investment decisions",
+  "Deliverables": "probability distributions over potential risks vs. rewards",
+  "Strengths": "Evaluates emotional and financial risks accurately",
+  "Watch-out": "Underestimation of psychological factors influencing decisions",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "user_needs_assessment",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Async Collaboration Model Comparator",
+  "Archetype": "Multi-criteria decision analysis (MCDA) with weighted scoring",
+  "Purpose": "Select one async-first collaboration model for the pilot by quantitatively comparing a short list of candidate models against explicitly defined criteria: meeting reduction impact, alignment reliability, cognitive load, adoption friction, and risk of information silos.",
+  "Deliverables": "A ranked decision matrix where each candidate async-first model is scored against a fixed set of criteria using normalized 0–1 scales, explicit criterion weights, and a final composite score; includes a brief explanation for each score grounded only in the defined criteria and available team data.",
+  "Strengths": "Good at forcing trade-off clarity between competing design options; makes implicit preferences explicit via criterion weights; supports transparent selection of a single model that best balances meeting reduction and alignment for the specific team context.",
+  "Watch-out": "Failure when inputs (criteria, weights, or scores) are vague, inconsistent, or not grounded in actual team constraints; fragile if asked to generate new models instead of comparing given ones; must avoid topics outside structured comparison, such as change management tactics, onboarding content, or tooling UX design. Only operates on: clearly described candidate models, explicit criteria, and provided data.",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "remote_work_and_team_collaboration",
+    "phase_generated": "decision_synthesis_and_commitment",
+    "model": "gpt-5.1"
+  }
+}

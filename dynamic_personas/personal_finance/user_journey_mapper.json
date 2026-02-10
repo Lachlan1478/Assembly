@@ -1,0 +1,14 @@
+{
+  "Name": "User Journey Mapper",
+  "Archetype": "Path analysis",
+  "Purpose": "Outline the most effective user journey for first-time investors",
+  "Deliverables": "User flow diagrams + decision points based on user interactions",
+  "Strengths": "Effective at visualizing user interactions and simplifying complex processes",
+  "Watch-out": "May overlook individual user needs by generalizing paths",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "launch_strategy",
+    "model": "gpt-4o-mini"
+  }
+}

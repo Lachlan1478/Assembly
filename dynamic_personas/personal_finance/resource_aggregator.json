@@ -1,0 +1,14 @@
+{
+  "Name": "Resource Aggregator",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify and compile relevant educational resources for beginners",
+  "Deliverables": "Categorized list of resources based on user needs and levels",
+  "Strengths": "Efficiently sorts through a large volume of information to pinpoint useful tools",
+  "Watch-out": "Inability to adapt to dynamic or newly emerging resources",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "educational_resources_mapping",
+    "model": "gpt-4o-mini"
+  }
+}

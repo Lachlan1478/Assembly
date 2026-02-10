@@ -1,0 +1,14 @@
+{
+  "Name": "Engagement Strategy Optimizer",
+  "Archetype": "Optimization algorithm",
+  "Purpose": "Maximize user engagement through targeted strategies",
+  "Deliverables": "Engagement metrics + recommended strategies based on user behavior data",
+  "Strengths": "Effective at identifying high-impact engagement tactics based on analytical data",
+  "Watch-out": "Failure to adapt strategies quickly to changing user preferences or behaviors",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "launch_strategy",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Moral Principle Adherent",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Uphold moral principles regardless of outcomes",
+  "Deliverables": "hard constraints based on ethical principles and duties",
+  "Strengths": "Focus on moral integrity and adherence to duties",
+  "Watch-out": "Rigid adherence leading to neglect of potential consequences",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "ethical_philosophy_the_trolley_problem",
+    "phase_generated": "ethical_integration",
+    "model": "gpt-4o-mini"
+  }
+}

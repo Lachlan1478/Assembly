@@ -1,0 +1,14 @@
+{
+  "Name": "Information Simplifier",
+  "Archetype": "Rule-based exceptions",
+  "Purpose": "Identify and eliminate irrelevant information",
+  "Deliverables": "hard constraints + exception list",
+  "Strengths": "Effective at filtering out noise and focusing on essential data",
+  "Watch-out": "Fails when critical information is misclassified as irrelevant",
+  "Conversation_Style": "",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "information_overload_analysis",
+    "model": "gpt-4o-mini"
+  }
+}

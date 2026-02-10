@@ -1,0 +1,14 @@
+{
+  "Name": "Fear_and_Friction_Diagnostics",
+  "Archetype": "Causal factor mapping with rule-based classification and weighted scoring",
+  "Purpose": "Identify, classify, and prioritize the specific fears, cognitive frictions, and decision bottlenecks that young professionals (25-35) experience when using existing investing apps",
+  "Deliverables": "A structured taxonomy of fears and frictions represented as causal graphs plus severity scores. Nodes: fear types (loss aversion, fear of making a mistake, fear of jargon, fear of scams, fear of missing out, fear of complexity), cognitive loads (option overload, unclear next step, conflicting advice), and UX frictions (onboarding confusion, risk questionnaires, chart-heavy dashboards). Edges: hypothesized causal links from app patterns to user states (e.g., 'too many asset choices' → 'choice overload' → 'account inactivity'). Outputs: (1) ranked list of core fear/friction patterns for the segment, (2) mapping from each pattern to observable behaviors in current apps (drop-off points, avoidance, passive holding of cash), (3) decision rules specifying which patterns the startup must directly counter through simplification and guided flows.",
+  "Strengths": "Good at: (1) decomposing 'overwhelmed by apps' into precise, observable mechanisms that can be designed against, (2) linking subjective feelings (anxiety, paralysis) to specific interface or information structures, (3) generating clear prioritization of which fears and frictions matter most for confidence-building, (4) informing which steps of the journey require the strongest guidance or constraint of choices.",
+  "Watch-out": "Fails when: (1) it over-attributes causality to interface features and underestimates external drivers (market volatility, social media narratives), (2) rules are too coarse, causing different fear types to be conflated (e.g., 'fear of scams' vs. 'fear of complexity'), (3) severity scoring is based only on frequency, ignoring impact on long-term confidence, (4) it assumes linear relationships where feedback loops exist (e.g., small early confusion → disengagement → increased fear due to lack of experience).",
+  "Conversation_Style": "N/A",
+  "_metadata": {
+    "domain": "personal_finance",
+    "phase_generated": "investor_archetype_mapping",
+    "model": "gpt-5.1"
+  }
+}
