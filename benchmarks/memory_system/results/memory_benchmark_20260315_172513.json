@@ -1,0 +1,253 @@
+{
+  "benchmark_config": {
+    "domains": [
+      "finance"
+    ],
+    "assembly_mode": "medium",
+    "judge_model": "gpt-5.1",
+    "memory_configs": [
+      "full_history",
+      "structured"
+    ],
+    "timestamp": "2026-03-15T17:25:13.146525"
+  },
+  "comparisons": [
+    {
+      "totals": {
+        "full_history": 15,
+        "structured": 16
+      },
+      "winner": "structured",
+      "winners": [
+        "structured"
+      ],
+      "rankings": {
+        "structured": 1,
+        "full_history": 2
+      },
+      "criteria_comparison": {
+        "novelty": {
+          "scores": {
+            "full_history": 3,
+            "structured": 4
+          },
+          "winner": "structured",
+          "winners": [
+            "structured"
+          ]
+        },
+        "feasibility": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "specificity": {
+          "scores": {
+            "full_history": 5,
+            "structured": 5
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "commercial_clarity": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        }
+      },
+      "score_details": {
+        "full_history": {
+          "novelty": 3,
+          "feasibility": 4,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "Novelty: The core concept (prioritizing between emergency fund vs debt payoff using ratios) exists in many PF tools and advisor playbooks, but the explicit rule-based, threshold-driven engine and focus on structural cash-flow tradeoffs is a decent differentiation from generic budgeting apps, so mid-level novelty. Feasibility: All components (data intake, ratio calculations, rule engine, dashboards, scenarios) are straightforward with current tech; main challenges are data quality, UX to reduce input friction, and regulatory positioning, but nothing technically prohibitive. Specificity: Very high\u2014clear ICPs, detailed must-have features, explicit metrics and decision rules, constraints, and non-goals; the problem and solution are well-articulated. Commercial clarity: It\u2019s clear this could be monetized (e.g., B2C subscription, B2B2C for coaches/advisors, employer benefits, or fintech partnerships), but the idea description doesn\u2019t specify a concrete revenue model, pricing, or go-to-market focus, so commercial clarity is only moderate."
+        },
+        "structured": {
+          "novelty": 4,
+          "feasibility": 4,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 16,
+          "notes": "Novelty: The focus on cashflow regimes, behavioral default scripts under stress, and structural vulnerability mapping is a differentiated angle versus standard budgeting/saving apps, though adjacent to emerging \"financial health\" analytics tools. Feasibility: All core components (data aggregation, categorization, time-series analysis, scenario modeling) are buildable with current fintech stacks; main challenges are data access, ML accuracy for behavioral inference, and compliance, but none are insurmountable. Specificity: Very high\u2014clear ICPs, detailed feature list, explicit constraints and non-goals, and a well-articulated primary outcome. Commercial clarity: There are obvious potential customers (end users, coaches/planners, fintechs/neobanks), but the idea doesn\u2019t yet specify a concrete go-to-market or pricing model (B2C subscription vs B2B2C API vs pro tooling), nor evidence of willingness to pay, so the revenue path is plausible but not yet clearly defined."
+        }
+      },
+      "domain": "finance",
+      "domain_prompt": "Personal finance tools for young professionals aged 22-35",
+      "run_details": {
+        "full_history": {
+          "memory_config": "full_history",
+          "label": "Full History (baseline)",
+          "idea": {
+            "title": "Debt\u2013Liquidity & Cash-Flow Planner",
+            "description": "A personal finance planning tool that models an individual\u2019s income structure, expense structure, debt stack, and liquidity to generate rule-based, threshold-driven recommendations. It computes key ratios (e.g., fixed-cost load, liquidity in months, debt-service ratio) and then applies piecewise decision rules to tell users when to prioritize building an emergency buffer, when to accelerate high-interest debt payoff, and when to adjust fixed expenses.",
+            "target_users": [
+              "Individuals aged 22\u201340 with multiple debt types (credit cards, student loans, BNPL, auto loans)",
+              "Gig workers and freelancers with volatile income",
+              "Young professionals with stable income but complex expense and debt structures",
+              "Financial coaches and advisors who need structured, quantitative planning tools for clients"
+            ],
+            "primary_outcome": "Provide clear, quantitative, and personalized guidance on whether a user should focus on liquidity (emergency savings), debt repayment, or restructuring their income/expense mix, thereby reducing cash-flow stress and default/overdraft risk while improving long-term financial stability.",
+            "must_haves": [
+              "Income structure modeling (fixed vs variable income, volatility, pay frequency)",
+              "Expense structure mapping (fixed vs variable, quasi-fixed recurring discretionary items)",
+              "Automatic calculation of core ratios: rent-to-income, fixed-costs-to-income, debt-service-to-income, savings rate, discretionary-spend-share",
+              "Debt stack analyzer (balances, APRs, minimum payments, terms, fees) with high-interest vs low-interest classification",
+              "Liquidity and buffer calculator (cash and accessible credit translated into months of core expenses)",
+              "Risk scoring engine (liquidity risk scores for 1\u20133 and 3\u20136 months, cash-flow stress flags, leverage flags)",
+              "Rule-based recommendation engine with explicit numeric thresholds (e.g., when liquidity_months < 1 and debt_service_ratio > X%, prioritize buffer; when liquidity_months > 6, prioritize high-interest payoff, etc.)",
+              "Scenario and what-if simulation (e.g., income drop, rent change, lump-sum inflow) showing how metrics and recommended priorities change",
+              "Simple, structured outputs (e.g., \u201cnext dollar\u201d allocation suggestions and 1\u20133 recommended structural changes)",
+              "User-friendly dashboards visualizing trade-offs between aggressive debt payoff vs liquidity vs lifestyle/fixed-cost commitments"
+            ],
+            "constraints": [
+              "Requires accurate and reasonably detailed user financial data (income, expenses, debts, savings) to produce reliable recommendations",
+              "Thresholds and scoring models must be transparent and regularly updated to reflect changing economic conditions (interest rates, employment volatility)",
+              "Cannot guarantee outcomes; recommendations are heuristic and may not be optimal for every edge case",
+              "Regulatory and compliance considerations if positioned as financial advice rather than educational guidance",
+              "May need localization for different countries\u2019 banking, credit, and debt structures",
+              "User adoption may be limited by the effort required to input and maintain up-to-date financial data"
+            ],
+            "non_goals": [
+              "It will not act as a bank, lender, or brokerage executing transactions on behalf of users",
+              "It will not provide individualized tax, legal, or investment security selection advice",
+              "It will not attempt to predict market movements or offer trading strategies",
+              "It will not replace full-service human financial planners for users with highly complex financial situations (e.g., business ownership, complex estates)",
+              "It will not function as a generic budgeting app focused on day-to-day expense tracking without structural analysis"
+            ]
+          },
+          "score": {
+            "novelty": 3,
+            "feasibility": 4,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "Novelty: The core concept (prioritizing between emergency fund vs debt payoff using ratios) exists in many PF tools and advisor playbooks, but the explicit rule-based, threshold-driven engine and focus on structural cash-flow tradeoffs is a decent differentiation from generic budgeting apps, so mid-level novelty. Feasibility: All components (data intake, ratio calculations, rule engine, dashboards, scenarios) are straightforward with current tech; main challenges are data quality, UX to reduce input friction, and regulatory positioning, but nothing technically prohibitive. Specificity: Very high\u2014clear ICPs, detailed must-have features, explicit metrics and decision rules, constraints, and non-goals; the problem and solution are well-articulated. Commercial clarity: It\u2019s clear this could be monetized (e.g., B2C subscription, B2B2C for coaches/advisors, employer benefits, or fintech partnerships), but the idea description doesn\u2019t specify a concrete revenue model, pricing, or go-to-market focus, so commercial clarity is only moderate."
+          },
+          "quality_metrics": {
+            "repetition_count": 4,
+            "dead_end_recovery": 0,
+            "concept_density": 106.7
+          },
+          "logs_count": 10
+        },
+        "structured": {
+          "memory_config": "structured",
+          "label": "Structured (shared+personal+3-turn)",
+          "idea": {
+            "title": "Personal Cashflow Regime Profiler",
+            "description": "A financial intelligence platform that builds a deep, multi-layered profile of an individual\u2019s money life by combining income/expense structure, behavioral spending patterns, and risk/safety-net exposure. It goes beyond static budgets to map cashflow regimes, default scripts under stress, and structural vulnerabilities, then surfaces personalized insights, scenarios, and routing rules (e.g., how to treat windfalls, how to size fixed commitments vs volatile income).",
+            "target_users": [
+              "Young professionals aged 22\u201335 with salaries, bonuses, or RSUs",
+              "Freelancers, consultants, and gig workers with volatile or lumpy income",
+              "Financial coaches and planners who want richer client diagnostics",
+              "Fintech apps and neobanks seeking advanced personalization modules"
+            ],
+            "primary_outcome": "Help users design resilient, behavior-aware money systems that align fixed commitments, spending habits, and buffers with their actual income volatility and risk exposure, reducing liquidity crises and enabling more intentional use of surplus and windfalls.",
+            "must_haves": [
+              "Income-Expense Structure Mapper that decomposes income sources (salary, bonuses, equity, gigs) and expenses (fixed, semi-fixed, variable, seasonal, one-off) with timing and rigidity tags",
+              "Behavioral Pattern Extractor that analyzes transaction timing, payday spikes, windfall/shock responses, monitoring habits, and default cut/upgrade hierarchies",
+              "Risk-Exposure and Safety Net Profiler that assesses income risk, shock surface area, buffers, insurance, obligations, and dependency maps",
+              "Regime detection engine that identifies stable patterns vs state shifts (e.g., after layoff news, new contract, repeated seasonal windfalls) and flags structural regime changes",
+              "Scenario simulator that lets users test cases like income drops, new medical bills, new contracts, or seasonal spikes and see cashflow, buffer, and risk impacts",
+              "Surplus and windfall routing rules (e.g., auto-allocate X% to buffers, Y% to debt, Z% to discretionary) tailored to user\u2019s volatility and risk profile",
+              "Cut-order and upgrade-order recommendations that show which expenses are easiest/safest to adjust under stress and which fixed commitments are dangerously high for given income volatility",
+              "Clear visualizations of monthly affordability vs intra-month liquidity, including bill/paycheck timing and reliance on credit as timing tool vs deficit cover",
+              "Integrations with banks, credit cards, payroll, and invoicing tools to ingest real transaction and income data",
+              "Privacy and security controls suitable for sensitive financial and behavioral data"
+            ],
+            "constraints": [
+              "Requires access to detailed financial transaction data and/or user input, which may face privacy concerns and consent friction",
+              "Behavioral inference (e.g., mood-driven spending, avoidance) is probabilistic and may misclassify users without sufficient history",
+              "Seasonal and regime-change detection needs enough time-series data; insights may be limited or less accurate for new users",
+              "Tax treatment and benefits structures vary by jurisdiction and employment type, complicating standardized modeling",
+              "Must avoid providing regulated financial advice without appropriate licensing and compliance frameworks",
+              "User engagement is needed to validate and refine inferred patterns; fully passive users may not realize full value"
+            ],
+            "non_goals": [
+              "It will not function as a traditional robo-advisor for investment portfolio selection or asset allocation optimization.",
+              "It will not replace full-service tax preparation or provide detailed, jurisdiction-specific tax filing.",
+              "It will not offer lending products or act as a bank; any credit recommendations are analytical, not product offers.",
+              "It will not guarantee prevention of overdrafts, debt accumulation, or financial distress; it focuses on insight and planning, not outcome guarantees.",
+              "It will not attempt to provide mental health or therapy services, even when identifying stress-linked spending patterns.",
+              "It will not enforce hard spending blocks; it provides guidance, alerts, and simulations rather than coercive controls."
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 4,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 16,
+            "notes": "Novelty: The focus on cashflow regimes, behavioral default scripts under stress, and structural vulnerability mapping is a differentiated angle versus standard budgeting/saving apps, though adjacent to emerging \"financial health\" analytics tools. Feasibility: All core components (data aggregation, categorization, time-series analysis, scenario modeling) are buildable with current fintech stacks; main challenges are data access, ML accuracy for behavioral inference, and compliance, but none are insurmountable. Specificity: Very high\u2014clear ICPs, detailed feature list, explicit constraints and non-goals, and a well-articulated primary outcome. Commercial clarity: There are obvious potential customers (end users, coaches/planners, fintechs/neobanks), but the idea doesn\u2019t yet specify a concrete go-to-market or pricing model (B2C subscription vs B2B2C API vs pro tooling), nor evidence of willingness to pay, so the revenue path is plausible but not yet clearly defined."
+          },
+          "quality_metrics": {
+            "repetition_count": 6,
+            "dead_end_recovery": 0,
+            "concept_density": 173.2
+          },
+          "logs_count": 10
+        }
+      }
+    }
+  ],
+  "aggregated": {
+    "total_comparisons": 1,
+    "by_label": {
+      "structured": {
+        "wins": 1.0,
+        "win_rate": 100.0,
+        "avg_score": 16.0,
+        "appearances": 1
+      },
+      "full_history": {
+        "wins": 0,
+        "win_rate": 0.0,
+        "avg_score": 15.0,
+        "appearances": 1
+      }
+    },
+    "by_approach": {
+      "full_history": {
+        "wins": 0,
+        "win_rate": 0.0,
+        "avg_score": 15.0,
+        "appearances": 1
+      },
+      "structured": {
+        "wins": 1.0,
+        "win_rate": 100.0,
+        "avg_score": 16.0,
+        "appearances": 1
+      }
+    }
+  },
+  "quality_summary": {
+    "full_history": {
+      "avg_repetition_count": 4.0,
+      "avg_dead_end_recovery": 0.0,
+      "avg_concept_density": 106.7
+    },
+    "structured": {
+      "avg_repetition_count": 6.0,
+      "avg_dead_end_recovery": 0.0,
+      "avg_concept_density": 173.2
+    }
+  }
+}

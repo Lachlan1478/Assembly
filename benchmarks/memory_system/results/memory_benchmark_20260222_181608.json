@@ -1,0 +1,1043 @@
+{
+  "benchmark_config": {
+    "domains": [
+      "finance",
+      "health",
+      "education",
+      "productivity",
+      "sustainability"
+    ],
+    "assembly_mode": "medium",
+    "judge_model": "gpt-5.1",
+    "memory_configs": [
+      "full_history",
+      "structured"
+    ],
+    "timestamp": "2026-02-22T18:16:08.900875"
+  },
+  "comparisons": [
+    {
+      "totals": {
+        "full_history": 16,
+        "structured": 15
+      },
+      "winner": "full_history",
+      "winners": [
+        "full_history"
+      ],
+      "rankings": {
+        "full_history": 1,
+        "structured": 2
+      },
+      "criteria_comparison": {
+        "novelty": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "feasibility": {
+          "scores": {
+            "full_history": 4,
+            "structured": 3
+          },
+          "winner": "full_history",
+          "winners": [
+            "full_history"
+          ]
+        },
+        "specificity": {
+          "scores": {
+            "full_history": 5,
+            "structured": 5
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "commercial_clarity": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        }
+      },
+      "score_details": {
+        "full_history": {
+          "novelty": 4,
+          "feasibility": 4,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 16,
+          "notes": "Novelty: The idea goes beyond standard budgeting/credit scoring by explicitly modeling income structure, volatility, fixed-cost load, behavioral compressibility, and goal-feasibility into stability segments. Cashflow underwriting and PFM analytics exist, but this is a relatively novel, structured segmentation and feasibility engine targeted as infrastructure for other fintechs, so above-average differentiation but not entirely unprecedented.\n\nFeasibility: All components (data aggregation, transaction categorization, volatility metrics, probabilistic surplus estimation, scenario simulation) are technically achievable with current data and ML methods. Main challenges are data quality, coverage, and regulatory constraints on use in lending, but nothing is fundamentally impossible. Integration with multiple data sources and compliance will be non-trivial, so not a 5.\n\nSpecificity: Extremely specific ICP (B2B: fintech apps, lenders, digital banks, financial coaching platforms, employers) and clearly articulated problem (need for behavior-aware financial stability profiles and goal-feasibility) with detailed must-haves and constraints. The solution architecture and outputs (segments, thresholds, simulations, APIs, user-facing explanations) are well defined.\n\nCommercial_clarity: It\u2019s clear this is a B2B analytics/infra product for fintechs, lenders, and wellness platforms, which implies a SaaS/API pricing model (per-user or per-call). However, the description doesn\u2019t explicitly state pricing, packaging, or which segment has the strongest willingness to pay (e.g., lenders for underwriting vs PFM apps for engagement). Monetization is plausible but not fully spelled out, so it sits at a solid 3 rather than 4."
+        },
+        "structured": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "Novelty: The tri-lens modeling (structural/behavioral/goal-constraint), explicit trade-off detection, and probabilistic persona engine go beyond typical budgeting or PFM tools, and the idea of a reusable intelligence layer for other fintechs is a differentiated angle, though elements overlap with advanced PFM and credit-risk modeling. Feasibility: Technically achievable with current data science/ML and open banking data, but non-trivial\u2014requires robust data access, complex modeling, explainability, regulatory compliance, and localization; building a production-grade, regulator-comfortable engine is challenging but doable with strong team and capital. Specificity: Very high\u2014clear ICPs (irregular income, HCOL young professionals, debt-jugglers, B2B fintechs), detailed components (profilers, pattern extractors, goal mappers, thresholds, APIs), constraints, and non-goals; the problem (cash-flow stress, unrealistic plans) and solution mechanics are well-articulated. Commercial_clarity: There\u2019s an implied B2B2C model (APIs/SDKs for banks/fintechs) and potential direct-to-consumer app, but pricing, buyer persona (product vs risk vs marketing), and concrete monetization mechanics (SaaS per MAU, rev-share, tiering) are not spelled out; willingness to pay is plausible but not validated in the description."
+        }
+      },
+      "domain": "finance",
+      "domain_prompt": "Personal finance tools for young professionals aged 22-35",
+      "run_details": {
+        "full_history": {
+          "memory_config": "full_history",
+          "label": "Full History (baseline)",
+          "idea": {
+            "title": "Income-Expense Pattern Segmenter",
+            "description": "A financial analytics platform that jointly models an individual\u2019s income structure, expense patterns, savings behavior, and goal timelines to segment them into actionable financial stability profiles. It uses probabilistic modeling of volatility, fixed-cost load, and behavioral spending compressibility to classify users (e.g., high-savings/low-volatility, variable-income/thin-buffer, financially fragile) and to assess the feasibility of their savings and debt goals.",
+            "target_users": [
+              "Consumer fintech apps (budgeting, neobanks, lending, BNPL)",
+              "Digital banks and credit unions",
+              "Lenders and underwriting teams",
+              "Financial coaching and planning platforms targeting ages 22\u201335",
+              "Employers offering financial wellness benefits"
+            ],
+            "primary_outcome": "Provide a robust, behavior-aware financial stability and goal-feasibility profile for each user that can drive personalized recommendations, product eligibility, and risk-based decisions.",
+            "must_haves": [
+              "Data ingestion from bank accounts, cards, payroll, and lending products to reconstruct income and expense histories",
+              "Income structure modeling (salary vs gig vs commission vs mixed), including volatility metrics and pay-cycle detection",
+              "Fixed obligations footprint analysis (rent, debt, insurance, core subscriptions) with fixed-cost ratio computation",
+              "Variable expense classification and behavioral compressibility modeling (historical minima vs typical spend, volatility)",
+              "Savings rate and surplus band estimation (credible intervals, not just point estimates)",
+              "Liquidity and shock-absorption metrics (runway in months of fixed costs, time-to-zero under adverse scenarios, worst 10\u201320% income outcomes)",
+              "Goal-feasibility engine that maps EF/debt/other goals and timelines onto surplus bands to classify feasibility (loose, tight, overloaded)",
+              "Segmentation engine with clear numeric thresholds (e.g., fixed-cost load tiers, savings-rate tiers, fragility flags)",
+              "Scenario simulation (e.g., layoffs, income dips, irregular expenses) and reclassification under shocks",
+              "APIs and SDKs for fintechs and lenders to embed segmentation and feasibility scores into their products",
+              "User-facing explanations that translate segments into plain-language personas and trade-offs (e.g., liquidity vs debt payoff, lifestyle vs buffer)",
+              "Privacy, security, and consent management for financial data"
+            ],
+            "constraints": [
+              "Requires access to sufficiently rich and continuous transaction and income data to model volatility and behavior accurately",
+              "Segment quality depends on robust categorization of transactions, which can be noisy or incomplete",
+              "Behavioral compressibility and volatility estimates may be unreliable for new users or those with short data histories",
+              "Regulatory and compliance constraints around using behavioral and cashflow data for lending or underwriting decisions",
+              "Model assumptions (e.g., distributions of income and expenses) may not generalize across all geographies or demographic groups without retraining",
+              "User goals and circumstances can change rapidly, requiring frequent model updates and re-segmentation"
+            ],
+            "non_goals": [
+              "It will not provide investment advice or portfolio management (e.g., asset allocation, security selection).",
+              "It will not act as a bank, lender, or payments processor itself; instead it augments existing financial products.",
+              "It will not guarantee outcomes such as loan approvals or goal achievement; it only provides probabilistic assessments and segments.",
+              "It will not replace full financial planning for complex situations (e.g., high-net-worth tax optimization, estate planning).",
+              "It will not enforce user behavior changes (e.g., automatically cutting spending); it focuses on analysis, segmentation, and recommendations."
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 4,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 16,
+            "notes": "Novelty: The idea goes beyond standard budgeting/credit scoring by explicitly modeling income structure, volatility, fixed-cost load, behavioral compressibility, and goal-feasibility into stability segments. Cashflow underwriting and PFM analytics exist, but this is a relatively novel, structured segmentation and feasibility engine targeted as infrastructure for other fintechs, so above-average differentiation but not entirely unprecedented.\n\nFeasibility: All components (data aggregation, transaction categorization, volatility metrics, probabilistic surplus estimation, scenario simulation) are technically achievable with current data and ML methods. Main challenges are data quality, coverage, and regulatory constraints on use in lending, but nothing is fundamentally impossible. Integration with multiple data sources and compliance will be non-trivial, so not a 5.\n\nSpecificity: Extremely specific ICP (B2B: fintech apps, lenders, digital banks, financial coaching platforms, employers) and clearly articulated problem (need for behavior-aware financial stability profiles and goal-feasibility) with detailed must-haves and constraints. The solution architecture and outputs (segments, thresholds, simulations, APIs, user-facing explanations) are well defined.\n\nCommercial_clarity: It\u2019s clear this is a B2B analytics/infra product for fintechs, lenders, and wellness platforms, which implies a SaaS/API pricing model (per-user or per-call). However, the description doesn\u2019t explicitly state pricing, packaging, or which segment has the strongest willingness to pay (e.g., lenders for underwriting vs PFM apps for engagement). Monetization is plausible but not fully spelled out, so it sits at a solid 3 rather than 4."
+          },
+          "quality_metrics": {
+            "repetition_count": 6,
+            "dead_end_recovery": 0,
+            "concept_density": 149.3
+          },
+          "logs_count": 10
+        },
+        "structured": {
+          "memory_config": "structured",
+          "label": "Structured (shared+personal+3-turn)",
+          "idea": {
+            "title": "Tri-Lens Personal Finance Intelligence Engine",
+            "description": "A financial intelligence platform that models an individual\u2019s money life through three integrated lenses: structural segments (income type, geography, liabilities), behavioral patterns (cash-flow rhythms, spending/debt habits), and goal\u2013constraint rules (what\u2019s feasible when, given buffers and volatility). It continuously ingests transaction and account data to infer probabilistic personas, detect key trade-offs (lifestyle vs savings, liquidity vs commitment, growth vs stability, autonomy vs interdependence), and surface personalized, dynamically-updated plans and guardrails.",
+            "target_users": [
+              "Consumers with irregular or mixed income (gig workers, freelancers, consultants)",
+              "Young professionals in high cost-of-living cities",
+              "People juggling debt, BNPL, and limited buffers who want to reduce financial stress",
+              "Fintechs, neobanks, and budgeting apps that want a smarter personalization engine"
+            ],
+            "primary_outcome": "Help users make financially feasible, behavior-aware decisions by turning raw transaction data into an accurate, adaptive model of their income, obligations, behaviors, and goals\u2014then using that model to recommend realistic plans, thresholds, and commitments that reduce cash-flow crises and improve long-term goal attainment.",
+            "must_haves": [
+              "Segmented Context Profiler that infers income process (W2 vs 1099 vs mixed), volatility, COL, liability structure, support network, and buffer adequacy from data",
+              "Behavior Pattern Extractor that models cash-flow rhythms, payday-to-spend sequences, debt servicing habits, savings rules, discretionary/social spending cycles, and responses to shocks",
+              "Goal\u2013Constraint Mapper that encodes common goal bundles (e.g., homebuying, debt payoff, FI, entrepreneurship) with time horizons and feasibility regions under user-specific constraints",
+              "Unified probabilistic engine that reconciles segment-level priors, observed behaviors, and stated goals into a single persona-level state with explicit trade-offs and tensions",
+              "Dynamic thresholding for phase transitions (e.g., buffer adequacy levels where behavior and risk capacity qualitatively change) and automatic re-segmentation when thresholds are crossed",
+              "Scenario and case simulation (e.g., CASE_A\u2013F style) to test how changes in income, expenses, or commitments affect cash-shortage risk and goal feasibility over time",
+              "APIs/SDKs for banks/fintechs to embed the engine into their apps (for personalized nudges, product offers, and commitment recommendations)",
+              "User-facing explanations that translate complex model outputs into clear narratives and actionable steps (e.g., \u201cyou can\u2019t safely pursue homebuying in 5 years unless X/Y change\u201d)"
+            ],
+            "constraints": [
+              "Requires access to granular financial data (transactions, balances, income sources) and possibly external signals (COL indices, housing data) to perform well",
+              "Model complexity must be balanced with explainability; highly probabilistic structures need to be interpretable for regulators and end users",
+              "Regulatory and privacy constraints around financial data usage, profiling, and automated recommendations may limit certain inferences or actions",
+              "Cold-start users with sparse data will have lower-confidence profiles and may need conservative defaults until enough behavior is observed",
+              "Cross-market generalization may be limited; COL, social norms, and product sets (BNPL, credit types) vary by country and may require localization"
+            ],
+            "non_goals": [
+              "It will not function as a traditional robo-advisor focused solely on portfolio allocation and investment selection",
+              "It will not provide tax preparation or full accounting services",
+              "It will not guarantee specific financial outcomes (e.g., home purchase by a certain date) or underwrite credit risk directly",
+              "It will not replace human financial planners for users who need complex, bespoke advice (e.g., intricate estate planning)",
+              "It will not act as a generic budgeting app limited to static categories and simple spend tracking without probabilistic modeling"
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "Novelty: The tri-lens modeling (structural/behavioral/goal-constraint), explicit trade-off detection, and probabilistic persona engine go beyond typical budgeting or PFM tools, and the idea of a reusable intelligence layer for other fintechs is a differentiated angle, though elements overlap with advanced PFM and credit-risk modeling. Feasibility: Technically achievable with current data science/ML and open banking data, but non-trivial\u2014requires robust data access, complex modeling, explainability, regulatory compliance, and localization; building a production-grade, regulator-comfortable engine is challenging but doable with strong team and capital. Specificity: Very high\u2014clear ICPs (irregular income, HCOL young professionals, debt-jugglers, B2B fintechs), detailed components (profilers, pattern extractors, goal mappers, thresholds, APIs), constraints, and non-goals; the problem (cash-flow stress, unrealistic plans) and solution mechanics are well-articulated. Commercial_clarity: There\u2019s an implied B2B2C model (APIs/SDKs for banks/fintechs) and potential direct-to-consumer app, but pricing, buyer persona (product vs risk vs marketing), and concrete monetization mechanics (SaaS per MAU, rev-share, tiering) are not spelled out; willingness to pay is plausible but not validated in the description."
+          },
+          "quality_metrics": {
+            "repetition_count": 5,
+            "dead_end_recovery": 0,
+            "concept_density": 111.4
+          },
+          "logs_count": 10
+        }
+      }
+    },
+    {
+      "totals": {
+        "full_history": 15,
+        "structured": 14
+      },
+      "winner": "full_history",
+      "winners": [
+        "full_history"
+      ],
+      "rankings": {
+        "full_history": 1,
+        "structured": 2
+      },
+      "criteria_comparison": {
+        "novelty": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "feasibility": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "specificity": {
+          "scores": {
+            "full_history": 5,
+            "structured": 4
+          },
+          "winner": "full_history",
+          "winners": [
+            "full_history"
+          ]
+        },
+        "commercial_clarity": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        }
+      },
+      "score_details": {
+        "full_history": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "Novelty: The idea goes beyond generic wellness apps by explicitly modeling temporal work patterns plus home/environment constraints to generate probabilistic mental health risk and context-feasible interventions. This combination of work-tool telemetry, environment modeling, and burnout risk mapping is a non-obvious angle vs standard engagement or productivity analytics, but it\u2019s still adjacent to existing \u2018people analytics\u2019 and digital exhaustion tools, so not a 5.\n\nFeasibility: Technically buildable with current APIs and analytics/ML methods, but there are meaningful barriers: data access from calendars/messaging in enterprises, privacy/legal constraints around mental health\u2013related analytics, and the difficulty of building a reliable risk model from noisy self-report plus behavioral metadata. Also, adoption will require strong trust and change management. Achievable with resources but not straightforward, hence 3.\n\nSpecificity: Extremely concrete ICP (HR/people teams, distributed orgs), clear problem (burnout/attention fragmentation in remote workers), and a detailed solution architecture (data sources, modeling layers, rule engine, recommender, dashboards, privacy stance). Must-haves, constraints, and non-goals are all well-articulated. This is a 5 on specificity.\n\nCommercial_clarity: It\u2019s clearly a B2B SaaS for organizations, implying a per-seat or per-employee subscription model, but pricing strategy, buyer persona (budget owner), and proof of willingness to pay are not spelled out. The value proposition (reduced burnout, better policies) is plausible but not yet tied to concrete ROI metrics (e.g., attrition reduction, sick leave, productivity). So the business model is reasonable but not fully fleshed out, meriting a 3."
+        },
+        "structured": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 4,
+          "commercial_clarity": 3,
+          "total": 14,
+          "notes": "Novelty: The focus on stress *regime shifts* (state changes), constraint-aware interventions, and explicit modeling of structural factors for both remote and gig workers is a non-obvious, differentiated angle versus generic wellness apps and simple burnout trackers. It\u2019s more of a novel combination and framing than a totally unique category, hence 4 not 5.\n\nFeasibility: Each component (data ingestion from work tools, basic stress modeling, dashboards, privacy-preserving analytics) is buildable with current tech, but the full vision\u2014robust regime-switch detection, accurate stress-dynamics modeling across heterogeneous gig/remote populations, and credible policy simulation\u2014faces real technical, data-access, and adoption barriers. Getting enough high-quality, longitudinal, multi-source data (especially for gig workers) and proving model reliability will be challenging, so this is achievable but non-trivial.\n\nSpecificity: The ICPs are clearly enumerated (remote/hybrid knowledge workers, gig workers, managers/HR, platforms, occupational health providers), the core problem (early detection of harmful stress shifts under real-world constraints) is well articulated, and the solution components are laid out in concrete feature terms (segmentation engine, regime detection, dashboards, simulation). Non-goals are also explicit. What\u2019s missing is more detail on exact data sources, user workflows, and example interventions, so it\u2019s a 4 rather than 5.\n\nCommercial_clarity: There are obvious potential buyers (HR/People Ops in distributed orgs, digital platforms with gig workforces, occupational health/EAP providers) and a plausible B2B SaaS model (per-seat, per-FTE, or per-gig-worker licensing; possibly platform-level contracts). However, the description doesn\u2019t specify a concrete pricing strategy, packaging, or which ICP is the primary wedge customer. Willingness to pay is implied (burnout/attrition reduction, workforce stability) but not validated or quantified. Hence a solid but not fully crisp 3."
+        }
+      },
+      "domain": "health",
+      "domain_prompt": "Mental health and wellness apps for remote workers",
+      "run_details": {
+        "full_history": {
+          "memory_config": "full_history",
+          "label": "Full History (baseline)",
+          "idea": {
+            "title": "Remote Work Pattern & Environment Risk Mapper",
+            "description": "A B2B SaaS platform that models remote workers\u2019 temporal patterns (schedule, notifications, meetings, deep work vs reactive work) together with their home and device constraints (space, privacy, noise, caregiving, IT policies, bandwidth) to predict mental health and burnout risk. It generates probabilistic risk profiles and prescribes feasible, context-aware interventions (e.g., micro-breaks, schedule changes, tooling changes) that respect both worker preferences and environmental limitations.",
+            "target_users": [
+              "People teams and HR leaders at remote or hybrid companies",
+              "Engineering and operations leaders managing distributed teams",
+              "Occupational health / employee wellbeing vendors",
+              "Large organizations with globally distributed or shift-based workforces"
+            ],
+            "primary_outcome": "Reduce burnout, anxiety, and attention fragmentation in remote workers by aligning work patterns and wellbeing interventions with each worker\u2019s actual constraints and rhythms, rather than generic one-size-fits-all policies.",
+            "must_haves": [
+              "Data ingestion from work tools (calendar, Slack/Teams, email, ticketing) to infer schedule patterns, meeting density, notification load, and response-time norms",
+              "Behavioral pattern modeling (e.g., start/stop time variance, second shifts, deep-work vs reactive ratios, context switching, temporal drift week-to-week)",
+              "Environment and constraint modeling via structured surveys and optional passive signals (household size, dependents, privacy, noise, device/IT limits, bandwidth, time zones)",
+              "Segmented probabilistic risk engine that links patterns and constraints to stressors (burnout, isolation, anxiety, attention fragmentation, emotional blunting) with archetype-specific priors (caregivers, junior staff, globally distributed teams, shift workers, etc.)",
+              "Explicit rule layer for trade-offs and overrides (e.g., when environmental constraints dominate vs when schedule/notification patterns dominate; thresholds for ping window, SLA, noise, household size)",
+              "Intervention recommender that outputs only environment-feasible options (e.g., micro-interventions between meetings, text-only vs audio/video, early-morning vs late-night sessions, disguised \u201cfocus\u201d tools in stigmatizing environments)",
+              "Manager and org-level dashboards showing risk segments, key drivers (ping envelope, noise, meeting load, etc.), and recommended policy or practice changes",
+              "Privacy-preserving design with aggregation and anonymization so individuals are not exposed while still enabling team/org insights"
+            ],
+            "constraints": [
+              "Requires access to work-tool metadata (calendars, messaging, tickets); organizations with strict IT or privacy policies may limit data availability",
+              "Self-reported environment data (space, noise, caregiving) can be noisy or incomplete and may need periodic refresh to stay accurate",
+              "Cultural and legal differences across regions may constrain what mental health\u2013related analytics and interventions are permissible",
+              "Interventions must be carefully framed to avoid appearing like surveillance or performance monitoring, especially when using behavioral data",
+              "Model accuracy depends on sustained data volume; very small teams or highly irregular contractors may yield weaker predictions",
+              "Cannot fully account for offline stressors (e.g., financial strain, health issues) that are not observable via patterns or environment inputs"
+            ],
+            "non_goals": [
+              "It will not provide clinical diagnosis or replace licensed mental health care",
+              "It will not be an employee monitoring or productivity surveillance tool focused on individual performance scoring",
+              "It will not enforce schedule changes or automatically modify calendars without user or manager consent",
+              "It will not attempt to control or redesign workers\u2019 physical home environments (e.g., furniture, real estate)",
+              "It will not function as a generic meditation or wellness content library detached from each user\u2019s actual constraints and work patterns"
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "Novelty: The idea goes beyond generic wellness apps by explicitly modeling temporal work patterns plus home/environment constraints to generate probabilistic mental health risk and context-feasible interventions. This combination of work-tool telemetry, environment modeling, and burnout risk mapping is a non-obvious angle vs standard engagement or productivity analytics, but it\u2019s still adjacent to existing \u2018people analytics\u2019 and digital exhaustion tools, so not a 5.\n\nFeasibility: Technically buildable with current APIs and analytics/ML methods, but there are meaningful barriers: data access from calendars/messaging in enterprises, privacy/legal constraints around mental health\u2013related analytics, and the difficulty of building a reliable risk model from noisy self-report plus behavioral metadata. Also, adoption will require strong trust and change management. Achievable with resources but not straightforward, hence 3.\n\nSpecificity: Extremely concrete ICP (HR/people teams, distributed orgs), clear problem (burnout/attention fragmentation in remote workers), and a detailed solution architecture (data sources, modeling layers, rule engine, recommender, dashboards, privacy stance). Must-haves, constraints, and non-goals are all well-articulated. This is a 5 on specificity.\n\nCommercial_clarity: It\u2019s clearly a B2B SaaS for organizations, implying a per-seat or per-employee subscription model, but pricing strategy, buyer persona (budget owner), and proof of willingness to pay are not spelled out. The value proposition (reduced burnout, better policies) is plausible but not yet tied to concrete ROI metrics (e.g., attrition reduction, sick leave, productivity). So the business model is reasonable but not fully fleshed out, meriting a 3."
+          },
+          "quality_metrics": {
+            "repetition_count": 6,
+            "dead_end_recovery": 0,
+            "concept_density": 138.8
+          },
+          "logs_count": 10
+        },
+        "structured": {
+          "memory_config": "structured",
+          "label": "Structured (shared+personal+3-turn)",
+          "idea": {
+            "startup_ideas": [
+              {
+                "title": "RegimeSense: Context-Aware Mental Health & Workload Intelligence for Remote and Gig Workers",
+                "description": "RegimeSense is an analytics and decision-support platform that models stress dynamics for remote and gig workers by combining structural factors (income volatility, caregiving load, housing constraints), digital work patterns (meetings, notifications, surveillance), and psychosocial variables (isolation, stigma, identity). It continuously detects when a worker or team crosses from \u201chigh but manageable load\u201d into a new stress regime (e.g., burnout risk, boundary collapse) and then adapts wellness and workflow interventions to fit real-world temporal, environmental, organizational, and personal constraints.",
+                "target_users": [
+                  "Remote and hybrid knowledge workers",
+                  "Gig and platform workers (rideshare, delivery, online freelancing, creator economy)",
+                  "People managers and HR/People Ops teams in distributed organizations",
+                  "Digital platforms and marketplaces that rely on large remote/gig workforces",
+                  "Occupational health and EAP providers serving remote populations"
+                ],
+                "primary_outcome": "Provide early, context-sensitive detection of harmful stress regime shifts and deliver feasible, low-friction interventions that improve mental health, protect sleep and boundaries, and reduce burnout and attrition without compromising income or core performance.",
+                "must_haves": [
+                  "Contextual segmentation engine",
+                  "Stress-dynamics modeling",
+                  "Constraint-aware intervention planner",
+                  "Regime-switch detection",
+                  "Multi-modal, low-friction interventions",
+                  "Privacy-preserving data collection",
+                  "Manager and org dashboards",
+                  "Scenario simulation and policy testing",
+                  "Cross-segment impact modeling",
+                  "Personalization with low cognitive load"
+                ],
+                "constraints": [
+                  "Data access and privacy",
+                  "Trust and stigma",
+                  "Survival vs wellness trade-off for gig workers",
+                  "Organizational culture dependence",
+                  "Measurement noise and uncertainty",
+                  "Regulatory and compliance requirements",
+                  "Heterogeneity across cultures and platforms"
+                ],
+                "non_goals": [
+                  "Not a clinical diagnostic tool or replacement for licensed therapy or psychiatry",
+                  "Not an employee surveillance or productivity-policing system",
+                  "Not a generic meditation or wellness content library without context modeling",
+                  "Not a scheduling or payroll platform for gig work",
+                  "Not a one-size-fits-all engagement or gamification layer that ignores constraints",
+                  "Not an HRIS or core HR/payroll system"
+                ]
+              }
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 4,
+            "commercial_clarity": 3,
+            "total": 14,
+            "notes": "Novelty: The focus on stress *regime shifts* (state changes), constraint-aware interventions, and explicit modeling of structural factors for both remote and gig workers is a non-obvious, differentiated angle versus generic wellness apps and simple burnout trackers. It\u2019s more of a novel combination and framing than a totally unique category, hence 4 not 5.\n\nFeasibility: Each component (data ingestion from work tools, basic stress modeling, dashboards, privacy-preserving analytics) is buildable with current tech, but the full vision\u2014robust regime-switch detection, accurate stress-dynamics modeling across heterogeneous gig/remote populations, and credible policy simulation\u2014faces real technical, data-access, and adoption barriers. Getting enough high-quality, longitudinal, multi-source data (especially for gig workers) and proving model reliability will be challenging, so this is achievable but non-trivial.\n\nSpecificity: The ICPs are clearly enumerated (remote/hybrid knowledge workers, gig workers, managers/HR, platforms, occupational health providers), the core problem (early detection of harmful stress shifts under real-world constraints) is well articulated, and the solution components are laid out in concrete feature terms (segmentation engine, regime detection, dashboards, simulation). Non-goals are also explicit. What\u2019s missing is more detail on exact data sources, user workflows, and example interventions, so it\u2019s a 4 rather than 5.\n\nCommercial_clarity: There are obvious potential buyers (HR/People Ops in distributed orgs, digital platforms with gig workforces, occupational health/EAP providers) and a plausible B2B SaaS model (per-seat, per-FTE, or per-gig-worker licensing; possibly platform-level contracts). However, the description doesn\u2019t specify a concrete pricing strategy, packaging, or which ICP is the primary wedge customer. Willingness to pay is implied (burnout/attrition reduction, workforce stability) but not validated or quantified. Hence a solid but not fully crisp 3."
+          },
+          "quality_metrics": {
+            "repetition_count": 3,
+            "dead_end_recovery": 3,
+            "concept_density": 190.0
+          },
+          "logs_count": 10
+        }
+      }
+    },
+    {
+      "totals": {
+        "full_history": 15,
+        "structured": 15
+      },
+      "winner": "Tie",
+      "winners": [
+        "full_history",
+        "structured"
+      ],
+      "rankings": {
+        "full_history": 1,
+        "structured": 2
+      },
+      "criteria_comparison": {
+        "novelty": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "feasibility": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "specificity": {
+          "scores": {
+            "full_history": 5,
+            "structured": 5
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "commercial_clarity": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        }
+      },
+      "score_details": {
+        "full_history": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "Novelty: Modeling adult learners as probabilistic mixtures of motivation segments jointly with constraint spaces and an explicit 'enactable-intention filter' is a non-obvious, fairly novel angle beyond standard personalization or recommender systems, though it builds on known decision-intelligence and Bayesian modeling concepts. Feasibility: Technically achievable with current ML and data infrastructure, but challenging\u2014requires sensitive, hard-to-collect data, careful modeling of temporal dynamics, strong privacy, and robust bias/ethics safeguards; integration into existing LMS and employer systems adds non-trivial complexity. Specificity: Very high\u2014clear ICPs, detailed problem framing (misalignment between motivation, constraints, and goals), explicit model components, and concrete product features (APIs, dashboards, scenario engine); also clearly scoped via non-goals. Commercial_clarity: There\u2019s an implied B2B SaaS model selling to bootcamps, LMSs, employers, and agencies, but pricing, buyer persona (economic decision-maker), and proof of willingness to pay are not articulated; revenue paths are plausible but not yet clearly laid out or validated."
+        },
+        "structured": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "Novelty: Modeling real-world constraints (time, caregiving, device limits, financial stress) and utility\u2013cost tradeoffs for career pathways is a clear step beyond generic course recommenders and typical career guidance tools; the explicit Bayesian motivation model and constraint-rule engine are relatively novel in this domain, though the orchestration concept itself is not entirely unprecedented. Feasibility: All components are buildable with current tech (rules engines, probabilistic models, integrations), but accurate payoff modeling, behavior-based motivation inference, and broad provider/employer integrations are non-trivial and will require substantial data, partnerships, and iteration; early-stage performance may be weak, and privacy/compliance add friction. Specificity: ICPs, problems, and solution components are extremely well-articulated, including detailed intake dimensions, modeling approach, dynamic re-planning, integrations, and analytics use cases, as well as clear non-goals. Commercial clarity: There are obvious potential B2B/B2G buyers (employers, unions, workforce programs, bootcamps, community colleges), but the description doesn\u2019t spell out a concrete pricing model (e.g., per-seat SaaS, per-learner referral, outcome-based contracts) or evidence of willingness to pay; monetization is plausible but not yet crisply defined."
+        }
+      },
+      "domain": "education",
+      "domain_prompt": "Personalized learning platforms for adult upskilling",
+      "run_details": {
+        "full_history": {
+          "memory_config": "full_history",
+          "label": "Full History (baseline)",
+          "idea": {
+            "title": "Motivation-Aware Learning Feasibility Engine",
+            "description": "A decision-intelligence platform that models adult learners as probabilistic mixtures of motivation segments (career-switcher, income-maximizer, security-seeker, identity-driven, employer-mandated, exploratory) jointly with their real-world constraints (time, money, energy, caregiving, device access) and goal structures. It uses a Bayesian mixture model plus an 'enactable-intention filter' to infer which learning and career-change intentions are realistically feasible, then recommends pathways, formats, and cadences that align motivation, constraints, and goals over time.",
+            "target_users": [
+              "Adult learners considering upskilling or career transitions",
+              "Online education platforms and bootcamps",
+              "Workforce development programs and career centers",
+              "Employers offering learning & development benefits",
+              "Public agencies designing reskilling initiatives"
+            ],
+            "primary_outcome": "Increase completion, satisfaction, and successful career transitions by matching learners to learning paths that are both motivationally aligned and realistically feasible under their constraints.",
+            "must_haves": [
+              "Bayesian motivation segmentation engine that represents each learner as a mixture over segments (career-switcher, income-maximizer, security-seeker, identity-driven, employer-mandated, exploratory/ambivalent)",
+              "Constraint-space mapper capturing time budgets, financial limits, cognitive load, caregiving duties, job schedule patterns, and digital access",
+              "Goal-structure decomposer that infers goal hierarchies, detects conflicting or infeasible goals, and distinguishes long-term outcomes from near-term tasks",
+              "Joint probabilistic model P(segment, constraints, goal_structure) with temporal dynamics to update beliefs as life events and behaviors change",
+              "Enactable-intention filter that downweights motivational segments and goals that are not realistically executable under current constraints",
+              "Recommendation layer that outputs feasible learning formats (sync/async, cohort/self-paced, micro vs long-form), cadences, and pathway suggestions tailored to each learner profile",
+              "Scenario engine to simulate shocks (e.g., reduced hours, financial changes) and re-plan paths accordingly",
+              "APIs or SDK for integration into LMSs, bootcamps, and career platforms",
+              "Analytics dashboard for institutions to see segment distributions, feasibility regions, and risk of dropout across their learner base"
+            ],
+            "constraints": [
+              "Requires access to sensitive personal data (time availability, finances, family obligations), demanding strong privacy and security safeguards",
+              "Model quality depends on sufficient labeled or semi-labeled data to learn realistic joint distributions across segments, constraints, and goals",
+              "Interpretability is challenging with rich mixture models; institutions may need simplified views to act on insights",
+              "Recommendations must avoid discriminatory or defeatist patterns (e.g., systematically steering constrained learners away from ambitious paths)",
+              "Continuous updating and calibration are needed as labor markets, program offerings, and learner behaviors evolve",
+              "Integration complexity with existing education platforms and employer systems may slow adoption"
+            ],
+            "non_goals": [
+              "It will not function as a full LMS or content delivery platform; it augments existing systems rather than replacing them.",
+              "It will not guarantee job placement or specific salary outcomes; it focuses on feasibility and alignment, not employment contracts.",
+              "It will not provide mental health or therapeutic services, even though it reasons about motivation and stress-related constraints.",
+              "It will not make high-stakes decisions (e.g., admissions, firing) autonomously; it is a decision-support and recommendation tool.",
+              "It will not attempt to perfectly predict individual behavior; it provides probabilistic guidance and risk estimates, not certainties."
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "Novelty: Modeling adult learners as probabilistic mixtures of motivation segments jointly with constraint spaces and an explicit 'enactable-intention filter' is a non-obvious, fairly novel angle beyond standard personalization or recommender systems, though it builds on known decision-intelligence and Bayesian modeling concepts. Feasibility: Technically achievable with current ML and data infrastructure, but challenging\u2014requires sensitive, hard-to-collect data, careful modeling of temporal dynamics, strong privacy, and robust bias/ethics safeguards; integration into existing LMS and employer systems adds non-trivial complexity. Specificity: Very high\u2014clear ICPs, detailed problem framing (misalignment between motivation, constraints, and goals), explicit model components, and concrete product features (APIs, dashboards, scenario engine); also clearly scoped via non-goals. Commercial_clarity: There\u2019s an implied B2B SaaS model selling to bootcamps, LMSs, employers, and agencies, but pricing, buyer persona (economic decision-maker), and proof of willingness to pay are not articulated; revenue paths are plausible but not yet clearly laid out or validated."
+          },
+          "quality_metrics": {
+            "repetition_count": 4,
+            "dead_end_recovery": 3,
+            "concept_density": 150.25
+          },
+          "logs_count": 8
+        },
+        "structured": {
+          "memory_config": "structured",
+          "label": "Structured (shared+personal+3-turn)",
+          "idea": {
+            "startup_ideas": [
+              {
+                "title": "Constraint-Aware Career Pathway Recommender",
+                "description": "A platform that designs and recommends realistic upskilling and career-transition pathways by jointly modeling a learner\u2019s motivation, constraints, and utility\u2013cost tradeoffs. It ingests data on work schedules, caregiving load, financial stress, device/access limits, and stated goals, then outputs feasible learning plans (e.g., micro-credentials, pacing, funding options) that match real structural slack rather than generic course tracks.",
+                "target_users": [
+                  "Working adults in volatile or shift-based jobs considering upskilling or career transitions",
+                  "Low- and middle-income learners with high financial and time constraints",
+                  "Employers, unions, and workforce programs designing sponsored training for constrained workers",
+                  "Bootcamps, online course providers, and community colleges seeking better fit and completion rates"
+                ],
+                "primary_outcome": "Increase completion and career-mobility outcomes by matching each learner to training formats, schedules, and credential paths that are actually feasible given their constraints and risk tolerance.",
+                "must_haves": [
+                  "Multi-dimensional learner intake that captures work hours/volatility, caregiving responsibilities, financial position, device/connectivity, prior education, and stated goals",
+                  "Constraint-rule engine that encodes time, energy, financial, and technology rules (e.g., max hard-thinking minutes, blackout periods, phone-only access)",
+                  "Bayesian or similar probabilistic motivation model that treats self-reported motivation as noisy and updates based on revealed behavior (enrollments, dropouts, overtime vs study tradeoffs)",
+                  "Utility\u2013cost tradeoff analyzer that estimates expected payoff of different paths (fast bootcamp vs slow stackable modules, sponsored vs self-pay) under each learner\u2019s context",
+                  "Pathway generator that outputs concrete, stepwise plans (courses, pacing, credential sequence) that respect hard caps (e.g., <5 hrs/week) and deadlines (licensure, visa, layoffs)",
+                  "Dynamic re-planning that updates recommendations when context changes (new job, crisis, off-season, new baby, debt spike) and suggests pause/resume or scope changes",
+                  "Provider and employer integration layer (APIs) to map constraints to specific offerings: which courses are phone-friendly, low-bandwidth, asynchronous, or micro-credential-based",
+                  "Simulation and transparency UI that shows learners tradeoffs: time-to-goal, dropout risk, financial downside, and alternative slower/faster paths",
+                  "Analytics for institutions to see which segments are systematically excluded by current formats (e.g., phone-only learners, high-volatility gig workers) and how to redesign programs"
+                ],
+                "constraints": [
+                  "Requires access to sensitive personal data (work schedules, income stress, caregiving), demanding strong privacy, consent, and data-governance practices",
+                  "Quality of recommendations depends on accurate, up-to-date labor-market data and realistic models of program difficulty and time requirements",
+                  "Behavioral and Bayesian models need substantial historical data to calibrate; early-stage deployments may be less accurate until enough usage data is collected",
+                  "Integration with diverse education providers and employer systems can be technically and politically complex",
+                  "Cannot fully observe or predict sudden life events (health crises, layoffs, family emergencies) that drastically change constraints",
+                  "Regulatory and compliance requirements may limit flexibility for certain licensure or immigration-related programs"
+                ],
+                "non_goals": [
+                  "It will not create or deliver the educational content itself (courses, bootcamps, degrees); it orchestrates and recommends existing offerings",
+                  "It will not function as a general-purpose LMS or HRIS; it focuses on pathway design and fit, not day-to-day content delivery or HR administration",
+                  "It will not guarantee job placement; it estimates probabilities and tradeoffs but cannot ensure specific employment outcomes",
+                  "It will not provide financial products like loans or ISAs directly, though it may integrate with third-party funding options",
+                  "It will not act as a surveillance tool for employers to micromanage individual workers\u2019 off-hours; employer views are aggregated or explicitly consent-based"
+                ]
+              }
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "Novelty: Modeling real-world constraints (time, caregiving, device limits, financial stress) and utility\u2013cost tradeoffs for career pathways is a clear step beyond generic course recommenders and typical career guidance tools; the explicit Bayesian motivation model and constraint-rule engine are relatively novel in this domain, though the orchestration concept itself is not entirely unprecedented. Feasibility: All components are buildable with current tech (rules engines, probabilistic models, integrations), but accurate payoff modeling, behavior-based motivation inference, and broad provider/employer integrations are non-trivial and will require substantial data, partnerships, and iteration; early-stage performance may be weak, and privacy/compliance add friction. Specificity: ICPs, problems, and solution components are extremely well-articulated, including detailed intake dimensions, modeling approach, dynamic re-planning, integrations, and analytics use cases, as well as clear non-goals. Commercial clarity: There are obvious potential B2B/B2G buyers (employers, unions, workforce programs, bootcamps, community colleges), but the description doesn\u2019t spell out a concrete pricing model (e.g., per-seat SaaS, per-learner referral, outcome-based contracts) or evidence of willingness to pay; monetization is plausible but not yet crisply defined."
+          },
+          "quality_metrics": {
+            "repetition_count": 6,
+            "dead_end_recovery": 0,
+            "concept_density": 153.2
+          },
+          "logs_count": 10
+        }
+      }
+    },
+    {
+      "totals": {
+        "full_history": 16,
+        "structured": 16
+      },
+      "winner": "Tie",
+      "winners": [
+        "full_history",
+        "structured"
+      ],
+      "rankings": {
+        "full_history": 1,
+        "structured": 2
+      },
+      "criteria_comparison": {
+        "novelty": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "feasibility": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "specificity": {
+          "scores": {
+            "full_history": 5,
+            "structured": 5
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "commercial_clarity": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        }
+      },
+      "score_details": {
+        "full_history": {
+          "novelty": 4,
+          "feasibility": 4,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 16,
+          "notes": "Novelty: The focus on modeling real service patterns, promoting recurring exceptions into first-class service types, and mapping them to actual calendar constraints is a non-obvious angle compared to generic time-tracking, project management, or capacity-planning tools. The explicit treatment of fragmentation risk and exception-promotion rules is relatively unique, though adjacent to existing resource-planning and time-blocking products.\n\nFeasibility: All core capabilities (time tracking/integration, rules-based classification, calendar mapping, analytics, and simulation) are achievable with current technology. The main risks are UX complexity, data quality (relying on accurate time/activity capture), and behavior change for freelancers and small agencies. Technically buildable, but productizing it in a way that users consistently maintain accurate models is non-trivial.\n\nSpecificity: The ICP (solo consultants, small agencies, ops/delivery managers), problem (hidden fragmentation, mis-scoped services, poor capacity planning), and solution (service-type modeling, exception detection, rule-based promotion, scenario simulation) are described in concrete detail. Must-haves, constraints, and non-goals are clearly articulated, showing a well-thought-through use case.\n\nCommercial_clarity: It\u2019s clear that this could be sold as B2B SaaS to freelancers and agencies (likely per-seat or per-account subscription), but the description doesn\u2019t explicitly define pricing tiers, target ACV, or how it competes vs. cheaper generic tools. Willingness to pay is plausible but unvalidated in the description, and there\u2019s no explicit monetization strategy beyond the implicit assumption of a subscription model."
+        },
+        "structured": {
+          "novelty": 4,
+          "feasibility": 4,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 16,
+          "notes": "Novelty: Modeling a freelancer\u2019s entire workflow against a combined time/cognitive-load/burnout budget with an explicit feasibility frontier and deliberate under-optimization is a non-obvious angle compared to standard time-tracking, PM, or CRM tools. Similar ideas exist in capacity planning and personal productivity, but this framing for solo freelancers is differentiated.\n\nFeasibility: All core features (segmented workflow model, rules engine, scenario planner, basic integrations, visualizations) are implementable with current web/app tech and standard APIs. The main challenges are UX complexity, getting accurate self-reported inputs, and building a rules/heuristics layer that feels genuinely helpful rather than arbitrary, but none are insurmountable.\n\nSpecificity: ICP (solo freelancers, independent consultants, small agency owners near capacity), problem (trade-offs between revenue, pipeline, and burnout within realistic capacity), and solution (detailed segments, constraints, outcomes, scenario planner, rules engine, integrations) are described with high granularity. Clear non-goals further sharpen scope.\n\nCommercial_clarity: It\u2019s obvious this could be sold as SaaS (e.g., monthly subscription to a planning/decision-support tool), but the idea doesn\u2019t specify pricing tiers, target ACV, or which user segment has the strongest willingness to pay and why. It\u2019s commercially plausible but not yet clearly articulated how it becomes a must-pay-for product vs. a nice-to-have planning layer in a crowded productivity stack."
+        }
+      },
+      "domain": "productivity",
+      "domain_prompt": "Productivity software for solo freelancers and consultants",
+      "run_details": {
+        "full_history": {
+          "memory_config": "full_history",
+          "label": "Full History (baseline)",
+          "idea": {
+            "title": "Service-Pattern Segmenter & Time-Block Mapper",
+            "description": "A workflow intelligence platform for freelancers and agencies that models their real service patterns and time usage. It identifies recurring service types, variants, and exceptions (e.g., urgent audits, add-on training) and maps them onto calendar constraints to reveal true capacity, fragmentation risk, and disruption patterns. The system promotes recurring 'exceptions' into first-class service-types based on quantitative thresholds, enabling more accurate scoping, pricing, and scheduling.",
+            "target_users": [
+              "Solo consultants and freelancers with multiple service offerings",
+              "Small to mid-sized agencies managing retainers, builds, and emergencies",
+              "Operations and delivery managers responsible for capacity planning",
+              "Service businesses that frequently handle urgent or add-on work"
+            ],
+            "primary_outcome": "Accurate, structured modeling of service patterns and time blocks so service businesses can plan capacity, price work, and schedule commitments without overload or hidden fragmentation.",
+            "must_haves": [
+              "Service-type modeling: define concrete service types (e.g., audits, retainers, builds, emergencies) with standardized attributes like inputs, deliverables, typical effort, sync/async ratio, and client interaction intensity",
+              "Exception and variant detection: track 'exceptions' (urgent work, add-ons, mini-builds) and automatically detect when they cross quantitative thresholds (frequency, % of hours) to be promoted to their own service-types",
+              "Time-block structure mapping: capture fixed constraints (calls, childcare, no-work windows) and actual block patterns for deep work, calls, admin, and spillover",
+              "Service-to-calendar mapping engine: map each service type to required block patterns (number, size, timing windows) and fit them into the user\u2019s real calendar constraints",
+              "Capacity and fragmentation analytics: show how many clients/projects can be supported, where fragmentation risk is high, and how emergencies or urgent work disrupt existing plans",
+              "Rule-based promotion thresholds: configurable numeric rules (counts, percentages, time windows) that determine when a recurring variant becomes a first-class service-type",
+              "Scenario simulation: model different mixes of retainers, builds, emergencies, and add-ons to see impact on capacity and schedule before committing",
+              "Reporting and recommendations: insights on which services are underpriced or structurally disruptive, and suggestions for restructuring offerings or calendar patterns"
+            ],
+            "constraints": [
+              "Requires reasonably accurate time and activity data (manual input, integrations, or tracking) to build reliable patterns",
+              "Initial setup may be complex for businesses with very ad-hoc or poorly documented services",
+              "Heavily dependent on user discipline to keep service definitions and rules up to date as offerings evolve",
+              "May not fit extremely large enterprises with highly specialized, existing resource-planning systems",
+              "Cannot fully eliminate unpredictability from true emergencies; it can only model and buffer for them statistically"
+            ],
+            "non_goals": [
+              "It will not be a generic to-do list or simple calendar app without structural modeling of services and time blocks",
+              "It will not handle detailed project task management (e.g., per-subtask Kanban) beyond what\u2019s needed for service-pattern modeling",
+              "It will not provide automated lead generation or marketing for freelancers/agencies",
+              "It will not replace full-fledged ERP or enterprise resource planning tools for large organizations",
+              "It will not guarantee elimination of all schedule conflicts; it focuses on prediction and planning, not hard enforcement"
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 4,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 16,
+            "notes": "Novelty: The focus on modeling real service patterns, promoting recurring exceptions into first-class service types, and mapping them to actual calendar constraints is a non-obvious angle compared to generic time-tracking, project management, or capacity-planning tools. The explicit treatment of fragmentation risk and exception-promotion rules is relatively unique, though adjacent to existing resource-planning and time-blocking products.\n\nFeasibility: All core capabilities (time tracking/integration, rules-based classification, calendar mapping, analytics, and simulation) are achievable with current technology. The main risks are UX complexity, data quality (relying on accurate time/activity capture), and behavior change for freelancers and small agencies. Technically buildable, but productizing it in a way that users consistently maintain accurate models is non-trivial.\n\nSpecificity: The ICP (solo consultants, small agencies, ops/delivery managers), problem (hidden fragmentation, mis-scoped services, poor capacity planning), and solution (service-type modeling, exception detection, rule-based promotion, scenario simulation) are described in concrete detail. Must-haves, constraints, and non-goals are clearly articulated, showing a well-thought-through use case.\n\nCommercial_clarity: It\u2019s clear that this could be sold as B2B SaaS to freelancers and agencies (likely per-seat or per-account subscription), but the description doesn\u2019t explicitly define pricing tiers, target ACV, or how it competes vs. cheaper generic tools. Willingness to pay is plausible but unvalidated in the description, and there\u2019s no explicit monetization strategy beyond the implicit assumption of a subscription model."
+          },
+          "quality_metrics": {
+            "repetition_count": 6,
+            "dead_end_recovery": 0,
+            "concept_density": 147.4
+          },
+          "logs_count": 10
+        },
+        "structured": {
+          "memory_config": "structured",
+          "label": "Structured (shared+personal+3-turn)",
+          "idea": {
+            "title": "Freelancer Feasibility Planner",
+            "description": "A workflow planning and decision-support tool for solo freelancers and consultants that models their entire client workflow as segments (lead gen, sales, delivery, admin, etc.) against a global capacity and cognitive load budget. It helps them see when segments must be deliberately under-optimized (e.g., pausing marketing, simplifying proposals) to stay within realistic time and mental energy limits while still aligning with income, stability, and burnout-recovery goals.",
+            "target_users": [
+              "Solo freelancers",
+              "Independent consultants",
+              "Small agency owners operating near personal capacity"
+            ],
+            "primary_outcome": "Enable freelancers to make explicit, data-informed trade-offs between revenue, pipeline, and burnout risk by visualizing a per-week feasibility frontier of outcomes vs. time and cognitive load.",
+            "must_haves": [
+              "Segmented workflow model covering lead generation, qualification, sales/scoping, proposal/contract, planning, delivery, revisions, reporting, relationship nurturing, admin/finance, and learning/improvement",
+              "Global capacity envelope that combines available hours, burnout risk, and cognitive load into a weekly budget",
+              "Constraint tagging per segment (time, cognitive_load, client_dependency, financial_urgency) with severity and frequency",
+              "Outcome mapping that links segments to goals like income floor, income stability, flexibility, reputation, learning, and recovery",
+              "Scenario planner for different cases (e.g., new whale prospect, high burnout, overdue invoices, dry pipeline) with recommended reallocation of hours by segment",
+              "Rules engine that flags when total planned segment load exceeds capacity and suggests which segments to under-optimize (e.g., simplify sales, pause learning, reduce customization)",
+              "Visualization of a feasibility frontier: achievable outcome combinations given current constraints and capacity",
+              "Templates and heuristics for standardization vs. customization decisions (e.g., when to use a template proposal vs. bespoke)",
+              "Cash-flow and runway awareness (e.g., overdue invoices, months of runway) integrated into prioritization logic",
+              "Simple integrations with calendar, basic CRM/spreadsheet, and invoicing tools to pull real activity and update the model"
+            ],
+            "constraints": [
+              "Relies on reasonably accurate self-reported capacity (hours and burnout level) and task estimates from the freelancer",
+              "Cannot fully capture qualitative client dynamics (e.g., political risk, strategic value) that might justify non-optimal allocations",
+              "Limited ability to enforce behavior change; it can recommend reallocations but cannot guarantee the user will follow them",
+              "Complexity must be carefully managed so that the tool itself does not add significant cognitive load",
+              "Best suited for solo or very small teams; multi-team, multi-layer organizations may require more advanced resource planning tools"
+            ],
+            "non_goals": [
+              "It will not be a full project management suite with detailed task tracking and collaboration features",
+              "It will not attempt to automate lead generation or marketing execution; it only allocates capacity to those activities",
+              "It will not provide tax, legal, or detailed financial accounting services beyond basic cash-flow and invoice status awareness",
+              "It will not act as a CRM replacement; it may integrate with existing CRMs but will not manage full sales pipelines end-to-end",
+              "It will not optimize for generic productivity metrics (e.g., tasks completed); its focus is on feasibility and trade-off clarity, not maximal output"
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 4,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 16,
+            "notes": "Novelty: Modeling a freelancer\u2019s entire workflow against a combined time/cognitive-load/burnout budget with an explicit feasibility frontier and deliberate under-optimization is a non-obvious angle compared to standard time-tracking, PM, or CRM tools. Similar ideas exist in capacity planning and personal productivity, but this framing for solo freelancers is differentiated.\n\nFeasibility: All core features (segmented workflow model, rules engine, scenario planner, basic integrations, visualizations) are implementable with current web/app tech and standard APIs. The main challenges are UX complexity, getting accurate self-reported inputs, and building a rules/heuristics layer that feels genuinely helpful rather than arbitrary, but none are insurmountable.\n\nSpecificity: ICP (solo freelancers, independent consultants, small agency owners near capacity), problem (trade-offs between revenue, pipeline, and burnout within realistic capacity), and solution (detailed segments, constraints, outcomes, scenario planner, rules engine, integrations) are described with high granularity. Clear non-goals further sharpen scope.\n\nCommercial_clarity: It\u2019s obvious this could be sold as SaaS (e.g., monthly subscription to a planning/decision-support tool), but the idea doesn\u2019t specify pricing tiers, target ACV, or which user segment has the strongest willingness to pay and why. It\u2019s commercially plausible but not yet clearly articulated how it becomes a must-pay-for product vs. a nice-to-have planning layer in a crowded productivity stack."
+          },
+          "quality_metrics": {
+            "repetition_count": 5,
+            "dead_end_recovery": 0,
+            "concept_density": 172.75
+          },
+          "logs_count": 8
+        }
+      }
+    },
+    {
+      "totals": {
+        "full_history": 15,
+        "structured": 15
+      },
+      "winner": "Tie",
+      "winners": [
+        "full_history",
+        "structured"
+      ],
+      "rankings": {
+        "full_history": 1,
+        "structured": 2
+      },
+      "criteria_comparison": {
+        "novelty": {
+          "scores": {
+            "full_history": 4,
+            "structured": 4
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "feasibility": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "specificity": {
+          "scores": {
+            "full_history": 5,
+            "structured": 5
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        },
+        "commercial_clarity": {
+          "scores": {
+            "full_history": 3,
+            "structured": 3
+          },
+          "winner": "Tie",
+          "winners": [
+            "full_history",
+            "structured"
+          ]
+        }
+      },
+      "score_details": {
+        "full_history": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "Novelty: The idea goes beyond generic carbon calculators by explicitly modeling feasibility, structural constraints, and app control levers, and positioning itself as an optimization/intelligence layer for other apps. This context-aware, high-leverage-behavior focus is a non-obvious combination of lifecycle analysis, behavioral science, and partner integrations, though adjacent to existing climate fintech and footprint APIs, so not a 5.\n\nFeasibility: All components (LCA databases, segmentation, recommendation engines, APIs, dashboards) are technically buildable with current tech, but there are meaningful challenges: high-quality, localized impact data; accurate constraint modeling; privacy-compliant access to granular behavioral/transactional data; and dependence on partners to integrate and act on recommendations. Achievable with strong data, product, and BD capabilities, but not straightforward.\n\nSpecificity: Very high. Clear ICPs (climate-conscious consumers via partners, product teams, utilities/cities/NGOs), well-articulated problem (generic, low-impact tips vs. constrained, high-leverage actions), and detailed solution components (hotspot mapper, feasibility engine, constraint analyzer, APIs, analytics). Constraints and non-goals are explicitly defined, showing a concrete understanding of scope and limitations.\n\nCommercial_clarity: There is an implied B2B/B2B2C model (APIs/SDKs for banks, mobility, grocery, utilities, NGOs) but no explicit pricing or go-to-market strategy. Monetization is plausible\u2014API/SaaS fees, enterprise licenses, program analytics\u2014but not spelled out, and willingness to pay vs. competing priorities (e.g., banks focusing on core revenue, utilities on compliance) is unvalidated. Clearer articulation of who pays, for what, and why now would raise this score."
+        },
+        "structured": {
+          "novelty": 4,
+          "feasibility": 3,
+          "specificity": 5,
+          "commercial_clarity": 3,
+          "total": 15,
+          "notes": "NOVELTY: The focus on constraint-aware, high-agency behaviors plus a Bayesian behavior-context engine and explicit exception-handling for non-agency users is a differentiated, non-obvious angle compared to generic carbon calculators and green habit apps. Not a 5 because behavior-change + climate optimization is a known space with adjacent work in utilities and mobility telematics. FEASIBILITY: Technically buildable with known methods (Bayesian modeling, data integrations, behavioral UX), but real-world deployment is challenging: requires multiple data partnerships (utilities, mobility, food platforms), privacy/security rigor, and robust experimentation to prove impact. Behavior change at scale and accurate attribution are non-trivial, and integration with diverse regional programs adds complexity, so this is more than straightforward productization. SPECIFICITY: Extremely high. Clear ICP segments, well-defined problem (maximize real, high-impact, user-agency emissions reductions), detailed must-have features, constraints, and non-goals. The behavior domains and intervention types are concrete and operationalizable. COMMERCIAL_CLARITY: There is a plausible path (white-label for utilities/municipalities/programs, potentially B2B2C with mobility/food platforms), but pricing, buyer persona, and revenue mechanics are not explicitly articulated (e.g., per-user SaaS to utilities, performance-based contracts, or licensing). Willingness to pay is implied (utilities/municipalities wanting measurable program impact) but not validated or detailed, so the business model is reasonable but not yet clearly laid out."
+        }
+      },
+      "domain": "sustainability",
+      "domain_prompt": "Sustainability-focused consumer apps and services",
+      "run_details": {
+        "full_history": {
+          "memory_config": "full_history",
+          "label": "Full History (baseline)",
+          "idea": {
+            "startup_ideas": [
+              {
+                "title": "Context-Aware Climate Impact Optimizer",
+                "description": "A decision-support platform that identifies and ranks the most impactful, realistically changeable consumer behaviors in domains like food and mobility, personalized to each user\u2019s structural constraints, motivation, and digital footprint. It combines lifecycle impact data with a feasibility engine to surface a small set of high-leverage actions the app can actually influence, rather than generic sustainability tips.",
+                "target_users": [
+                  "Consumers interested in reducing their climate and environmental impact",
+                  "Product teams building sustainability features into consumer apps (banking, mobility, grocery, lifestyle)",
+                  "Utilities, cities, and NGOs wanting targeted behavior-change programs"
+                ],
+                "primary_outcome": "Maximize real-world emissions and resource-use reductions per user by focusing interventions on high-impact behaviors that are both measurable and realistically influenceable in that user\u2019s context.",
+                "must_haves": [
+                  "Impact Hotspot Mapper: lifecycle impact models for key domains (food, mobility, energy, goods, leisure) broken into discrete, repeatable actions with theoretical impact scores",
+                  "Feasibility Engine: a quantitative function f(structural_constraint_level, user_motivation, app_control_levers, behavior_specific_factor) that produces a feasibility multiplier for each action",
+                  "Context Constraint Analyzer: ingestion and modeling of structural, infrastructural, market, and household constraints (e.g., transit availability, landlord control, local store assortment)",
+                  "Target User Segment Discriminator: rule-based segmentation using observable attributes (e.g., flies >4x/yr, owns_car, cooks_at_home_meals_per_week, access_to_public_transport) and digital integration points (bank data, e-receipts, transport APIs)",
+                  "Behavioral Leverage Point Identifier: ranking engine that combines theoretical impact, feasibility, motivation, and frequency to select a small set of high-leverage behaviors per user",
+                  "Scenario Engine: ability to simulate and compare different user archetypes (urban, rural, suburban) and domains to guide product design and policy targeting",
+                  "APIs/SDKs for partners: embeddable scoring and recommendation APIs for banks, mobility apps, grocery apps, and climate apps to plug in and get per-user hotspot rankings",
+                  "Personalized recommendation layer: user-facing logic that turns ranked hotspots into concrete suggestions (e.g., mode shifts, grocery swaps, trip consolidation) with thresholds for what counts as a \u201cmaterial\u201d hotspot",
+                  "Analytics & reporting: dashboards showing realized vs theoretical impact, distribution of feasible impact across segments, and where the app is structurally locked out of meaningful change"
+                ],
+                "constraints": [
+                  "Requires access to reasonably rich behavioral or transactional data (e.g., card data, e-receipts, mobility logs) to accurately detect and influence actions",
+                  "Impact models and feasibility functions must be localized (infrastructure, prices, product availability), which demands ongoing data maintenance and regional calibration",
+                  "Structural constraints (e.g., car-dependent geographies, landlord-controlled heating, food deserts) can severely limit achievable impact for some users, making the product\u2019s value uneven across segments",
+                  "Motivation is difficult to observe directly and may need to be inferred or self-reported, introducing noise into feasibility estimates",
+                  "Partners must integrate the APIs and surface interventions in UX; without strong in-app levers (nudges, incentives, defaults), realized impact may be lower even when hotspots are correctly identified",
+                  "Regulatory and privacy requirements around financial, mobility, and energy data access can limit data sources and require robust consent and governance"
+                ],
+                "non_goals": [
+                  "It will not attempt to change physical infrastructure or policy directly (e.g., building transit lines, mandating retrofits); it only optimizes within existing structural conditions and can flag where policy is needed",
+                  "It will not be a generic carbon footprint calculator that treats all users the same or focuses on low-impact micro-actions without feasibility filtering",
+                  "It will not function as a full consumer-facing lifestyle app by default; its core is an intelligence and decision engine that can power many front-ends",
+                  "It will not guarantee specific emissions reductions for every individual user, especially in highly constrained contexts; instead it quantifies and prioritizes the realistically influenceable share",
+                  "It will not replace domain-specific services (e.g., transit planning apps, grocery delivery apps); rather, it augments them with impact-aware, context-aware prioritization"
+                ]
+              }
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "Novelty: The idea goes beyond generic carbon calculators by explicitly modeling feasibility, structural constraints, and app control levers, and positioning itself as an optimization/intelligence layer for other apps. This context-aware, high-leverage-behavior focus is a non-obvious combination of lifecycle analysis, behavioral science, and partner integrations, though adjacent to existing climate fintech and footprint APIs, so not a 5.\n\nFeasibility: All components (LCA databases, segmentation, recommendation engines, APIs, dashboards) are technically buildable with current tech, but there are meaningful challenges: high-quality, localized impact data; accurate constraint modeling; privacy-compliant access to granular behavioral/transactional data; and dependence on partners to integrate and act on recommendations. Achievable with strong data, product, and BD capabilities, but not straightforward.\n\nSpecificity: Very high. Clear ICPs (climate-conscious consumers via partners, product teams, utilities/cities/NGOs), well-articulated problem (generic, low-impact tips vs. constrained, high-leverage actions), and detailed solution components (hotspot mapper, feasibility engine, constraint analyzer, APIs, analytics). Constraints and non-goals are explicitly defined, showing a concrete understanding of scope and limitations.\n\nCommercial_clarity: There is an implied B2B/B2B2C model (APIs/SDKs for banks, mobility, grocery, utilities, NGOs) but no explicit pricing or go-to-market strategy. Monetization is plausible\u2014API/SaaS fees, enterprise licenses, program analytics\u2014but not spelled out, and willingness to pay vs. competing priorities (e.g., banks focusing on core revenue, utilities on compliance) is unvalidated. Clearer articulation of who pays, for what, and why now would raise this score."
+          },
+          "quality_metrics": {
+            "repetition_count": 6,
+            "dead_end_recovery": 0,
+            "concept_density": 139.7
+          },
+          "logs_count": 10
+        },
+        "structured": {
+          "memory_config": "structured",
+          "label": "Structured (shared+personal+3-turn)",
+          "idea": {
+            "startup_ideas": [
+              {
+                "title": "Constraint-Aware Climate Behavior Optimizer",
+                "description": "A decision-support and behavior-change platform that identifies high-impact, realistically changeable sustainability behaviors for specific user segments, then delivers targeted, in-the-moment and planning-time interventions. It combines Bayesian behavior-context mapping with impact and barrier analysis to focus on a small set of measurable, high-leverage actions (e.g., home energy use, mobility, heating upgrades, diet choices) tailored to each user\u2019s constraints and motivations.",
+                "target_users": [
+                  "Urban renters managing household energy use",
+                  "Suburban commuters dependent on cars",
+                  "Rural homeowners with high heating loads and volatile income",
+                  "Urban professionals seeking lower-impact diets without sacrificing convenience",
+                  "Utilities, municipalities, and program administrators running heat-pump or efficiency programs who want a white-label app layer"
+                ],
+                "primary_outcome": "Maximize real, measurable emissions reductions and cost savings per user by steering them toward a few high-impact, high-agency behaviors that fit their daily contexts and constraints.",
+                "must_haves": [
+                  "Segmented Behavior Context Engine that models (segment \u00d7 sustainability_challenge \u00d7 micro_context \u00d7 app_touchpoint) as a Bayesian distribution and updates it with real-world data (usage, surveys, experiments).",
+                  "Impact & Actionability Filter that scores candidate behaviors on per-user impact, decision frequency, user control, intervention feasibility, and measurability, then narrows to a top-N shortlist per user/segment.",
+                  "Barrier-Driver Decomposer that maps structural, psychological, and situational barriers plus potential drivers (cost savings, convenience, norms, identity) for each chosen behavior and segment.",
+                  "Personalized intervention flows for key domains, such as:\n  - Household energy: thermostat norms, appliance timing, standby load reduction, draft-proofing, heating system upgrade windows.\n  - Mobility: eco-driving feedback, route suggestions, trip bundling, carpool day selection.\n  - Food: lower-impact menu/delivery choices, default low-impact meals, anti-waste grocery planning, high-emission item swaps.",
+                  "Context-aware touchpoints including pre-planning micro-sessions, in-the-moment nudges, and post-hoc feedback dashboards tuned to each segment\u2019s time budget.",
+                  "Program-integration layer for high-impact upgrades (e.g., heat pumps) that can ingest utility/program offers (on-bill finance, rebates), run personalized risk and cashflow checks, and support adoption decisions.",
+                  "Measurement and attribution framework using realistic data sources (utility bills, telematics, transaction/ordering data, self-reports) to quantify behavior change and emissions impact per behavior and per segment.",
+                  "Exception-handling logic to detect and exclude users with no real agency over a given behavior (e.g., renters without heating control, structurally car-dependent commuters with no alternatives)."
+                ],
+                "constraints": [
+                  "Relies on access to reasonably granular data (e.g., energy usage, mobility traces, or purchase/ordering data); impact is limited where such data cannot be obtained or integrated.",
+                  "High-impact structural decisions (e.g., deep retrofits, relocation, full mode shifts) are low-frequency and often outside user control, so the app\u2019s influence there will be sporadic and program-dependent.",
+                  "User attention is scarce; interventions must fit within tight time budgets (often <1 hour/week) and cannot require heavy manual tracking or complex configuration.",
+                  "Effectiveness depends on partnerships with utilities, mobility providers, or food platforms to enable in-the-moment interventions and to measure outcomes.",
+                  "Must carefully manage perceived vs real financial risk for upgrade decisions (e.g., heat pumps with on-bill financing or delayed rebates) to avoid pushing users into unsafe commitments.",
+                  "Behavior-change efficacy may vary significantly by culture, region, and infrastructure (e.g., availability of transit, carpool options, or low-impact food choices)."
+                ],
+                "non_goals": [
+                  "Will not attempt to cover every possible sustainability behavior; it explicitly avoids being a generic, broad \u201cgreen lifestyle companion\u201d with shallow advice.",
+                  "Will not provide financial products or directly underwrite loans; it only analyzes and explains existing offers (e.g., on-bill finance, rebates) from third parties.",
+                  "Will not override user comfort, safety, or reliability priorities (e.g., under-heating homes in long winters, compromising commute reliability) in pursuit of emissions reductions.",
+                  "Will not require users to perform exhaustive manual logging of all trips, meals, or energy uses; data collection must be largely automated or very lightweight.",
+                  "Will not guarantee specific bill savings or emissions outcomes; it provides modeled estimates and decision support, not contractual guarantees.",
+                  "Will not replace professional energy auditors, HVAC installers, or financial advisors; it complements them by improving user understanding and timing of decisions."
+                ]
+              }
+            ]
+          },
+          "score": {
+            "novelty": 4,
+            "feasibility": 3,
+            "specificity": 5,
+            "commercial_clarity": 3,
+            "total": 15,
+            "notes": "NOVELTY: The focus on constraint-aware, high-agency behaviors plus a Bayesian behavior-context engine and explicit exception-handling for non-agency users is a differentiated, non-obvious angle compared to generic carbon calculators and green habit apps. Not a 5 because behavior-change + climate optimization is a known space with adjacent work in utilities and mobility telematics. FEASIBILITY: Technically buildable with known methods (Bayesian modeling, data integrations, behavioral UX), but real-world deployment is challenging: requires multiple data partnerships (utilities, mobility, food platforms), privacy/security rigor, and robust experimentation to prove impact. Behavior change at scale and accurate attribution are non-trivial, and integration with diverse regional programs adds complexity, so this is more than straightforward productization. SPECIFICITY: Extremely high. Clear ICP segments, well-defined problem (maximize real, high-impact, user-agency emissions reductions), detailed must-have features, constraints, and non-goals. The behavior domains and intervention types are concrete and operationalizable. COMMERCIAL_CLARITY: There is a plausible path (white-label for utilities/municipalities/programs, potentially B2B2C with mobility/food platforms), but pricing, buyer persona, and revenue mechanics are not explicitly articulated (e.g., per-user SaaS to utilities, performance-based contracts, or licensing). Willingness to pay is implied (utilities/municipalities wanting measurable program impact) but not validated or detailed, so the business model is reasonable but not yet clearly laid out."
+          },
+          "quality_metrics": {
+            "repetition_count": 5,
+            "dead_end_recovery": 0,
+            "concept_density": 175.1
+          },
+          "logs_count": 10
+        }
+      }
+    }
+  ],
+  "aggregated": {
+    "total_comparisons": 5,
+    "by_label": {
+      "structured": {
+        "wins": 1.5,
+        "win_rate": 30.0,
+        "avg_score": 15.0,
+        "appearances": 5
+      },
+      "full_history": {
+        "wins": 3.5,
+        "win_rate": 70.0,
+        "avg_score": 15.4,
+        "appearances": 5
+      }
+    },
+    "by_approach": {
+      "full_history": {
+        "wins": 3.5,
+        "win_rate": 70.0,
+        "avg_score": 15.4,
+        "appearances": 5
+      },
+      "structured": {
+        "wins": 1.5,
+        "win_rate": 30.0,
+        "avg_score": 15.0,
+        "appearances": 5
+      }
+    }
+  },
+  "quality_summary": {
+    "full_history": {
+      "avg_repetition_count": 5.6,
+      "avg_dead_end_recovery": 0.6,
+      "avg_concept_density": 145.09
+    },
+    "structured": {
+      "avg_repetition_count": 4.8,
+      "avg_dead_end_recovery": 0.6,
+      "avg_concept_density": 160.49
+    }
+  }
+}

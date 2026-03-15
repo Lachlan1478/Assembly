@@ -1,0 +1,166 @@
+{
+  "test_name": "persona_role_adherence",
+  "timestamp": "2026-03-15T13:25:16.082076",
+  "config": {
+    "logs_path": "conversation_logs\\session_20260315_123730\\metadata\\full_conversation.json",
+    "use_llm": false,
+    "model_name": "heuristic"
+  },
+  "exchanges": [
+    {
+      "persona": "temporal pattern segmenter",
+      "phase": "workstyle_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "context-switch load evaluator",
+      "phase": "workstyle_mapping",
+      "score": 4,
+      "in_role": true,
+      "reasoning": "Positive indicators: 2, Negative: 0"
+    },
+    {
+      "persona": "client-work vs. business-work balancer",
+      "phase": "workstyle_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "temporal pattern segmenter",
+      "phase": "workstyle_mapping",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "context-switch load evaluator",
+      "phase": "workstyle_mapping",
+      "score": 3,
+      "in_role": false,
+      "reasoning": "Positive indicators: 1, Negative: 0"
+    },
+    {
+      "persona": "lifecycle stage segmenter",
+      "phase": "workflow_decomposition",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "lifecycle stage segmenter",
+      "phase": "workflow_decomposition",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "lifecycle stage segmenter",
+      "phase": "workflow_decomposition",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "lifecycle stage segmenter",
+      "phase": "workflow_decomposition",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "lifecycle stage segmenter",
+      "phase": "workflow_decomposition",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "lifecycle stage segmenter",
+      "phase": "workflow_decomposition",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "value-chain friction ranker",
+      "phase": "leverage_point_analysis",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "value-chain friction ranker",
+      "phase": "leverage_point_analysis",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "value-chain friction ranker",
+      "phase": "leverage_point_analysis",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "value-chain friction ranker",
+      "phase": "leverage_point_analysis",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "value-chain friction ranker",
+      "phase": "leverage_point_analysis",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "habit-routine anchor mapper",
+      "phase": "adoption_playbook",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "adoption friction decomposer",
+      "phase": "adoption_playbook",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "minimal viable integration planner",
+      "phase": "adoption_playbook",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "minimal viable integration planner",
+      "phase": "adoption_playbook",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    },
+    {
+      "persona": "habit-routine anchor mapper",
+      "phase": "adoption_playbook",
+      "score": 3,
+      "in_role": true,
+      "reasoning": "Unknown persona type - assuming in-role"
+    }
+  ],
+  "summary": {
+    "total_exchanges": 36,
+    "in_role": 20,
+    "out_of_role": 1,
+    "average_score": 3.0476190476190474,
+    "adherence_rate_percent": 95.23809523809523,
+    "gate_passed": true
+  }
+}
