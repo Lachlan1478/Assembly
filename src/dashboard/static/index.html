@@ -60,6 +60,14 @@
 
   /* Benchmark cards */
   .how-body { border-left: 2px solid #334155; }
+
+  /* How it Works */
+  .step-circle { display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:28px; border-radius:50%; font-size:11px; font-weight:bold; flex-shrink:0; }
+  .flow-box { border:1px solid #334155; border-radius:6px; padding:8px 14px;
+    background:#1e293b; font-size:11px; text-align:center; }
+  .flow-arrow { color:#475569; font-size:16px; display:flex; align-items:center; padding:0 6px; }
+  .howto-detail { border-left:2px solid #334155; margin-left:14px; padding-left:16px; }
 </style>
 </head>
 
@@ -69,13 +77,60 @@
 <nav class="flex items-center gap-4 px-4 py-2 bg-slate-800 border-b border-slate-700 shrink-0">
   <span class="text-xs font-bold tracking-widest text-indigo-400">⚡ ASSEMBLY</span>
   <div class="flex gap-1 ml-2">
-    <button id="nav-run" class="nav-btn active text-xs px-3 py-1 text-slate-200 hover:text-white">Run</button>
-    <button id="nav-benchmarks" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Benchmarks</button>
+    <button id="nav-home" data-view="home" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Home</button>
+    <button id="nav-run" data-view="run" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Run</button>
+    <button id="nav-benchmarks" data-view="benchmarks" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Benchmarks</button>
+    <button id="nav-howto" data-view="howto" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">How it Works</button>
   </div>
 </nav>
 
+<!-- ═══════════════ HOME VIEW ═══════════════ -->
+<div id="view-home" class="hidden flex-1 flex flex-col items-center justify-center bg-slate-900 p-8">
+  <!-- Hero -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-indigo-400 tracking-widest mb-3">⚡ ASSEMBLY</h1>
+    <p class="text-slate-400 text-sm">Multi-persona AI brainstorming — problem to idea</p>
+  </div>
+
+  <!-- 3 nav cards -->
+  <div class="flex gap-6 mb-12 flex-wrap justify-center">
+    <div onclick="switchView('run')" class="cursor-pointer flex flex-col gap-3 p-6 bg-slate-800 border border-slate-700 rounded-lg hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all w-52">
+      <span class="text-2xl">▶</span>
+      <div>
+        <p class="text-sm font-bold text-slate-200 mb-1">Run</p>
+        <p class="text-xs text-slate-400 leading-snug">Start a new idea generation session</p>
+      </div>
+    </div>
+    <div onclick="switchView('benchmarks')" class="cursor-pointer flex flex-col gap-3 p-6 bg-slate-800 border border-slate-700 rounded-lg hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all w-52">
+      <span class="text-2xl">◈</span>
+      <div>
+        <p class="text-sm font-bold text-slate-200 mb-1">Benchmarks</p>
+        <p class="text-xs text-slate-400 leading-snug">Measure and test output quality</p>
+      </div>
+    </div>
+    <div onclick="switchView('howto')" class="cursor-pointer flex flex-col gap-3 p-6 bg-slate-800 border border-slate-700 rounded-lg hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all w-52">
+      <span class="text-2xl">◎</span>
+      <div>
+        <p class="text-sm font-bold text-slate-200 mb-1">How it Works</p>
+        <p class="text-xs text-slate-400 leading-snug">Understand the Assembly process</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini flow strip -->
+  <div class="flex items-center text-xs">
+    <div class="flow-box text-slate-300">Inspiration</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box text-slate-300">Phases</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box text-slate-300">Debate</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box text-slate-300">Ideas</div>
+  </div>
+</div><!-- end view-home -->
+
 <!-- ═══════════════ MAIN 3-COLUMN LAYOUT ═══════════════ -->
-<div id="view-run" class="flex flex-1 overflow-hidden">
+<div id="view-run" class="hidden flex-1 overflow-hidden">
 
   <!-- ═══ LEFT PANEL — Parameters (250px) ═══ -->
   <aside class="w-64 min-w-[250px] bg-slate-800 border-r border-slate-700 flex flex-col overflow-y-auto p-4 gap-3">
@@ -256,6 +311,246 @@
   </div>
 
 </div><!-- end view-benchmarks -->
+
+<!-- ═══════════════ HOW IT WORKS VIEW ═══════════════ -->
+<div id="view-howto" class="hidden flex-1 overflow-y-auto bg-slate-900 p-6">
+  <h2 class="text-xs font-bold tracking-widest text-indigo-400 uppercase mb-6">How Assembly Works</h2>
+  <div class="flex flex-col gap-3 max-w-3xl">
+
+    <!-- §1 Overview -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-1">
+        <span class="step-circle bg-indigo-900 text-indigo-300">1</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Overview: The Big Picture</span>
+          <span class="text-xs text-slate-500 ml-3">End-to-end flow from input to structured ideas</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-1" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex items-start flex-wrap gap-1 mb-4">
+          <div class="flow-box"><div class="text-slate-300 font-bold">User Input</div><div class="text-slate-500 mt-1 text-xs">inspiration + mode</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box"><div class="text-slate-300 font-bold">Phase Planning</div><div class="text-slate-500 mt-1 text-xs">LLM-generated phases</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box"><div class="text-slate-300 font-bold">Persona Debate</div><div class="text-slate-500 mt-1 text-xs">multi-turn conversation</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box"><div class="text-slate-300 font-bold">Ideas &amp; Output</div><div class="text-slate-500 mt-1 text-xs">structured ideas + convergence</div></div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">Assembly takes a problem description and runs it through a multi-phase structured debate between AI personas, each with different viewpoints and expertise. The system extracts ideas as they emerge, tracks belief evolution, and optionally runs a convergence phase to produce a polished commercial spec.</p>
+      </div>
+    </div>
+
+    <!-- §2 Inspiration & Mode -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-2">
+        <span class="step-circle bg-purple-900 text-purple-300">2</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Inspiration &amp; Mode Selection</span>
+          <span class="text-xs text-slate-500 ml-3">Controls depth, personas, memory, and timing</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-2" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex gap-3 mb-4 flex-wrap">
+          <div class="flow-box flex-1 min-w-[100px] text-left"><div class="text-indigo-300 font-bold mb-1">fast</div><div class="text-slate-400">3 turns</div><div class="text-slate-400">3 personas</div><div class="text-slate-500">no mediator</div><div class="text-slate-500">1–2 min</div></div>
+          <div class="flow-box flex-1 min-w-[100px] text-left"><div class="text-purple-300 font-bold mb-1">medium</div><div class="text-slate-400">5 turns</div><div class="text-slate-400">4 personas</div><div class="text-green-500">mediator ✓</div><div class="text-slate-500">3–5 min</div></div>
+          <div class="flow-box flex-1 min-w-[100px] text-left"><div class="text-teal-300 font-bold mb-1">standard</div><div class="text-slate-400">8 turns</div><div class="text-slate-400">4 personas</div><div class="text-green-500">mediator ✓</div><div class="text-slate-500">30–60 min</div></div>
+          <div class="flow-box flex-1 min-w-[100px] text-left"><div class="text-amber-300 font-bold mb-1">deep</div><div class="text-slate-400">15 turns</div><div class="text-slate-400">5 personas</div><div class="text-green-500">mediator ✓</div><div class="text-slate-500">60–90 min</div></div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">The <span class="text-slate-300 font-bold">mode</span> sets default turns and persona count. <span class="text-slate-300 font-bold">fast</span> uses <code class="text-indigo-400">full_history</code> memory (all exchanges verbatim, no extra LLM calls). <span class="text-slate-300 font-bold">medium/standard/deep</span> use <code class="text-indigo-400">structured</code> memory — a maintained summary that reduces context bloat as conversations grow long.</p>
+      </div>
+    </div>
+
+    <!-- §3 Dynamic Phase Generation -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-3">
+        <span class="step-circle bg-teal-900 text-teal-300">3</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Dynamic Phase Generation</span>
+          <span class="text-xs text-slate-500 ml-3">LLM creates domain-specific conversation phases</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-3" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex items-start gap-2 mb-4 flex-wrap">
+          <div class="flow-box"><div class="text-slate-300 font-bold">Inspiration text</div></div>
+          <div class="flow-arrow mt-2">→</div>
+          <div class="flow-box"><div class="text-slate-300 font-bold">LLM</div><div class="text-slate-500 text-xs">phase planner</div></div>
+          <div class="flow-arrow mt-2">→</div>
+          <div class="flex flex-col gap-1.5">
+            <div class="flow-box text-xs"><span class="text-slate-300">Phase 1</span> <span class="text-indigo-300 ml-2">DEBATE</span></div>
+            <div class="flow-box text-xs"><span class="text-slate-300">Phase 2</span> <span class="text-indigo-300 ml-2">DEBATE</span></div>
+            <div class="flow-box text-xs"><span class="text-slate-300">Phase N</span> <span class="text-teal-300 ml-2">INTEGRATION</span></div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">Phases are not hardcoded — the LLM generates domain-specific phases tailored to the inspiration. Each phase includes: <code class="text-indigo-400">phase_id</code>, <code class="text-indigo-400">goal</code>, <code class="text-indigo-400">desired_outcome</code>, <code class="text-indigo-400">max_turns</code>, and <code class="text-indigo-400">phase_type</code>. Phase selection strategies (bookends, bookends_plus_middle, all) determine which phases to run.</p>
+      </div>
+    </div>
+
+    <!-- §4 Persona Creation -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-4">
+        <span class="step-circle bg-rose-900 text-rose-300">4</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Persona Creation</span>
+          <span class="text-xs text-slate-500 ml-3">Fresh per-phase personas generated for the domain</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-4" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex gap-3 mb-4 flex-wrap">
+          <div class="border-l-4 border-blue-500 bg-slate-900 rounded p-3 flex-1 min-w-[120px]"><div class="text-blue-300 font-bold text-xs mb-1">Market Analyst</div><div class="text-slate-500 text-xs">Pragmatist</div><div class="text-slate-400 text-xs mt-1">Validates market fit</div><div class="text-slate-500 text-xs mt-1">• Data-driven • Sceptical</div></div>
+          <div class="border-l-4 border-purple-500 bg-slate-900 rounded p-3 flex-1 min-w-[120px]"><div class="text-purple-300 font-bold text-xs mb-1">UX Visionary</div><div class="text-slate-500 text-xs">Creative</div><div class="text-slate-400 text-xs mt-1">Champions user needs</div><div class="text-slate-500 text-xs mt-1">• Empathetic • Bold</div></div>
+          <div class="border-l-4 border-teal-500 bg-slate-900 rounded p-3 flex-1 min-w-[120px]"><div class="text-teal-300 font-bold text-xs mb-1">Tech Lead</div><div class="text-slate-500 text-xs">Realist</div><div class="text-slate-400 text-xs mt-1">Assesses feasibility</div><div class="text-slate-500 text-xs mt-1">• Rigorous • Precise</div></div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">PersonaManager generates fresh personas per phase, tailored to the domain and phase goal. Personas are cached for reuse across sessions. Each has a name, archetype, purpose, and intellectual strengths that shape how they engage.</p>
+      </div>
+    </div>
+
+    <!-- §5 The Conversation Loop -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-5">
+        <span class="step-circle bg-amber-900 text-amber-300">5</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">The Conversation Loop</span>
+          <span class="text-xs text-slate-500 ml-3">What happens inside each turn</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-5" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex flex-col gap-2 mb-4">
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">①</span><div class="flow-box flex-1 text-left">Facilitator selects next speaker based on recent exchanges + novelty</div></div>
+          <div class="ml-3 text-slate-600 text-xs">↓</div>
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">②</span><div class="flow-box flex-1 text-left">Persona reads context (full history or structured memory)</div></div>
+          <div class="ml-3 text-slate-600 text-xs">↓</div>
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">③</span><div class="flow-box flex-1 text-left">Persona generates response via LLM</div></div>
+          <div class="ml-3 text-slate-600 text-xs">↓</div>
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">④</span><div class="flow-box flex-1 text-left">Idea extraction (async, non-blocking)</div></div>
+          <div class="ml-3 text-slate-600 text-xs">↓</div>
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">⑤</span><div class="flow-box flex-1 text-left">Memory update (shared + personal belief state)</div></div>
+          <div class="ml-3 text-slate-600 text-xs">↓</div>
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">⑥</span><div class="flow-box flex-1 text-left">Novelty / gap check → next turn or phase end</div></div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">FacilitatorAgent decides who speaks next based on novelty scores and recent participation. A gap nudge fires every 4 turns to push unexplored angles. <code class="text-indigo-400">max_turns</code> per phase is enforced. All async tasks (extraction, memory) run in parallel via <code class="text-indigo-400">asyncio.gather()</code>.</p>
+      </div>
+    </div>
+
+    <!-- §6 Memory System -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-6">
+        <span class="step-circle bg-emerald-900 text-emerald-300">6</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Memory System</span>
+          <span class="text-xs text-slate-500 ml-3">How personas remember across a long conversation</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-6" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex gap-3 mb-4 flex-wrap">
+          <div class="flow-box flex-1 min-w-[120px] text-left"><div class="text-emerald-300 font-bold text-xs mb-2">SHARED MEMORY</div><div class="text-slate-400 text-xs">LLM consensus</div><div class="text-slate-400 text-xs">dead-ends</div><div class="text-slate-400 text-xs">key decisions</div></div>
+          <div class="flow-box flex-1 min-w-[120px] text-left"><div class="text-blue-300 font-bold text-xs mb-2">PERSONAL MEMORY</div><div class="text-slate-400 text-xs">summary: facts / concerns</div><div class="text-slate-400 text-xs">belief_state: position / deltas</div></div>
+          <div class="flow-box flex-1 min-w-[120px] text-left"><div class="text-purple-300 font-bold text-xs mb-2">SHORT-TERM</div><div class="text-slate-400 text-xs">Last 3 exchanges verbatim</div></div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed"><code class="text-indigo-400">full_history</code> mode dumps the entire conversation each turn — simple but grows large. <code class="text-indigo-400">structured</code> mode maintains these 3 components updated each turn via <code class="text-indigo-400">update_shared_memory_async()</code>, <code class="text-indigo-400">update_summary_async()</code>, and <code class="text-indigo-400">update_belief_state_async()</code>. This reduces context bloat while preserving continuity.</p>
+      </div>
+    </div>
+
+    <!-- §7 The Mediator -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-7">
+        <span class="step-circle bg-sky-900 text-sky-300">7</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">The Mediator</span>
+          <span class="text-xs text-slate-500 ml-3">Neutral AI that unsticks debates and presents scenarios</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-7" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="mb-4 border border-slate-600 rounded overflow-hidden text-xs">
+          <div class="flex bg-slate-900 border-b border-slate-700 font-bold text-slate-400 px-3 py-1.5"><span class="flex-1">TRIGGER</span><span class="mx-3">→</span><span class="flex-1">MEDIATOR ACTION</span></div>
+          <div class="flex px-3 py-1.5 border-b border-slate-700"><span class="flex-1 text-slate-300">Circular argument</span><span class="mx-3 text-slate-600">→</span><span class="flex-1 text-amber-300">DETECT + reframe</span></div>
+          <div class="flex px-3 py-1.5 border-b border-slate-700"><span class="flex-1 text-slate-300">Implicit agreement</span><span class="mx-3 text-slate-600">→</span><span class="flex-1 text-amber-300">BRIDGE synthesis</span></div>
+          <div class="flex px-3 py-1.5 border-b border-slate-700"><span class="flex-1 text-slate-300">Needs definition</span><span class="mx-3 text-slate-600">→</span><span class="flex-1 text-amber-300">FORCE definition</span></div>
+          <div class="flex px-3 py-1.5"><span class="flex-1 text-slate-300">Stagnation</span><span class="mx-3 text-slate-600">→</span><span class="flex-1 text-amber-300">Present SCENARIOS</span></div>
+        </div>
+        <div class="flex gap-2 mb-4 flex-wrap">
+          <div class="flow-box text-left text-xs flex-1 min-w-[80px]"><div class="text-amber-300 font-bold">CASE_A</div><div class="text-slate-400">Aggressive path</div></div>
+          <div class="flow-box text-left text-xs flex-1 min-w-[80px]"><div class="text-amber-300 font-bold">CASE_B</div><div class="text-slate-400">Conservative path</div></div>
+          <div class="flow-box text-left text-xs flex-1 min-w-[80px]"><div class="text-amber-300 font-bold">CASE_C</div><div class="text-slate-400">Novel hybrid path</div></div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">The mediator is a neutral persona with access to all belief states. It fires when the FacilitatorAgent detects stagnation, circularity, or implicit convergence. Each mediation is logged with sub-types: questions_asked, circular_arguments_detected, synthesis_points, scenarios_presented.</p>
+      </div>
+    </div>
+
+    <!-- §8 Idea Tracking & Belief States -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-8">
+        <span class="step-circle bg-fuchsia-900 text-fuchsia-300">8</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Idea Tracking &amp; Belief States</span>
+          <span class="text-xs text-slate-500 ml-3">How ideas and persona positions evolve over time</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-8" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex gap-4 mb-4 flex-wrap">
+          <div class="flex-1 min-w-[160px]">
+            <p class="text-xs text-slate-500 font-bold mb-2">IDEA LIFECYCLE</p>
+            <div class="flex flex-col gap-1.5 items-start">
+              <div class="flow-box text-indigo-300 font-bold w-full">in_play ~</div>
+              <div class="flex gap-4 w-full justify-around text-slate-600 text-xs px-4">↙ ↘</div>
+              <div class="flex gap-2 w-full">
+                <div class="flow-box text-red-300 flex-1">rejected ✗</div>
+                <div class="flow-box text-green-300 flex-1">integrated ✓</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex-1 min-w-[160px]">
+            <p class="text-xs text-slate-500 font-bold mb-2">BELIEF EVOLUTION</p>
+            <div class="border border-slate-600 rounded text-xs overflow-hidden">
+              <div class="flex bg-slate-900 border-b border-slate-700 text-slate-500 px-2 py-1"><span class="w-8">Turn</span><span class="flex-1">Position shift</span></div>
+              <div class="flex px-2 py-1 border-b border-slate-700 text-slate-400"><span class="w-8">t1</span><span class="flex-1">Initial stance set</span></div>
+              <div class="flex px-2 py-1 border-b border-slate-700 text-slate-400"><span class="w-8">t3</span><span class="flex-1">Partial concession</span></div>
+              <div class="flex px-2 py-1 text-slate-400"><span class="w-8">t5</span><span class="flex-1">Delta: integrated X</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">Idea extraction runs asynchronously in parallel with the conversation. Each extracted idea has a status (<code class="text-indigo-400">in_play</code> → <code class="text-indigo-400">rejected</code> or <code class="text-indigo-400">integrated</code>). Personas update certainty, concessions, and deltas each turn — visible in the Personas tab.</p>
+      </div>
+    </div>
+
+    <!-- §9 Convergence & Output -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <button class="howto-toggle w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-750 transition-colors text-left" data-target="howto-9">
+        <span class="step-circle bg-indigo-900 text-indigo-300">9</span>
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-bold text-slate-200">Convergence &amp; Output</span>
+          <span class="text-xs text-slate-500 ml-3">From raw ideas to a polished commercial spec</span>
+        </div>
+        <span class="howto-arrow text-slate-500 text-xs shrink-0">▶ Details</span>
+      </button>
+      <div id="howto-9" class="hidden howto-detail mx-4 mb-4 mt-1">
+        <div class="flex flex-col items-center gap-1 mb-4">
+          <div class="flow-box w-full text-center text-slate-300">Many ideas in_play across phases</div>
+          <div class="text-slate-600 text-xs">↓ convergence LLM synthesis pass</div>
+          <div class="flow-box w-56 text-center text-slate-300">Best ideas selected</div>
+          <div class="text-slate-600 text-xs">↓</div>
+          <div class="border border-amber-700 bg-amber-950 rounded p-3 text-xs flex flex-col gap-1 w-full">
+            <div class="flex items-center gap-2"><span class="text-amber-400">⭐</span><span class="text-amber-300 font-bold">PRODUCT NAME</span></div>
+            <div class="text-slate-300 italic">"One sentence pitch"</div>
+            <div class="text-slate-400">Target: … &nbsp; Monetisation: … &nbsp; Differentiator: …</div>
+            <div class="text-slate-500">MVP features: • … • …</div>
+            <div class="text-slate-500">Risks: • …</div>
+            <div class="text-slate-500">7-day plan: • Day 1–2: … • Day 3–5: … • Day 6–7: …</div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">The optional convergence phase runs a final LLM synthesis over all raw ideas and conversation logs. It produces a commercial-grade structured spec: product name, one-sentence pitch, target ICP, monetisation model, key differentiator, MVP features, risks, and a 7-day execution plan.</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end view-howto -->
 
 <!-- ═══════════════ PROMPT INSPECTOR DRAWER ═══════════════ -->
 <div id="inspector" class="fixed bottom-0 left-0 right-0 bg-slate-800 border-t-2 border-indigo-600 z-50"
@@ -1362,19 +1657,32 @@ function renderMediatorLog() {
 // ══════════════════════════════════════════════════════════════════
 // TOP NAV
 // ══════════════════════════════════════════════════════════════════
-document.getElementById('nav-run').addEventListener('click', () => {
-  document.getElementById('view-run').classList.remove('hidden');
-  document.getElementById('view-benchmarks').classList.add('hidden');
-  document.getElementById('nav-run').classList.add('active');
-  document.getElementById('nav-benchmarks').classList.remove('active');
+function switchView(name) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
+  const navBtn = document.getElementById('nav-' + name);
+  if (navBtn) navBtn.classList.add('active');
+  const viewEl = document.getElementById('view-' + name);
+  if (viewEl) viewEl.classList.remove('hidden');
+  if (name === 'benchmarks') loadBenchmarks();
+}
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchView(btn.dataset.view));
 });
 
-document.getElementById('nav-benchmarks').addEventListener('click', () => {
-  document.getElementById('view-run').classList.add('hidden');
-  document.getElementById('view-benchmarks').classList.remove('hidden');
-  document.getElementById('nav-run').classList.remove('active');
-  document.getElementById('nav-benchmarks').classList.add('active');
-  loadBenchmarks();
+switchView('home'); // default on load
+
+// How it Works — expand/collapse toggles
+document.querySelectorAll('.howto-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    if (!target) return;
+    const isHidden = target.classList.contains('hidden');
+    target.classList.toggle('hidden');
+    const arrow = btn.querySelector('.howto-arrow');
+    if (arrow) arrow.textContent = isHidden ? '▼ Details' : '▶ Details';
+  });
 });
 
 document.getElementById('bm-log-close').addEventListener('click', () => {
