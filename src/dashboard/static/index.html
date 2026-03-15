@@ -5,11 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Assembly Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <style>
+  body { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
+  .material-symbols-outlined { font-size: inherit; line-height: 1; user-select: none;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+
   /* Custom scrollbars */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #1e293b; }
-  ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
 
   /* Smooth message entrance */
   @keyframes slideIn {
@@ -74,8 +81,11 @@
 <body class="bg-slate-900 text-slate-200 h-screen flex flex-col overflow-hidden font-mono text-sm">
 
 <!-- ═══════════════ TOP NAV ═══════════════ -->
-<nav class="flex items-center gap-4 px-4 py-2 bg-slate-800 border-b border-slate-700 shrink-0">
-  <span class="text-xs font-bold tracking-widest text-indigo-400">⚡ ASSEMBLY</span>
+<nav class="flex items-center gap-4 px-4 py-2 bg-slate-800/90 border-b border-indigo-500/20 shrink-0 backdrop-blur-sm">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-indigo-400 text-lg">account_tree</span>
+    <span class="font-display text-sm font-bold tracking-tight text-slate-100">Assembly <span class="text-indigo-400/70 font-normal text-xs">v2.4.0</span></span>
+  </div>
   <div class="flex gap-1 ml-2">
     <button id="nav-home" data-view="home" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Home</button>
     <button id="nav-run" data-view="run" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Run</button>
@@ -85,60 +95,87 @@
 </nav>
 
 <!-- ═══════════════ HOME VIEW ═══════════════ -->
-<div id="view-home" class="hidden flex-1 flex flex-col items-center justify-center bg-slate-900 p-8">
+<div id="view-home" class="hidden flex-1 flex flex-col items-center justify-center bg-slate-900 p-8 relative overflow-hidden">
+  <!-- Ambient glow -->
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-blue-600/8 blur-[120px] rounded-full pointer-events-none"></div>
+
   <!-- Hero -->
-  <div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-indigo-400 tracking-widest mb-3">⚡ ASSEMBLY</h1>
+  <div class="text-center mb-12 relative z-10">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold mb-6 uppercase tracking-widest font-display">
+      Multi-Persona Intelligence
+    </div>
+    <h1 class="font-display text-5xl font-bold text-indigo-400 tracking-tight mb-3">⚡ ASSEMBLY</h1>
     <p class="text-slate-400 text-sm">Multi-persona AI brainstorming — problem to idea</p>
   </div>
 
   <!-- 3 nav cards -->
-  <div class="flex gap-6 mb-12 flex-wrap justify-center">
-    <div onclick="switchView('run')" class="cursor-pointer flex flex-col gap-3 p-6 bg-slate-800 border border-slate-700 rounded-lg hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all w-52">
-      <span class="text-2xl">▶</span>
+  <div class="flex gap-5 mb-14 flex-wrap justify-center relative z-10">
+    <div onclick="switchView('run')" class="cursor-pointer flex flex-col gap-4 p-7 bg-slate-800 border border-slate-700/60 rounded-2xl hover:border-indigo-500/60 hover:shadow-lg hover:shadow-indigo-500/10 transition-all w-56 group">
+      <div class="w-11 h-11 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+        <span class="material-symbols-outlined text-2xl">terminal</span>
+      </div>
       <div>
-        <p class="text-sm font-bold text-slate-200 mb-1">Run</p>
-        <p class="text-xs text-slate-400 leading-snug">Start a new idea generation session</p>
+        <p class="font-display text-sm font-bold text-slate-100 mb-1.5 uppercase tracking-wide">Run</p>
+        <p class="text-xs text-slate-400 leading-snug">Execute a multi-persona brainstorming session</p>
       </div>
     </div>
-    <div onclick="switchView('benchmarks')" class="cursor-pointer flex flex-col gap-3 p-6 bg-slate-800 border border-slate-700 rounded-lg hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all w-52">
-      <span class="text-2xl">◈</span>
+    <div onclick="switchView('benchmarks')" class="cursor-pointer flex flex-col gap-4 p-7 bg-slate-800 border border-slate-700/60 rounded-2xl hover:border-indigo-500/60 hover:shadow-lg hover:shadow-indigo-500/10 transition-all w-56 group">
+      <div class="w-11 h-11 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+        <span class="material-symbols-outlined text-2xl">leaderboard</span>
+      </div>
       <div>
-        <p class="text-sm font-bold text-slate-200 mb-1">Benchmarks</p>
+        <p class="font-display text-sm font-bold text-slate-100 mb-1.5 uppercase tracking-wide">Benchmarks</p>
         <p class="text-xs text-slate-400 leading-snug">Measure and test output quality</p>
       </div>
     </div>
-    <div onclick="switchView('howto')" class="cursor-pointer flex flex-col gap-3 p-6 bg-slate-800 border border-slate-700 rounded-lg hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all w-52">
-      <span class="text-2xl">◎</span>
+    <div onclick="switchView('howto')" class="cursor-pointer flex flex-col gap-4 p-7 bg-slate-800 border border-slate-700/60 rounded-2xl hover:border-indigo-500/60 hover:shadow-lg hover:shadow-indigo-500/10 transition-all w-56 group">
+      <div class="w-11 h-11 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+        <span class="material-symbols-outlined text-2xl">schema</span>
+      </div>
       <div>
-        <p class="text-sm font-bold text-slate-200 mb-1">How it Works</p>
+        <p class="font-display text-sm font-bold text-slate-100 mb-1.5 uppercase tracking-wide">How it Works</p>
         <p class="text-xs text-slate-400 leading-snug">Understand the Assembly process</p>
       </div>
     </div>
   </div>
 
-  <!-- Mini flow strip -->
-  <div class="flex items-center text-xs">
-    <div class="flow-box text-slate-300">Inspiration</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box text-slate-300">Phases</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box text-slate-300">Debate</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box text-slate-300">Ideas</div>
+  <!-- "The Assembly Line" process strip -->
+  <div class="relative z-10 text-center">
+    <p class="font-display text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">The Assembly Line</p>
+    <div class="flex items-center text-xs">
+      <div class="flow-box flex items-center gap-2 text-slate-300">
+        <span class="material-symbols-outlined text-indigo-400" style="font-size:14px">lightbulb</span> Inspiration
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flex items-center gap-2 text-slate-300">
+        <span class="material-symbols-outlined text-indigo-400" style="font-size:14px">layers</span> Phases
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flex items-center gap-2 text-slate-300">
+        <span class="material-symbols-outlined text-indigo-400" style="font-size:14px">forum</span> Debate
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flex items-center gap-2 font-bold" style="background:#1e293b;border-color:#4f46e5;color:#a5b4fc">
+        <span class="material-symbols-outlined" style="font-size:14px;color:#818cf8">rocket_launch</span> Ideas
+      </div>
+    </div>
   </div>
 </div><!-- end view-home -->
 
 <!-- ═══════════════ MAIN 3-COLUMN LAYOUT ═══════════════ -->
-<div id="view-run" class="hidden flex-1 overflow-hidden">
+<div id="view-run" class="hidden flex-1 flex overflow-hidden">
 
   <!-- ═══ LEFT PANEL — Parameters (250px) ═══ -->
   <aside class="w-64 min-w-[250px] bg-slate-800 border-r border-slate-700 flex flex-col overflow-y-auto p-4 gap-3">
-    <h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase mb-1">Parameters</h2>
+    <div class="flex items-center justify-between mb-1">
+      <h2 class="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Parameters</h2>
+      <span class="material-symbols-outlined text-slate-500 text-sm">settings_input_component</span>
+    </div>
 
     <!-- Inspiration -->
     <div>
-      <label class="text-xs text-slate-400 block mb-1">Inspiration</label>
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Inspiration Seed</label>
       <textarea id="p-inspiration" rows="4"
         class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs resize-none focus:outline-none focus:border-indigo-500"
         placeholder="Describe the problem space or domain…"></textarea>
@@ -147,7 +184,7 @@
 
     <!-- Mode -->
     <div>
-      <label class="text-xs text-slate-400 block mb-1">Mode</label>
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Execution Mode</label>
       <select id="p-mode"
         class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500">
         <option value="fast">fast — quick test (no mediator)</option>
@@ -161,27 +198,27 @@
     <!-- Numeric params -->
     <div class="grid grid-cols-2 gap-2">
       <div>
-        <label class="text-xs text-slate-400 block mb-1"># Ideas</label>
+        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"># Ideas</label>
         <input id="p-ideas" type="number" min="1" max="5" value="1"
           class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
         <p class="text-slate-500 text-xs leading-tight mt-0.5">Distinct final ideas to aim for</p>
       </div>
       <div>
-        <label class="text-xs text-slate-400 block mb-1">Max turns</label>
+        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Max Turns</label>
         <input id="p-turns" type="number" min="2" max="20" value=""
           placeholder="auto"
           class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
         <p class="text-slate-500 text-xs leading-tight mt-0.5">Turns per phase (blank = mode default)</p>
       </div>
       <div>
-        <label class="text-xs text-slate-400 block mb-1">Personas</label>
+        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Personas</label>
         <input id="p-personas" type="number" min="2" max="6" value=""
           placeholder="auto"
           class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
         <p class="text-slate-500 text-xs leading-tight mt-0.5">AI personas per phase (blank = mode default)</p>
       </div>
       <div>
-        <label class="text-xs text-slate-400 block mb-1">Memory</label>
+        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Memory</label>
         <select id="p-memory"
           class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500">
           <option value="full_history">full_history</option>
@@ -211,7 +248,7 @@
 
     <!-- Model -->
     <div>
-      <label class="text-xs text-slate-400 block mb-1">Model override</label>
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Model Override</label>
       <input id="p-model" type="text" placeholder="default: gpt-5.1"
         class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
       <p class="text-slate-500 text-xs leading-tight mt-0.5">OpenAI model to use (blank = mode default, currently gpt-5.1)</p>
@@ -219,8 +256,9 @@
 
     <!-- Run button -->
     <button id="btn-run"
-      class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded px-3 py-2 text-xs font-bold tracking-wide transition-colors">
-      ▶ Run Assembly
+      class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded px-3 py-2.5 text-xs font-bold tracking-wide transition-all active:scale-[0.98] shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-base">play_arrow</span>
+      Run Assembly
     </button>
 
     <!-- Status -->
@@ -233,15 +271,49 @@
 
   <!-- ═══ CENTER PANEL — Live Conversation ═══ -->
   <main class="flex-1 flex flex-col overflow-hidden bg-slate-900">
-    <div class="border-b border-slate-700 px-4 py-2 text-xs text-slate-400 flex items-center gap-3">
-      <span class="font-bold text-slate-300">Live Conversation</span>
-      <span id="turn-counter" class="text-slate-500">—</span>
+    <div class="border-b border-slate-700 px-4 py-2 text-xs flex items-center gap-3 bg-slate-800/30 backdrop-blur-sm">
+      <span class="size-2 rounded-full bg-slate-600 animate-pulse shrink-0"></span>
+      <span class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Live Conversation</span>
+      <div class="ml-auto flex items-center gap-4 text-[10px] text-slate-500">
+        <span>TURNS: <span id="turn-counter" class="text-indigo-400">—</span></span>
+        <span>STATUS: <span id="run-status-label" class="text-slate-500">IDLE</span></span>
+      </div>
     </div>
 
     <div id="conversation"
       class="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
       <!-- messages appended here -->
-      <p class="text-slate-500 text-xs italic text-center mt-8">Configure parameters and click Run Assembly to start.</p>
+      <div class="flex flex-col items-center justify-center flex-1 text-center py-12" id="empty-state">
+        <div class="relative mb-5">
+          <div class="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full"></div>
+          <span class="material-symbols-outlined text-5xl text-slate-700 relative" style="font-size:48px">terminal</span>
+        </div>
+        <p class="text-slate-400 text-xs max-w-xs leading-relaxed mb-6">
+          Configure parameters and click <span class="text-indigo-400 font-bold">Run Assembly</span> to start the multi-persona brainstorming session.
+        </p>
+        <div class="grid grid-cols-3 gap-3 w-full max-w-sm opacity-30 pointer-events-none">
+          <div class="p-3 border border-dashed border-slate-700 rounded-lg flex flex-col items-center gap-1.5">
+            <span class="material-symbols-outlined text-slate-500" style="font-size:20px">psychology</span>
+            <span class="text-[9px] uppercase font-bold tracking-tight text-slate-500">Personas</span>
+          </div>
+          <div class="p-3 border border-dashed border-slate-700 rounded-lg flex flex-col items-center gap-1.5">
+            <span class="material-symbols-outlined text-slate-500" style="font-size:20px">forum</span>
+            <span class="text-[9px] uppercase font-bold tracking-tight text-slate-500">Debate</span>
+          </div>
+          <div class="p-3 border border-dashed border-slate-700 rounded-lg flex flex-col items-center gap-1.5">
+            <span class="material-symbols-outlined text-slate-500" style="font-size:20px">lightbulb</span>
+            <span class="text-[9px] uppercase font-bold tracking-tight text-slate-500">Ideas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal status footer -->
+    <div class="h-8 border-t border-slate-700 bg-slate-800/50 flex items-center px-4 gap-3 shrink-0">
+      <span class="material-symbols-outlined text-emerald-500" style="font-size:13px">check_circle</span>
+      <span class="text-[10px] text-emerald-500">System Ready</span>
+      <div class="h-3 w-px bg-slate-700"></div>
+      <span id="terminal-status" class="text-[10px] text-slate-500 truncate">Waiting for configuration input…</span>
     </div>
   </main>
 
@@ -250,10 +322,10 @@
 
     <!-- Tabs -->
     <div class="flex border-b border-slate-700">
-      <button class="tab-btn active flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="phases">Phases</button>
-      <button class="tab-btn flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="personas">Personas</button>
-      <button class="tab-btn flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="ideas">Ideas</button>
-      <button class="tab-btn flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="memory">Memory</button>
+      <button class="tab-btn active flex-1 text-[10px] font-bold uppercase tracking-wider py-2.5 px-2 hover:bg-slate-700 transition-colors" data-tab="phases">Phases</button>
+      <button class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-wider py-2.5 px-2 hover:bg-slate-700 transition-colors" data-tab="personas">Personas</button>
+      <button class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-wider py-2.5 px-2 hover:bg-slate-700 transition-colors" data-tab="ideas">Ideas</button>
+      <button class="tab-btn flex-1 text-[10px] font-bold uppercase tracking-wider py-2.5 px-2 hover:bg-slate-700 transition-colors" data-tab="memory">Memory</button>
     </div>
 
     <!-- Tab content -->
@@ -261,17 +333,29 @@
 
       <!-- PHASES tab -->
       <div id="tab-phases" class="tab-content flex flex-col gap-2">
-        <p class="text-slate-500 text-xs italic">Phases will appear when the run starts.</p>
+        <div class="flex flex-col items-center justify-center py-10 text-center opacity-60">
+          <span class="material-symbols-outlined text-slate-600 mb-3" style="font-size:32px">analytics</span>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">No Active Data</p>
+          <p class="text-[10px] text-slate-600 leading-snug">Phases will appear when the run starts.</p>
+        </div>
       </div>
 
       <!-- PERSONAS tab -->
       <div id="tab-personas" class="tab-content hidden flex flex-col gap-2">
-        <p class="text-slate-500 text-xs italic">Persona states will appear after the first turn.</p>
+        <div class="flex flex-col items-center justify-center py-10 text-center opacity-60">
+          <span class="material-symbols-outlined text-slate-600 mb-3" style="font-size:32px">psychology</span>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">No Active Data</p>
+          <p class="text-[10px] text-slate-600 leading-snug">Persona states will appear after the first turn.</p>
+        </div>
       </div>
 
       <!-- IDEAS tab -->
       <div id="tab-ideas" class="tab-content hidden flex flex-col gap-2">
-        <p class="text-slate-500 text-xs italic">Ideas will appear as they are discussed.</p>
+        <div class="flex flex-col items-center justify-center py-10 text-center opacity-60">
+          <span class="material-symbols-outlined text-slate-600 mb-3" style="font-size:32px">lightbulb</span>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">No Active Data</p>
+          <p class="text-[10px] text-slate-600 leading-snug">Ideas will appear as they are discussed.</p>
+        </div>
       </div>
 
       <!-- MEMORY tab -->
@@ -288,6 +372,23 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- Stats footer -->
+    <div class="p-3 border-t border-slate-700 bg-slate-900/30 shrink-0">
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center text-[10px]">
+          <span class="text-slate-500">Latency (Est.)</span>
+          <span id="stat-latency" class="text-slate-300">-- ms</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px]">
+          <span class="text-slate-500">Token Cost</span>
+          <span id="stat-cost" class="text-slate-300">$0.0000</span>
+        </div>
+        <div class="w-full bg-slate-900 h-1 rounded-full overflow-hidden border border-slate-700 mt-0.5">
+          <div id="stat-progress" class="bg-indigo-500 h-full w-0 transition-all duration-1000"></div>
+        </div>
+      </div>
     </div>
   </aside>
 </div><!-- end view-run -->
@@ -753,6 +854,12 @@ document.getElementById('btn-run').addEventListener('click', async () => {
 
   // Reset UI
   document.getElementById('conversation').innerHTML = '';
+  const runStatusLabel = document.getElementById('run-status-label');
+  if (runStatusLabel) { runStatusLabel.textContent = 'IDLE'; runStatusLabel.className = 'text-slate-500'; }
+  const termStatus = document.getElementById('terminal-status');
+  if (termStatus) termStatus.textContent = 'Initiating sequence…';
+  const progBar = document.getElementById('stat-progress');
+  if (progBar) progBar.style.width = '0%';
   Object.assign(state, { prompts: {}, phases: [], activePhaseId: null, phaseProgress: {}, ideas: {}, personaStates: {}, nuances: [], mediationLog: null, scenarioHistory: [] });
   Object.keys(speakerColors).forEach(k => delete speakerColors[k]);
   document.getElementById('tab-phases').innerHTML = '<p class="text-slate-500 text-xs italic">Generating phases…</p>';
@@ -806,9 +913,15 @@ function setRunning(running) {
   const btn = document.getElementById('btn-run');
   const bar = document.getElementById('status-bar');
   btn.disabled = running;
+  const statusLabel = document.getElementById('run-status-label');
+  const termStatus = document.getElementById('terminal-status');
+  const pulseEl = document.querySelector('main .animate-pulse');
   if (running) {
     bar.classList.remove('hidden');
     document.getElementById('status-text').textContent = 'Running';
+    if (statusLabel) { statusLabel.textContent = 'RUNNING'; statusLabel.className = 'text-emerald-400'; }
+    if (termStatus) termStatus.textContent = 'Run in progress…';
+    if (pulseEl) { pulseEl.classList.remove('bg-slate-600'); pulseEl.classList.add('bg-emerald-500'); }
     startTimer();
   } else {
     bar.classList.remove('hidden');
@@ -816,6 +929,11 @@ function setRunning(running) {
     const pulse = document.querySelector('#status-bar .animate-pulse');
     if (pulse) { pulse.classList.remove('animate-pulse', 'text-green-400'); pulse.classList.add('text-slate-500'); }
     document.querySelector('#status-bar span').classList.add('text-slate-500');
+    if (statusLabel) { statusLabel.textContent = 'DONE'; statusLabel.className = 'text-slate-400'; }
+    if (termStatus) termStatus.textContent = 'Run complete. Configure a new session to run again.';
+    if (pulseEl) { pulseEl.classList.remove('bg-emerald-500', 'animate-pulse'); pulseEl.classList.add('bg-slate-600'); }
+    const progBar = document.getElementById('stat-progress');
+    if (progBar) progBar.style.width = '100%';
     stopTimer();
   }
 }
@@ -874,7 +992,15 @@ function handleEvent(ev) {
       };
       updatePhaseProgress(state.activePhaseId);
       document.getElementById('turn-counter').textContent =
-        'Turn ' + (ev.turn_num + 1) + ' / ' + ev.max_turns + ' — ' + ev.speaker;
+        (ev.turn_num + 1) + '/' + ev.max_turns + ' · ' + ev.speaker;
+      document.getElementById('run-status-label').textContent = 'RUNNING';
+      document.getElementById('run-status-label').className = 'text-emerald-400';
+      document.getElementById('terminal-status').textContent =
+        'Turn ' + (ev.turn_num + 1) + ' of ' + ev.max_turns + ' — ' + ev.speaker + ' speaking…';
+      // Update progress bar
+      const pct = ev.max_turns > 0 ? Math.round(ev.turn_num / ev.max_turns * 100) : 0;
+      const bar = document.getElementById('stat-progress');
+      if (bar) bar.style.width = Math.min(pct, 100) + '%';
       break;
 
     case 'message':
