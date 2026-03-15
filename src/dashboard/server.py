@@ -110,6 +110,11 @@ class AuthMiddleware:
             await self._app(scope, receive, send)
             return
 
+        # Allow health check through without auth
+        if scope.get("path") == "/health":
+            await self._app(scope, receive, send)
+            return
+
         headers = scope.get("headers", [])
 
         # Cookie fast-path (covers WebSocket upgrades too)
@@ -199,6 +204,11 @@ class RunParams(BaseModel):
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+@app.get("/health")
+async def health():
+    return JSONResponse({"status": "ok"})
+
 
 @app.get("/")
 async def serve_index():
