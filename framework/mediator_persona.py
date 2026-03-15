@@ -58,7 +58,7 @@ class MediatorPersona(Persona):
         }
         return cls(definition, model_name=model_name)
 
-    def mediate(self, ctx: Dict[str, Any]) -> Dict[str, Any]:
+    def mediate(self, ctx: Dict[str, Any], prompt_logger=None) -> Dict[str, Any]:
         """
         Generate mediator intervention (QUESTION/DETECT/BRIDGE).
 
@@ -140,6 +140,18 @@ CRITICAL: {self.watchouts}"""
             {"role": "system", "content": system_message},
             {"role": "user", "content": prompt}
         ]
+
+        # Log prompt input if callback provided
+        if prompt_logger:
+            try:
+                full_prompt = "\n\n".join([f"{m['role'].upper()}: {m['content']}" for m in messages])
+                prompt_logger({
+                    "system_message": system_message,
+                    "enhanced_prompt": full_prompt,
+                    "token_count": 0
+                })
+            except Exception:
+                pass
 
         # Call LLM
         completion = self.client.chat.completions.create(

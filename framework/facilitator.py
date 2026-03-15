@@ -25,7 +25,10 @@ def safe_print(text: str) -> None:
 
 def extract_key_phrases(text: str, max_phrases: int = 5) -> Set[str]:
     """
-    Extract key phrases (3-5 word sequences) from text for repetition detection.
+    Extract key content phrases (3-word sequences) from text for repetition detection.
+
+    Skips structural section headers (numbered items, template boilerplate) so that
+    the phrases represent actual discussed concepts rather than formatting artifacts.
 
     Args:
         text: Input text to extract phrases from
@@ -34,13 +37,47 @@ def extract_key_phrases(text: str, max_phrases: int = 5) -> Set[str]:
     Returns:
         Set of key phrases (lowercase, normalized)
     """
-    # Simple extraction: get 3-5 word sequences
-    words = text.lower().split()
-    phrases = set()
+    import re
 
-    # Extract 3-word sequences
+    # Collect only content-bearing lines — skip numbered section headers and
+    # template boilerplate that every response shares.
+    STRUCTURAL_RE = re.compile(
+        r'^(\d+[.)]\s*|[-•*]\s*)?'  # optional leading bullet/number
+        r'(key aspects?|central tensions?|trade-?offs?|example mapping|'
+        r'instructions? to agents?|note:|section:)',
+        re.IGNORECASE,
+    )
+    content_lines = []
+    for line in text.split('\n'):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        # Skip pure numbered headers ("1. Key aspects to examine:")
+        if re.match(r'^\d+[.)]\s', stripped) and len(stripped) < 80:
+            continue
+        if STRUCTURAL_RE.match(stripped):
+            continue
+        content_lines.append(stripped.lower())
+
+    source = ' '.join(content_lines) if content_lines else text.lower()
+
+    # Words: only alpha sequences ≥4 chars (avoids punctuation artefacts like "(a)")
+    words = re.findall(r'\b[a-z]{4,}\b', source)
+
+    # Skip phrases that start with high-frequency template words
+    SKIP_STARTS = {
+        'this', 'that', 'these', 'those', 'which', 'what', 'when', 'where',
+        'each', 'both', 'more', 'most', 'less', 'such', 'some', 'also',
+        'using', 'with', 'from', 'into', 'their', 'they', 'have', 'been',
+        'will', 'would', 'could', 'should', 'must', 'make', 'take', 'give',
+        'need', 'want', 'used', 'only', 'very', 'well', 'high', 'often',
+    }
+
+    phrases: Set[str] = set()
     for i in range(len(words) - 2):
-        phrase = " ".join(words[i:i+3])
+        if words[i] in SKIP_STARTS:
+            continue
+        phrase = ' '.join(words[i:i + 3])
         phrases.add(phrase)
         if len(phrases) >= max_phrases:
             break
