@@ -22,9 +22,13 @@ load_dotenv()
 
 import asyncio
 import json
+import os
+import secrets
 import time
 import traceback
+from base64 import b64decode
 from concurrent.futures import ThreadPoolExecutor
+from http.cookies import SimpleCookie
 from pathlib import Path
 from typing import Any, Dict, Optional
 from uuid import uuid4
@@ -41,10 +45,127 @@ from src.dashboard.benchmarks_runner import (
 )
 
 # ---------------------------------------------------------------------------
+# Auth middleware
+# ---------------------------------------------------------------------------
+
+class AuthMiddleware:
+    """
+    ASGI middleware enforcing HTTP Basic Auth on all HTTP and WebSocket routes.
+
+    Skipped entirely when DASHBOARD_PASS is not set (local dev).
+
+    Flow:
+    - First request: browser prompts for credentials via WWW-Authenticate: Basic.
+    - On valid credentials a session cookie is issued (HttpOnly, 24 h).
+    - Subsequent requests (including WebSocket upgrades) present the cookie —
+      no re-prompt needed. Browsers attach cookies to WS upgrade requests
+      automatically, so WebSocket auth requires no extra client-side code.
+    """
+
+    def __init__(self, app):
+        self._app = app
+        self._user = os.getenv("DASHBOARD_USER", "admin")
+        self._pass = os.getenv("DASHBOARD_PASS", "")
+        self._sessions: set = set()
+
+    def _check_cookie(self, headers: list) -> bool:
+        for name, value in headers:
+            if name == b"cookie":
+                try:
+                    cookie: SimpleCookie = SimpleCookie(value.decode())
+                    token = cookie.get("assembly_session")
+                    if token and token.value in self._sessions:
+                        return True
+                except Exception:
+                    pass
+        return False
+
+    def _validate_basic(self, headers: list) -> "str | None":
+        """Return a new session token if Basic credentials are valid, else None."""
+        for name, value in headers:
+            if name == b"authorization":
+                auth = value.decode()
+                if auth.startswith("Basic "):
+                    try:
+                        decoded = b64decode(auth[6:]).decode()
+                        username, password = decoded.split(":", 1)
+                        user_ok = secrets.compare_digest(username, self._user)
+                        pass_ok = secrets.compare_digest(password, self._pass)
+                        if user_ok and pass_ok:
+                            token = secrets.token_hex(32)
+                            self._sessions.add(token)
+                            return token
+                    except Exception:
+                        pass
+        return None
+
+    async def __call__(self, scope, receive, send):
+        # Auth disabled — local dev
+        if not self._pass:
+            await self._app(scope, receive, send)
+            return
+
+        kind = scope.get("type")
+        if kind not in ("http", "websocket"):
+            await self._app(scope, receive, send)
+            return
+
+        headers = scope.get("headers", [])
+
+        # Cookie fast-path (covers WebSocket upgrades too)
+        if self._check_cookie(headers):
+            await self._app(scope, receive, send)
+            return
+
+        # Basic Auth
+        token = self._validate_basic(headers)
+        if token:
+            if kind == "websocket":
+                # Rarely hit — browser would normally have the cookie already
+                await self._app(scope, receive, send)
+                return
+
+            # HTTP: inject Set-Cookie into the response
+            cookie_value = (
+                f"assembly_session={token}; HttpOnly; SameSite=Lax; "
+                "Max-Age=86400; Path=/"
+            )
+
+            async def send_with_cookie(message):
+                if message["type"] == "http.response.start":
+                    hdrs = list(message.get("headers", []))
+                    hdrs.append((b"set-cookie", cookie_value.encode()))
+                    message = {**message, "headers": hdrs}
+                await send(message)
+
+            await self._app(scope, receive, send_with_cookie)
+            return
+
+        # --- Unauthorized ---
+        if kind == "http":
+            body = b"Unauthorized"
+            await send({
+                "type": "http.response.start",
+                "status": 401,
+                "headers": [
+                    (b"www-authenticate", b'Basic realm="Assembly Dashboard"'),
+                    (b"content-type", b"text/plain"),
+                    (b"content-length", str(len(body)).encode()),
+                ],
+            })
+            await send({"type": "http.response.body", "body": body})
+        else:
+            # WebSocket: consume the connect handshake then close
+            await receive()
+            await send({"type": "websocket.close", "code": 4401})
+
+
+# ---------------------------------------------------------------------------
 # App setup
 # ---------------------------------------------------------------------------
 
 app = FastAPI(title="Assembly Dashboard")
+app.add_middleware(AuthMiddleware)
 
 STATIC_DIR = Path(__file__).parent / "static"
 LOGS_DIR = Path("conversation_logs")
