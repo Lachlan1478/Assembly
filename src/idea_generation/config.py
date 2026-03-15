@@ -18,6 +18,7 @@ MODE_CONFIGS = {
         "enable_summary_updates": False,
         "enable_mediator": False,  # Disable mediator for speed
         "enable_convergence_phase": False,  # Skip convergence for speed
+        "memory_mode": "full_history",  # Baseline: raw history dump (no extra LLM calls)
         "description": "Quick test (1-2 min) - exploration -> decision only"
     },
     "medium": {
@@ -29,6 +30,7 @@ MODE_CONFIGS = {
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for quality discussions
         "enable_convergence_phase": True,  # Enable convergence for commercial refinement
+        "memory_mode": "structured",  # 3-component: shared + personal + 3-turn short-term
         "description": "Balanced (3-5 min) - first + middle + decision phases + convergence"
     },
     "standard": {
@@ -39,6 +41,7 @@ MODE_CONFIGS = {
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for quality discussions
         "enable_convergence_phase": True,  # Enable convergence for commercial refinement
+        "memory_mode": "structured",  # 3-component: shared + personal + 3-turn short-term
         "description": "Comprehensive (30-60 min) - full workflow + convergence"
     },
     "deep": {
@@ -49,6 +52,7 @@ MODE_CONFIGS = {
         "enable_summary_updates": True,
         "enable_mediator": True,  # Enable mediator for deepest exploration
         "enable_convergence_phase": True,  # Enable convergence for commercial refinement
+        "memory_mode": "structured",  # 3-component: shared + personal + 3-turn short-term
         "description": "Deep exploration (60-90 min) - maximum depth + convergence"
     }
 }

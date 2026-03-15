@@ -156,6 +156,7 @@ class Persona:
         other_speaker = ctx.get("other_speaker")  # {name, message} or None
         turn_count = ctx.get("turn_count", 0)
         phase = ctx.get("phase", {})
+        shared_context = ctx.get("shared_context", {})
 
         # Initialize belief state on first turn if not already set
         domain = phase.get("domain") or ctx.get("domain")
@@ -200,16 +201,21 @@ CRITICAL CONSTRAINTS:
         # Each turn rebuilds context from scratch using all participants' exchanges
         exchanges = ctx.get("exchanges", [])
 
+        memory_mode = ctx.get("memory_mode", "full_history")
+
         if not exchanges:
             # First turn - just initial_prompt
             new_user_message = initial_prompt
+        elif memory_mode == "structured":
+            shared_memory = shared_context.get("shared_memory", "")
+            formatted = self._format_structured_memory(exchanges, shared_memory)
+            new_user_message = f"{initial_prompt}\n\n---\n\nCONTEXT:\n{formatted}"
         else:
-            # Subsequent turns - include full conversation history from all participants
+            # "full_history" — current behavior, unchanged
             formatted_history = self._format_full_history(exchanges)
             new_user_message = f"{initial_prompt}\n\n---\n\nCONVERSATION SO FAR:\n{formatted_history}"
 
         # Prepend active scenarios if present (domain-agnostic scenario injection)
-        shared_context = ctx.get("shared_context", {})
         active_scenarios = shared_context.get("active_scenarios")
         if active_scenarios:
             import json
@@ -415,6 +421,52 @@ CRITICAL CONSTRAINTS:
             formatted.append(f"Turn {turn} - {speaker}:\n{content}")
 
         return "\n\n".join(formatted)
+
+    def _format_structured_memory(
+        self,
+        exchanges: list,
+        shared_memory: str,
+    ) -> str:
+        """
+        Build context using 3-component structured memory instead of raw history dump.
+
+        Components:
+        1. SHARED MEMORY — consensus & dead ends (from shared_context)
+        2. PERSONAL MEMORY — this persona's evolving position (from self.summary + self.belief_state)
+        3. SHORT-TERM — last 3 exchanges verbatim
+        """
+        from src.idea_generation.memory import format_shared_memory_block
+
+        parts = []
+
+        # Component 1: Shared memory (from shared_context)
+        if shared_memory:
+            parts.append(format_shared_memory_block(shared_memory))
+
+        # Component 2: Personal memory (existing summary + belief_state)
+        personal = self._format_summary()
+        belief = self._format_belief_state()
+        personal_parts = []
+        if personal and personal != "No memory yet (first turn)" and personal != "No memory yet":
+            personal_parts.append(personal)
+        if belief and belief != "No belief state yet (first turn)" and belief != "No belief state yet":
+            personal_parts.append(belief)
+        if personal_parts:
+            parts.append(
+                f"=== YOUR MEMORY (your perspective so far) ===\n"
+                + "\n".join(personal_parts)
+            )
+
+        # Component 3: Short-term — last 3 verbatim
+        recent = exchanges[-3:]
+        if recent:
+            short_term = "\n\n".join(
+                f"Turn {ex.get('turn', '?')} - {ex.get('speaker', 'Unknown')}:\n{ex.get('content', '')}"
+                for ex in recent
+            )
+            parts.append(f"=== RECENT (last 3 turns) ===\n{short_term}")
+
+        return "\n\n".join(parts) if parts else "No context yet."
 
     def _format_belief_state(self) -> str:
         """

@@ -14,7 +14,7 @@ from src.idea_generation.extraction import extract_ideas_with_llm
 from src.idea_generation.convergence import run_convergence_phase, format_convergence_output
 
 
-def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
+def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", monitor=None, logger=None, config_overrides=None):
     """
     Generate startup ideas using dynamic persona loading and facilitator-directed conversation.
 
@@ -34,7 +34,9 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         print(f"[!] Unknown mode '{mode}', using 'medium'")
         mode = "medium"
 
-    config = MODE_CONFIGS[mode]
+    config = dict(MODE_CONFIGS[mode])
+    if config_overrides:
+        config.update(config_overrides)
     print(f"\n[i] Running in {mode.upper()} mode: {config['description']}")
 
     # Initialize PersonaManager for dynamic generation
@@ -48,11 +50,11 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
     # Create facilitator agent
     facilitator = FacilitatorAgent(model_name=config["model"])
 
-    # Create conversation logger
-    logger = ConversationLogger(base_dir="conversation_logs")
-
-    # Create conversation monitor for real-time progress tracking
-    monitor = ConversationMonitor()
+    # Use provided logger/monitor or create defaults
+    if logger is None:
+        logger = ConversationLogger(base_dir="conversation_logs")
+    if monitor is None:
+        monitor = ConversationMonitor()
 
     # Log session metadata
     logger.log_metadata("inspiration", inspiration)
@@ -68,6 +70,10 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         number_of_ideas=number_of_ideas,
         model_name=config["model"]
     )
+
+    # Notify monitor that phases have been generated
+    if monitor:
+        getattr(monitor, 'on_phases_generated', lambda **kw: None)(phases=all_phases)
 
     # Validate that phases were generated successfully
     if not all_phases or len(all_phases) == 0:
@@ -147,7 +153,8 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium"):
         use_async_updates=True,  # Enable async parallel summary updates
         model_name=config["model"],  # Pass model for idea extraction
         personas_per_phase=config.get("personas_per_phase", 4),  # Configurable persona count
-        enable_mediator=config.get("enable_mediator", True)  # Enable mediator based on mode
+        enable_mediator=config.get("enable_mediator", True),  # Enable mediator based on mode
+        memory_mode=config.get("memory_mode", "full_history"),  # Structured vs full history
     ))
 
     # Save basic logs (backwards compatibility)

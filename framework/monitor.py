@@ -150,7 +150,10 @@ class ConversationMonitor:
         phase_id: str,
         summary: str,
         total_turns: int,
-        total_time: float
+        total_time: float,
+        ideas_in_play=None,
+        ideas_rejected_count: int = 0,
+        nuance_count: int = 0,
     ) -> None:
         """
         Called when a phase completes.
@@ -244,6 +247,36 @@ class ConversationMonitor:
             hours = int(seconds // 3600)
             minutes = int((seconds % 3600) // 60)
             return f"{hours}h {minutes}m"
+
+    # ---------------------------------------------------------------------------
+    # Extension hooks — no-op stubs that subclasses can override.
+    # Using no-ops (rather than abstract methods) preserves backward-compat
+    # with existing CLI usage: any ConversationMonitor instance still works.
+    # ---------------------------------------------------------------------------
+
+    def on_phases_generated(self, phases: List[Dict[str, Any]]) -> None:
+        """Called after domain phases are generated. Override in subclasses."""
+        pass
+
+    def on_personas_generated(self, phase_id: str, personas: List[str]) -> None:
+        """Called after personas are generated for a phase. Override in subclasses."""
+        pass
+
+    def on_mediator_intervention(self, speaker: str, content: str, scenarios: List[Any]) -> None:
+        """Called when the mediator intervenes. Override in subclasses."""
+        pass
+
+    def on_memory_update(self, shared_memory: str) -> None:
+        """Called when shared memory is updated (structured mode). Override in subclasses."""
+        pass
+
+    def on_idea_tracked(self, title: str, status: str, overview: str, rejection_reason: Optional[str]) -> None:
+        """Called when an idea is added or updated in the tracker. Override in subclasses."""
+        pass
+
+    def on_gap_nudge(self, content: str) -> None:
+        """Called when a coverage-gap nudge is computed. Override in subclasses."""
+        pass
 
     def get_stats(self) -> Dict[str, Any]:
         """

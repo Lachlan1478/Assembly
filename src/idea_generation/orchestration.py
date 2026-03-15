@@ -21,6 +21,7 @@ from src.idea_generation.idea_tracker import (
     detect_rejections_async
 )
 from src.idea_generation.gap_detection import compute_coverage_gaps
+from src.idea_generation.memory import update_shared_memory_async
 
 
 async def meeting_facilitator(
@@ -36,7 +37,8 @@ async def meeting_facilitator(
     model_name: str = "gpt-4o-mini",
     personas_per_phase: int = 4,
     enable_mediator: bool = True,
-    mediator: Optional[MediatorPersona] = None
+    mediator: Optional[MediatorPersona] = None,
+    memory_mode: str = "full_history"
 ) -> Dict[str, Any]:
     """
     Facilitator-directed conversation with dynamic persona generation and novelty tracking.
@@ -80,6 +82,10 @@ async def meeting_facilitator(
     # Store inspiration in shared_context for prompt generation
     shared_context["inspiration"] = inspiration
 
+    # Initialize shared memory for structured memory mode
+    if "shared_memory" not in shared_context:
+        shared_context["shared_memory"] = ""
+
     # Initialize mediator if enabled and not provided
     if enable_mediator and mediator is None:
         mediator = MediatorPersona.get_default_mediator(model_name=model_name)
@@ -118,6 +124,13 @@ async def meeting_facilitator(
                 reasoning=f"Generated {len(persona_names)} personas for phase '{phase['phase_id']}'"
             )
 
+        # Notify monitor of the personas generated for this phase
+        if monitor:
+            getattr(monitor, 'on_personas_generated', lambda **kw: None)(
+                phase_id=phase['phase_id'],
+                personas=list(active_personas.keys())
+            )
+
         if not active_personas:
             print(f"[!] No personas selected for phase '{phase['phase_id']}', skipping")
             continue
@@ -129,6 +142,21 @@ async def meeting_facilitator(
 
         # Track pending async extractions for this phase
         pending_extractions = []
+
+        # Helper: wrap extraction coroutine so the monitor is notified on completion
+        async def _tracked_extraction(coro):
+            result = await coro
+            if result and monitor:
+                getattr(monitor, 'on_idea_tracked', lambda **kw: None)(
+                    title=result.get('title', ''),
+                    status=result.get('status', 'in_play'),
+                    overview=result.get('overview', ''),
+                    rejection_reason=result.get('rejection_reason'),
+                    example=result.get('example', ''),
+                    why_it_works=result.get('why_it_works', []),
+                    why_it_might_fail=result.get('why_it_might_fail', []),
+                )
+            return result
 
         # Generate initial prompt from facilitator for this phase (used for native threading)
         initial_prompt = generate_dynamic_prompt(
@@ -199,7 +227,8 @@ async def meeting_facilitator(
                 "turn_count": turn_count,
                 "phase": phase,
                 "shared_context": shared_context,
-                "exchanges": phase_exchanges  # Full conversation history from all participants
+                "exchanges": phase_exchanges,  # Full conversation history from all participants
+                "memory_mode": memory_mode,  # "full_history" or "structured"
             }
 
             # Persona generates response using their summary
@@ -236,6 +265,11 @@ async def meeting_facilitator(
                 if phrase not in shared_context["mentioned_nuances"]:
                     shared_context["mentioned_nuances"].append(phrase)
 
+            if monitor:
+                getattr(monitor, 'on_nuances_update', lambda **kw: None)(
+                    nuances=shared_context["mentioned_nuances"]
+                )
+
             # Display response (only if not using monitor, to avoid clutter)
             if not monitor:
                 print(f"\n{speaker_persona.name}: {response_content[:200]}...")
@@ -271,14 +305,16 @@ async def meeting_facilitator(
             # Enhanced idea tracking: Extract detailed concepts and detect rejections (async)
             # Check if this is a detailed proposal (not just passing mention)
             if is_detailed_proposal(response_content):
-                # Kick off async extraction (non-blocking)
+                # Kick off async extraction (non-blocking); notify monitor on completion
                 extraction_task = asyncio.create_task(
-                    extract_idea_concept_async(
-                        response=response_content,
-                        shared_context=shared_context,
-                        turn_count=turn_count,
-                        phase_id=phase["phase_id"],
-                        model_name=model_name
+                    _tracked_extraction(
+                        extract_idea_concept_async(
+                            response=response_content,
+                            shared_context=shared_context,
+                            turn_count=turn_count,
+                            phase_id=phase["phase_id"],
+                            model_name=model_name
+                        )
                     )
                 )
                 pending_extractions.append(extraction_task)
@@ -317,6 +353,21 @@ async def meeting_facilitator(
                             update_tasks.append(persona.update_belief_state_async(exchange_data, turn_count))
 
                     await asyncio.gather(*update_tasks)
+
+                    if monitor:
+                        persona_snapshots = []
+                        for p in active_personas.values():
+                            persona_snapshots.append({
+                                "name": p.name,
+                                "archetype": p.archetype,
+                                "summary": p.summary,
+                                "belief_state": p.belief_state,
+                            })
+                        getattr(monitor, 'on_persona_states_update', lambda **kw: None)(
+                            phase_id=phase["phase_id"],
+                            turn=turn_count,
+                            personas=persona_snapshots,
+                        )
                 else:
                     # Sequential updates (backward compatibility)
                     if not monitor:
@@ -330,6 +381,34 @@ async def meeting_facilitator(
             else:
                 if not monitor:
                     print(f"[i] Fast mode: Skipping summary updates")
+                # Even in fast mode, emit persona identities so the Personas tab populates
+                if monitor:
+                    persona_snapshots = []
+                    for p in active_personas.values():
+                        persona_snapshots.append({
+                            "name": p.name,
+                            "archetype": p.archetype,
+                            "summary": p.summary,
+                            "belief_state": p.belief_state,
+                        })
+                    getattr(monitor, 'on_persona_states_update', lambda **kw: None)(
+                        phase_id=phase["phase_id"],
+                        turn=turn_count,
+                        personas=persona_snapshots,
+                    )
+
+            # Update shared memory after each turn (structured mode only)
+            if memory_mode == "structured":
+                updated_memory = await update_shared_memory_async(
+                    current_memory=shared_context.get("shared_memory", ""),
+                    new_exchange=exchange,
+                    model=model_name,
+                )
+                shared_context["shared_memory"] = updated_memory
+                if monitor:
+                    getattr(monitor, 'on_memory_update', lambda **kw: None)(
+                        shared_memory=updated_memory
+                    )
 
             turn_count += 1
 
@@ -343,7 +422,9 @@ async def meeting_facilitator(
                 )
                 if gap_nudge:
                     shared_context["active_gap_nudge"] = gap_nudge
-                    if not monitor:
+                    if monitor:
+                        getattr(monitor, 'on_gap_nudge', lambda **kw: None)(content=gap_nudge)
+                    else:
                         print(f"[i] Gap nudge computed: {gap_nudge[:80]}...")
 
             # Check if mediator should intervene
@@ -386,7 +467,16 @@ async def meeting_facilitator(
                     }
 
                     # Mediator generates intervention
-                    mediator_response_data = mediator.mediate(mediator_ctx)
+                    mediator_prompt_logger = None
+                    if logger:
+                        mediator_prompt_logger = lambda prompt_data: logger.log_prompt_input(
+                            phase_id=phase["phase_id"],
+                            turn=turn_count,
+                            speaker=mediator.name,
+                            archetype="Neutral Mediator",
+                            prompt_data=prompt_data
+                        )
+                    mediator_response_data = mediator.mediate(mediator_ctx, prompt_logger=mediator_prompt_logger)
                     mediator_content = mediator_response_data.get("response", "")
 
                     # Extract scenarios if mediator presented them
@@ -402,8 +492,18 @@ async def meeting_facilitator(
                         if not monitor:
                             print(f"[Mediator] Presented {len(scenarios)} scenarios: {scenario_ids}")
 
-                    # Display mediator intervention
-                    if not monitor:
+                    # Notify monitor of mediator intervention
+                    if monitor:
+                        getattr(monitor, 'on_mediator_intervention', lambda **kw: None)(
+                            speaker=mediator.name,
+                            content=mediator_content,
+                            scenarios=scenarios or []
+                        )
+                        getattr(monitor, 'on_mediator_log_update', lambda **kw: None)(
+                            mediation_log=mediator.mediation_log,
+                            scenario_history=shared_context.get("scenario_history", []),
+                        )
+                    else:
                         print(f"\n{mediator.name} (Mediator): {mediator_content[:200]}...")
 
                     # Monitor: Turn complete
@@ -447,6 +547,21 @@ async def meeting_facilitator(
                             for persona in active_personas.values():
                                 update_tasks.append(persona.update_summary_async(mediator_exchange_data))
                             await asyncio.gather(*update_tasks)
+
+                            if monitor:
+                                persona_snapshots = []
+                                for p in active_personas.values():
+                                    persona_snapshots.append({
+                                        "name": p.name,
+                                        "archetype": p.archetype,
+                                        "summary": p.summary,
+                                        "belief_state": p.belief_state,
+                                    })
+                                getattr(monitor, 'on_persona_states_update', lambda **kw: None)(
+                                    phase_id=phase["phase_id"],
+                                    turn=turn_count,
+                                    personas=persona_snapshots,
+                                )
                         else:
                             for persona in active_personas.values():
                                 persona.update_summary(mediator_exchange_data)
@@ -473,11 +588,15 @@ async def meeting_facilitator(
 
         # Monitor: Phase complete
         if monitor:
+            ideas_discussed = shared_context.get("ideas_discussed", [])
             monitor.on_phase_complete(
                 phase_id=phase['phase_id'],
                 summary=phase_summary,
                 total_turns=turn_count,
-                total_time=phase_elapsed_time
+                total_time=phase_elapsed_time,
+                ideas_in_play=[i["title"] for i in ideas_discussed if i.get("status") == "in_play"],
+                ideas_rejected_count=len([i for i in ideas_discussed if i.get("status") == "rejected"]),
+                nuance_count=len(shared_context.get("mentioned_nuances", [])),
             )
         else:
             print(f"[Summary] {phase_summary}\n")
@@ -502,3 +621,4 @@ async def meeting_facilitator(
         monitor.display_summary()
 
     return shared_context
+

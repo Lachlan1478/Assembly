@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Assembly Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* Custom scrollbars */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #1e293b; }
+  ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+  /* Smooth message entrance */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .msg-enter { animation: slideIn 0.25s ease-out; }
+
+  /* Prompt inspector slide-up */
+  #inspector {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  #inspector.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Tab active state */
+  .tab-btn.active { border-bottom: 2px solid #6366f1; color: #6366f1; }
+
+  /* Progress bar animation */
+  .progress-bar { transition: width 0.4s ease; }
+
+  /* Phase divider */
+  .phase-divider { position: relative; }
+  .phase-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #334155;
+  }
+  .phase-divider span {
+    position: relative;
+    background: #0f172a;
+    padding: 0 12px;
+  }
+
+  /* Top nav */
+  .nav-btn { border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; }
+  .nav-btn.active { border-bottom-color: #6366f1; color: #818cf8; }
+
+  /* Benchmark cards */
+  .how-body { border-left: 2px solid #334155; }
+</style>
+</head>
+
+<body class="bg-slate-900 text-slate-200 h-screen flex flex-col overflow-hidden font-mono text-sm">
+
+<!-- ═══════════════ TOP NAV ═══════════════ -->
+<nav class="flex items-center gap-4 px-4 py-2 bg-slate-800 border-b border-slate-700 shrink-0">
+  <span class="text-xs font-bold tracking-widest text-indigo-400">⚡ ASSEMBLY</span>
+  <div class="flex gap-1 ml-2">
+    <button id="nav-run" class="nav-btn active text-xs px-3 py-1 text-slate-200 hover:text-white">Run</button>
+    <button id="nav-benchmarks" class="nav-btn text-xs px-3 py-1 text-slate-400 hover:text-white">Benchmarks</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN 3-COLUMN LAYOUT ═══════════════ -->
+<div id="view-run" class="flex flex-1 overflow-hidden">
+
+  <!-- ═══ LEFT PANEL — Parameters (250px) ═══ -->
+  <aside class="w-64 min-w-[250px] bg-slate-800 border-r border-slate-700 flex flex-col overflow-y-auto p-4 gap-3">
+    <h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase mb-1">Parameters</h2>
+
+    <!-- Inspiration -->
+    <div>
+      <label class="text-xs text-slate-400 block mb-1">Inspiration</label>
+      <textarea id="p-inspiration" rows="4"
+        class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs resize-none focus:outline-none focus:border-indigo-500"
+        placeholder="Describe the problem space or domain…"></textarea>
+      <p class="text-slate-500 text-xs leading-tight mt-0.5">The problem domain or topic for idea generation</p>
+    </div>
+
+    <!-- Mode -->
+    <div>
+      <label class="text-xs text-slate-400 block mb-1">Mode</label>
+      <select id="p-mode"
+        class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500">
+        <option value="fast">fast — quick test (no mediator)</option>
+        <option value="medium" selected>medium — balanced (mediator + convergence)</option>
+        <option value="standard">standard — comprehensive</option>
+        <option value="deep">deep — maximum depth</option>
+      </select>
+      <p class="text-slate-500 text-xs leading-tight mt-0.5">Controls depth, speed, and which features are enabled</p>
+    </div>
+
+    <!-- Numeric params -->
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label class="text-xs text-slate-400 block mb-1"># Ideas</label>
+        <input id="p-ideas" type="number" min="1" max="5" value="1"
+          class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
+        <p class="text-slate-500 text-xs leading-tight mt-0.5">Distinct final ideas to aim for</p>
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Max turns</label>
+        <input id="p-turns" type="number" min="2" max="20" value=""
+          placeholder="auto"
+          class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
+        <p class="text-slate-500 text-xs leading-tight mt-0.5">Turns per phase (blank = mode default)</p>
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Personas</label>
+        <input id="p-personas" type="number" min="2" max="6" value=""
+          placeholder="auto"
+          class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
+        <p class="text-slate-500 text-xs leading-tight mt-0.5">AI personas per phase (blank = mode default)</p>
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Memory</label>
+        <select id="p-memory"
+          class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500">
+          <option value="full_history">full_history</option>
+          <option value="structured">structured</option>
+        </select>
+        <p class="text-slate-500 text-xs leading-tight mt-0.5">full_history dumps everything; structured uses a maintained summary</p>
+      </div>
+    </div>
+
+    <!-- Toggles -->
+    <div class="flex flex-col gap-1.5">
+      <div>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input id="p-mediator" type="checkbox" class="accent-indigo-500" />
+          <span class="text-xs text-slate-300">Mediator</span>
+        </label>
+        <p class="text-slate-500 text-xs leading-tight mt-0.5 ml-5">Adds a neutral AI to unstick debates and present hypothetical scenarios</p>
+      </div>
+      <div>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input id="p-convergence" type="checkbox" class="accent-indigo-500" />
+          <span class="text-xs text-slate-300">Convergence phase</span>
+        </label>
+        <p class="text-slate-500 text-xs leading-tight mt-0.5 ml-5">Adds a final phase that synthesises the best ideas into polished proposals</p>
+      </div>
+    </div>
+
+    <!-- Model -->
+    <div>
+      <label class="text-xs text-slate-400 block mb-1">Model override</label>
+      <input id="p-model" type="text" placeholder="default: gpt-5.1"
+        class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500" />
+      <p class="text-slate-500 text-xs leading-tight mt-0.5">OpenAI model to use (blank = mode default, currently gpt-5.1)</p>
+    </div>
+
+    <!-- Run button -->
+    <button id="btn-run"
+      class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded px-3 py-2 text-xs font-bold tracking-wide transition-colors">
+      ▶ Run Assembly
+    </button>
+
+    <!-- Status -->
+    <div id="status-bar" class="text-xs text-slate-400 flex items-center gap-2 hidden">
+      <span class="animate-pulse text-green-400">●</span>
+      <span id="status-text">Running</span>
+      <span id="elapsed" class="ml-auto text-slate-500">0:00</span>
+    </div>
+  </aside>
+
+  <!-- ═══ CENTER PANEL — Live Conversation ═══ -->
+  <main class="flex-1 flex flex-col overflow-hidden bg-slate-900">
+    <div class="border-b border-slate-700 px-4 py-2 text-xs text-slate-400 flex items-center gap-3">
+      <span class="font-bold text-slate-300">Live Conversation</span>
+      <span id="turn-counter" class="text-slate-500">—</span>
+    </div>
+
+    <div id="conversation"
+      class="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+      <!-- messages appended here -->
+      <p class="text-slate-500 text-xs italic text-center mt-8">Configure parameters and click Run Assembly to start.</p>
+    </div>
+  </main>
+
+  <!-- ═══ RIGHT PANEL — Side panel (280px) ═══ -->
+  <aside class="w-72 min-w-[280px] bg-slate-800 border-l border-slate-700 flex flex-col overflow-hidden">
+
+    <!-- Tabs -->
+    <div class="flex border-b border-slate-700">
+      <button class="tab-btn active flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="phases">Phases</button>
+      <button class="tab-btn flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="personas">Personas</button>
+      <button class="tab-btn flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="ideas">Ideas</button>
+      <button class="tab-btn flex-1 text-xs py-2 px-3 hover:bg-slate-700 transition-colors" data-tab="memory">Memory</button>
+    </div>
+
+    <!-- Tab content -->
+    <div class="flex-1 overflow-y-auto p-3">
+
+      <!-- PHASES tab -->
+      <div id="tab-phases" class="tab-content flex flex-col gap-2">
+        <p class="text-slate-500 text-xs italic">Phases will appear when the run starts.</p>
+      </div>
+
+      <!-- PERSONAS tab -->
+      <div id="tab-personas" class="tab-content hidden flex flex-col gap-2">
+        <p class="text-slate-500 text-xs italic">Persona states will appear after the first turn.</p>
+      </div>
+
+      <!-- IDEAS tab -->
+      <div id="tab-ideas" class="tab-content hidden flex flex-col gap-2">
+        <p class="text-slate-500 text-xs italic">Ideas will appear as they are discussed.</p>
+      </div>
+
+      <!-- MEMORY tab -->
+      <div id="tab-memory" class="tab-content hidden flex flex-col gap-2">
+        <p id="memory-content" class="text-slate-400 text-xs whitespace-pre-wrap leading-relaxed">
+          No shared memory yet. Memory is populated in structured mode.
+        </p>
+        <!-- Scenario history section (hidden until populated) -->
+        <div id="scenario-history-section" class="hidden flex flex-col gap-1">
+          <button id="scenario-history-toggle" class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-slate-200 text-left mt-2">
+            <span id="scenario-history-arrow">▶</span> SCENARIO HISTORY
+          </button>
+          <div id="scenario-history-body" class="hidden flex flex-col gap-1.5 ml-3"></div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+</div><!-- end view-run -->
+
+<!-- ═══════════════ BENCHMARKS VIEW ═══════════════ -->
+<div id="view-benchmarks" class="hidden flex-1 flex overflow-hidden">
+
+  <!-- Cards list -->
+  <div id="bm-cards" class="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+    <p class="text-slate-500 text-xs italic">Loading benchmarks…</p>
+  </div>
+
+  <!-- Run log panel (shown when a benchmark is running) -->
+  <div id="bm-log-panel" class="hidden w-96 bg-slate-800 border-l border-slate-700 flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-3 py-2 border-b border-slate-700">
+      <span id="bm-log-title" class="text-xs font-bold text-slate-300">Benchmark Run</span>
+      <button id="bm-log-close" class="text-slate-500 hover:text-white text-sm leading-none">✕</button>
+    </div>
+    <div id="bm-log" class="flex-1 overflow-y-auto p-3 font-mono text-xs text-slate-400 leading-relaxed"></div>
+    <div id="bm-log-status" class="px-3 py-2 border-t border-slate-700 text-xs text-slate-500"></div>
+  </div>
+
+</div><!-- end view-benchmarks -->
+
+<!-- ═══════════════ PROMPT INSPECTOR DRAWER ═══════════════ -->
+<div id="inspector" class="fixed bottom-0 left-0 right-0 bg-slate-800 border-t-2 border-indigo-600 z-50"
+  style="height: 45vh; max-height: 500px;">
+  <div class="flex items-center justify-between px-4 py-2 border-b border-slate-700">
+    <span class="text-xs font-bold text-indigo-400">PROMPT INSPECTOR</span>
+    <span id="inspector-label" class="text-xs text-slate-400">—</span>
+    <button id="inspector-close" class="text-slate-400 hover:text-white text-lg leading-none">✕</button>
+  </div>
+
+  <!-- Sub-tabs: System | User -->
+  <div class="flex border-b border-slate-700 text-xs">
+    <button class="insp-tab active px-4 py-1.5 border-b-2 border-indigo-500 text-indigo-400" data-insp="system">SYSTEM PROMPT</button>
+    <button class="insp-tab px-4 py-1.5 text-slate-400 hover:text-white" data-insp="user">USER PROMPT</button>
+  </div>
+
+  <div class="overflow-y-auto h-full p-4">
+    <pre id="insp-system" class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed"></pre>
+    <pre id="insp-user"   class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed hidden"></pre>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+const state = {
+  sessionId: null,
+  ws: null,
+  running: false,
+  startTime: null,
+  elapsedTimer: null,
+  // prompt store: key = "speaker::turn", value = {system_message, enhanced_prompt}
+  prompts: {},
+  // phase list
+  phases: [],
+  activePhaseId: null,
+  phaseProgress: {},  // phase_id -> {turn_num, max_turns}
+  // ideas
+  ideas: {},  // title -> {title, status, overview, rejection_reason}
+  // persona states: name -> {name, archetype, summary, belief_state, turn}
+  personaStates: {},
+  // nuances list
+  nuances: [],
+  // mediator log and scenario history
+  mediationLog: null,
+  scenarioHistory: [],
+};
+
+// Persona colour palette (Tailwind-safe bg colours)
+const PALETTE = [
+  'bg-blue-900', 'bg-purple-900', 'bg-teal-900', 'bg-rose-900',
+  'bg-amber-900', 'bg-emerald-900', 'bg-sky-900', 'bg-fuchsia-900',
+];
+const PALETTE_TEXT = [
+  'text-blue-300', 'text-purple-300', 'text-teal-300', 'text-rose-300',
+  'text-amber-300', 'text-emerald-300', 'text-sky-300', 'text-fuchsia-300',
+];
+const speakerColors = {};
+
+function getSpeakerColor(name) {
+  if (!speakerColors[name]) {
+    const idx = Object.keys(speakerColors).length % PALETTE.length;
+    speakerColors[name] = idx;
+  }
+  return { bg: PALETTE[speakerColors[name]], text: PALETTE_TEXT[speakerColors[name]] };
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TABS — right panel
+// ══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+  });
+});
+
+// ══════════════════════════════════════════════════════════════════
+// PROMPT INSPECTOR
+// ══════════════════════════════════════════════════════════════════
+const inspector = document.getElementById('inspector');
+const inspSystem = document.getElementById('insp-system');
+const inspUser = document.getElementById('insp-user');
+const inspLabel = document.getElementById('inspector-label');
+
+document.getElementById('inspector-close').addEventListener('click', () => {
+  inspector.classList.remove('open');
+});
+
+document.querySelectorAll('.insp-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.insp-tab').forEach(b => {
+      b.classList.remove('active', 'border-b-2', 'border-indigo-500', 'text-indigo-400');
+      b.classList.add('text-slate-400');
+    });
+    btn.classList.add('active', 'border-b-2', 'border-indigo-500', 'text-indigo-400');
+    btn.classList.remove('text-slate-400');
+
+    if (btn.dataset.insp === 'system') {
+      inspSystem.classList.remove('hidden');
+      inspUser.classList.add('hidden');
+    } else {
+      inspUser.classList.remove('hidden');
+      inspSystem.classList.add('hidden');
+    }
+  });
+});
+
+function openInspector(speaker, turn) {
+  const key = speaker + '::' + turn;
+  const prompt = state.prompts[key];
+  if (!prompt) {
+    inspSystem.textContent = '(No prompt captured for this turn yet)';
+    inspUser.textContent = '';
+  } else {
+    inspSystem.textContent = prompt.system_message || '(empty)';
+    inspUser.textContent = prompt.enhanced_prompt || '(empty)';
+  }
+  inspLabel.textContent = speaker + ' · turn ' + turn;
+  // Reset to system tab
+  document.querySelectorAll('.insp-tab').forEach((b, i) => {
+    b.classList.toggle('active', i === 0);
+    b.classList.toggle('border-b-2', i === 0);
+    b.classList.toggle('border-indigo-500', i === 0);
+    b.classList.toggle('text-indigo-400', i === 0);
+    b.classList.toggle('text-slate-400', i !== 0);
+  });
+  inspSystem.classList.remove('hidden');
+  inspUser.classList.add('hidden');
+  inspector.classList.add('open');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MODE DEFAULTS — auto-populate all fields from mode selection
+// ══════════════════════════════════════════════════════════════════
+const modeDefaults = {
+  fast:     { turns: 3,  personas: 3, memory: 'full_history', mediator: false, convergence: false, model: 'gpt-5.1' },
+  medium:   { turns: 5,  personas: 4, memory: 'structured',   mediator: true,  convergence: true,  model: 'gpt-5.1' },
+  standard: { turns: 8,  personas: 4, memory: 'structured',   mediator: true,  convergence: true,  model: 'gpt-5.1' },
+  deep:     { turns: 15, personas: 5, memory: 'structured',   mediator: true,  convergence: true,  model: 'gpt-5.1' },
+};
+
+function applyModeDefaults(mode) {
+  const d = modeDefaults[mode] || {};
+  const turnsEl    = document.getElementById('p-turns');
+  const personasEl = document.getElementById('p-personas');
+  const memoryEl   = document.getElementById('p-memory');
+  const modelEl    = document.getElementById('p-model');
+
+  // Update placeholders to show the actual default value
+  if (d.turns    !== undefined) turnsEl.placeholder    = 'default: ' + d.turns;
+  if (d.personas !== undefined) personasEl.placeholder = 'default: ' + d.personas;
+  if (d.model    !== undefined) modelEl.placeholder    = 'default: ' + d.model;
+
+  // Set memory select only if user hasn't overridden (value is blank/"auto")
+  if (d.memory !== undefined && (memoryEl.value === '' || true)) {
+    memoryEl.value = d.memory;
+  }
+
+  // Set checkbox state
+  document.getElementById('p-mediator').checked    = !!d.mediator;
+  document.getElementById('p-convergence').checked = !!d.convergence;
+}
+
+document.getElementById('p-mode').addEventListener('change', function() {
+  applyModeDefaults(this.value);
+});
+// Init on page load
+applyModeDefaults('medium');
+
+// ══════════════════════════════════════════════════════════════════
+// ELAPSED TIMER
+// ══════════════════════════════════════════════════════════════════
+function startTimer() {
+  state.startTime = Date.now();
+  state.elapsedTimer = setInterval(() => {
+    const s = Math.floor((Date.now() - state.startTime) / 1000);
+    const m = Math.floor(s / 60);
+    const ss = String(s % 60).padStart(2, '0');
+    document.getElementById('elapsed').textContent = m + ':' + ss;
+  }, 1000);
+}
+function stopTimer() {
+  if (state.elapsedTimer) { clearInterval(state.elapsedTimer); state.elapsedTimer = null; }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RUN
+// ══════════════════════════════════════════════════════════════════
+document.getElementById('btn-run').addEventListener('click', async () => {
+  const inspiration = document.getElementById('p-inspiration').value.trim();
+  if (!inspiration || inspiration.length < 10) {
+    alert('Please enter at least 10 characters of inspiration.');
+    return;
+  }
+  if (state.running) return;
+
+  // Reset UI
+  document.getElementById('conversation').innerHTML = '';
+  Object.assign(state, { prompts: {}, phases: [], activePhaseId: null, phaseProgress: {}, ideas: {}, personaStates: {}, nuances: [], mediationLog: null, scenarioHistory: [] });
+  Object.keys(speakerColors).forEach(k => delete speakerColors[k]);
+  document.getElementById('tab-phases').innerHTML = '<p class="text-slate-500 text-xs italic">Generating phases…</p>';
+  document.getElementById('tab-personas').innerHTML = '<p class="text-slate-500 text-xs italic">Persona states will appear after the first turn.</p>';
+  document.getElementById('tab-ideas').innerHTML = '<p class="text-slate-500 text-xs italic">Waiting for ideas…</p>';
+  document.getElementById('memory-content').textContent = 'No shared memory yet.';
+  document.getElementById('scenario-history-section').classList.add('hidden');
+  document.getElementById('scenario-history-body').innerHTML = '';
+
+  const body = {
+    inspiration,
+    mode: document.getElementById('p-mode').value,
+    number_of_ideas: parseInt(document.getElementById('p-ideas').value) || 1,
+    enable_mediator: document.getElementById('p-mediator').checked,
+    enable_convergence: document.getElementById('p-convergence').checked,
+  };
+
+  const turns = document.getElementById('p-turns').value;
+  if (turns) body.max_turns_per_phase = parseInt(turns);
+
+  const personas = document.getElementById('p-personas').value;
+  if (personas) body.personas_per_phase = parseInt(personas);
+
+  const memory = document.getElementById('p-memory').value;
+  if (memory) body.memory_mode = memory;
+
+  const model = document.getElementById('p-model').value.trim();
+  if (model) body.model = model;
+
+  let data;
+  try {
+    const resp = await fetch('/api/run', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body),
+    });
+    data = await resp.json();
+    if (!resp.ok) { alert('Error: ' + (data.error || resp.statusText)); return; }
+  } catch (e) {
+    alert('Request failed: ' + e.message);
+    return;
+  }
+
+  state.sessionId = data.session_id;
+  setRunning(true);
+  connectWebSocket(data.session_id);
+});
+
+function setRunning(running) {
+  state.running = running;
+  const btn = document.getElementById('btn-run');
+  const bar = document.getElementById('status-bar');
+  btn.disabled = running;
+  if (running) {
+    bar.classList.remove('hidden');
+    document.getElementById('status-text').textContent = 'Running';
+    startTimer();
+  } else {
+    bar.classList.remove('hidden');
+    document.getElementById('status-text').textContent = 'Done';
+    const pulse = document.querySelector('#status-bar .animate-pulse');
+    if (pulse) { pulse.classList.remove('animate-pulse', 'text-green-400'); pulse.classList.add('text-slate-500'); }
+    document.querySelector('#status-bar span').classList.add('text-slate-500');
+    stopTimer();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// WEBSOCKET
+// ══════════════════════════════════════════════════════════════════
+function connectWebSocket(sessionId) {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const ws = new WebSocket(proto + '://' + location.host + '/ws/' + sessionId);
+  state.ws = ws;
+
+  ws.onmessage = (evt) => {
+    let event;
+    try { event = JSON.parse(evt.data); } catch { return; }
+    handleEvent(event);
+  };
+
+  ws.onerror = () => {
+    appendSystemMsg('WebSocket error — connection lost.');
+    setRunning(false);
+  };
+
+  ws.onclose = () => {
+    state.ws = null;
+  };
+}
+
+// ══════════════════════════════════════════════════════════════════
+// EVENT HANDLER
+// ══════════════════════════════════════════════════════════════════
+function handleEvent(ev) {
+  switch (ev.type) {
+
+    case 'run_started':
+      appendSystemMsg('Session started · ' + ev.session_id);
+      break;
+
+    case 'phases_generated':
+      renderPhases(ev.phases);
+      break;
+
+    case 'personas_generated':
+      markPhasePersonas(ev.phase_id, ev.personas);
+      break;
+
+    case 'phase_start':
+      appendPhaseDivider(ev);
+      setActivePhase(ev.phase_id);
+      break;
+
+    case 'turn_start':
+      state.phaseProgress[state.activePhaseId] = {
+        turn_num: ev.turn_num,
+        max_turns: ev.max_turns,
+      };
+      updatePhaseProgress(state.activePhaseId);
+      document.getElementById('turn-counter').textContent =
+        'Turn ' + (ev.turn_num + 1) + ' / ' + ev.max_turns + ' — ' + ev.speaker;
+      break;
+
+    case 'message':
+      appendMessage(ev);
+      // Seed Personas tab from messages (covers fast mode where persona_states never fires)
+      if (ev.archetype && ev.archetype !== 'Neutral Mediator' && !state.personaStates[ev.speaker]) {
+        state.personaStates[ev.speaker] = { name: ev.speaker, archetype: ev.archetype, summary: null, belief_state: null, turn: ev.turn };
+        renderPersonaStates({ personas: Object.values(state.personaStates), turn: ev.turn });
+      }
+      break;
+
+    case 'mediator_intervention':
+      // The message event from logger already rendered the bubble;
+      // mediator_intervention carries extra scenario metadata — log it quietly.
+      if (ev.scenarios && ev.scenarios.length > 0) {
+        appendSystemMsg('Mediator presented ' + ev.scenarios.length + ' scenario(s).');
+      }
+      break;
+
+    case 'prompt_input':
+      storePrompt(ev);
+      break;
+
+    case 'idea_tracked':
+      trackIdea(ev);
+      break;
+
+    case 'memory_update':
+      document.getElementById('memory-content').textContent = ev.shared_memory || '(empty)';
+      break;
+
+    case 'persona_states':
+      renderPersonaStates(ev);
+      break;
+
+    case 'nuances_update':
+      state.nuances = ev.nuances || [];
+      renderNuances();
+      break;
+
+    case 'mediator_log':
+      state.mediationLog = ev.mediation_log;
+      state.scenarioHistory = ev.scenario_history || [];
+      renderMediatorLog();
+      renderScenarioHistory();
+      break;
+
+    case 'gap_nudge':
+      appendSystemMsg('Coverage gap nudge: ' + ev.content.slice(0, 120) + (ev.content.length > 120 ? '…' : ''));
+      break;
+
+    case 'phase_complete':
+      markPhaseComplete(ev.phase_id, ev.total_turns);
+      appendPhaseHandoff(ev);
+      break;
+
+    case 'convergence_output':
+      appendSystemMsg('Convergence phase complete.');
+      break;
+
+    case 'run_complete':
+      setRunning(false);
+      appendSystemMsg('Run complete — ' + (ev.ideas ? ev.ideas.length : 0) + ' idea(s) extracted.');
+      if (ev.ideas && ev.ideas.length) {
+        renderFinalIdeas(ev.ideas);
+      }
+      if (ev.convergence) {
+        renderConvergence(ev.convergence);
+      }
+      break;
+
+    case 'run_error':
+      setRunning(false);
+      appendSystemMsg('Error: ' + ev.message, 'error');
+      break;
+
+    case 'heartbeat':
+      break;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CONVERSATION PANEL
+// ══════════════════════════════════════════════════════════════════
+const conv = document.getElementById('conversation');
+
+function appendMessage(ev) {
+  const isMediator = ev.archetype === 'Neutral Mediator';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-enter flex flex-col gap-0.5';
+
+  const { bg, text } = isMediator
+    ? { bg: 'bg-amber-950', text: 'text-amber-300' }
+    : getSpeakerColor(ev.speaker);
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'flex items-center gap-2';
+
+  const dot = document.createElement('span');
+  dot.className = (isMediator ? 'text-amber-400' : 'text-slate-500') + ' text-base leading-none';
+  dot.textContent = isMediator ? '⚡' : '●';
+
+  const name = document.createElement('span');
+  name.className = 'font-bold ' + text;
+  name.textContent = ev.speaker;
+
+  const arch = document.createElement('span');
+  arch.className = 'text-slate-500 text-xs';
+  arch.textContent = ev.archetype ? '(' + ev.archetype + ')' : '';
+
+  const phaseLabel = document.createElement('span');
+  phaseLabel.className = 'ml-auto text-slate-600 text-xs';
+  phaseLabel.textContent = ev.phase + ' · t' + ev.turn;
+
+  header.append(dot, name, arch, phaseLabel);
+
+  // Bubble
+  const bubble = document.createElement('div');
+  bubble.className = bg + ' rounded p-3 text-xs leading-relaxed text-slate-200 cursor-pointer hover:ring-1 hover:ring-indigo-500 ml-4';
+  bubble.textContent = ev.content;
+  bubble.title = 'Click to inspect prompt';
+  bubble.addEventListener('click', () => openInspector(ev.speaker, ev.turn));
+
+  wrap.append(header, bubble);
+  conv.appendChild(wrap);
+  conv.scrollTop = conv.scrollHeight;
+}
+
+function appendPhaseDivider(ev) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-enter my-3';
+
+  // Full-width banner
+  const banner = document.createElement('div');
+  banner.className = 'bg-indigo-950 border border-indigo-700 rounded px-4 py-2.5 flex items-center gap-3';
+
+  const arrow = document.createElement('span');
+  arrow.className = 'text-indigo-400 text-base';
+  arrow.textContent = '▶';
+
+  const label = document.createElement('span');
+  label.className = 'text-xs font-bold text-indigo-300 tracking-widest uppercase flex-1';
+  label.textContent = ev.phase_id.replace(/_/g, ' ');
+
+  const goal = document.createElement('span');
+  goal.className = 'text-xs text-indigo-500 italic';
+  goal.textContent = ev.goal ? ev.goal.slice(0, 70) + (ev.goal.length > 70 ? '…' : '') : '';
+
+  banner.append(arrow, label, goal);
+  wrap.appendChild(banner);
+  conv.appendChild(wrap);
+  conv.scrollTop = conv.scrollHeight;
+}
+
+function appendPhaseHandoff(ev) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-enter my-2';
+
+  const card = document.createElement('div');
+  card.className = 'bg-slate-800 border border-slate-600 rounded px-3 py-2.5 flex flex-col gap-1.5 ml-4';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'flex items-center gap-2';
+  const check = document.createElement('span');
+  check.className = 'text-green-400 text-sm';
+  check.textContent = '✓';
+  const title = document.createElement('span');
+  title.className = 'text-xs font-bold text-slate-300';
+  title.textContent = ev.phase_id.replace(/_/g, ' ') + ' complete';
+  const meta = document.createElement('span');
+  meta.className = 'ml-auto text-xs text-slate-500';
+  meta.textContent = ev.total_turns + ' turns · ' + (ev.total_time ? Math.round(ev.total_time) + 's' : '');
+  header.append(check, title, meta);
+  card.appendChild(header);
+
+  // Summary
+  if (ev.summary) {
+    const summary = document.createElement('p');
+    summary.className = 'text-xs text-slate-400 leading-snug border-l-2 border-slate-600 pl-2';
+    summary.textContent = ev.summary.slice(0, 200) + (ev.summary.length > 200 ? '…' : '');
+    card.appendChild(summary);
+  }
+
+  // Carried forward
+  const carried = [];
+  if (ev.ideas_in_play && ev.ideas_in_play.length) {
+    carried.push('💡 Carrying forward: ' + ev.ideas_in_play.join(', '));
+  }
+  if (ev.ideas_rejected_count) {
+    carried.push('✗ ' + ev.ideas_rejected_count + ' idea(s) eliminated');
+  }
+  if (ev.nuance_count) {
+    carried.push('◆ ' + ev.nuance_count + ' unique angles explored');
+  }
+
+  if (carried.length) {
+    const hr = document.createElement('div');
+    hr.className = 'border-t border-slate-700 mt-0.5';
+    card.appendChild(hr);
+    carried.forEach(text => {
+      const p = document.createElement('p');
+      p.className = 'text-xs text-slate-500 leading-snug';
+      p.textContent = text;
+      card.appendChild(p);
+    });
+  }
+
+  wrap.appendChild(card);
+  conv.appendChild(wrap);
+  conv.scrollTop = conv.scrollHeight;
+}
+
+function appendSystemMsg(text, level = 'info') {
+  const p = document.createElement('p');
+  p.className = 'text-xs italic ' + (level === 'error' ? 'text-red-400' : 'text-slate-500');
+  p.textContent = text;
+  conv.appendChild(p);
+  conv.scrollTop = conv.scrollHeight;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PROMPT STORE
+// ══════════════════════════════════════════════════════════════════
+function storePrompt(ev) {
+  const key = ev.speaker + '::' + ev.turn;
+  state.prompts[key] = {
+    system_message: ev.system_message,
+    enhanced_prompt: ev.enhanced_prompt,
+  };
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PHASES PANEL
+// ══════════════════════════════════════════════════════════════════
+function renderPhases(phases) {
+  state.phases = phases;
+  const panel = document.getElementById('tab-phases');
+  panel.innerHTML = '';
+
+  // Re-add mediator log section placeholder (hidden by default)
+  const mlogSection = document.createElement('div');
+  mlogSection.id = 'mediator-log-section';
+  mlogSection.className = 'hidden flex flex-col gap-1 mt-1';
+  mlogSection.innerHTML =
+    '<button id="mediator-log-toggle" class="flex items-center gap-1 text-xs font-bold text-amber-600 hover:text-amber-400 text-left">' +
+    '<span id="mediator-log-arrow">▶</span> MEDIATOR LOG' +
+    '</button>' +
+    '<div id="mediator-log-body" class="hidden flex flex-col gap-1 ml-3"></div>';
+  panel.appendChild(mlogSection);
+
+  phases.forEach((ph, i) => {
+    const row = document.createElement('div');
+    row.id = 'phase-row-' + ph.phase_id;
+    row.className = 'flex flex-col gap-0.5 p-2 rounded bg-slate-900';
+
+    const top = document.createElement('div');
+    top.className = 'flex items-center gap-2';
+
+    const icon = document.createElement('span');
+    icon.id = 'phase-icon-' + ph.phase_id;
+    icon.className = 'text-slate-500';
+    icon.textContent = '○';
+
+    const label = document.createElement('span');
+    label.className = 'text-xs font-bold text-slate-300 flex-1';
+    label.textContent = ph.phase_id.replace(/_/g, ' ');
+
+    top.append(icon, label);
+
+    // Progress bar (hidden initially)
+    const barWrap = document.createElement('div');
+    barWrap.id = 'phase-bar-' + ph.phase_id;
+    barWrap.className = 'hidden h-1 bg-slate-700 rounded overflow-hidden ml-5';
+    const bar = document.createElement('div');
+    bar.className = 'progress-bar h-full bg-indigo-500 w-0';
+    barWrap.appendChild(bar);
+
+    // Goal
+    const goal = document.createElement('p');
+    goal.className = 'text-xs text-slate-500 ml-5 leading-tight';
+    goal.textContent = (ph.goal || '').slice(0, 80);
+
+    row.append(top, barWrap, goal);
+    panel.appendChild(row);
+  });
+}
+
+function markPhasePersonas(phaseId, personas) {
+  // Optionally annotate the phase row with persona names
+  const row = document.getElementById('phase-row-' + phaseId);
+  if (!row) return;
+  const existing = row.querySelector('.persona-list');
+  if (existing) existing.remove();
+  const p = document.createElement('p');
+  p.className = 'persona-list text-xs text-slate-600 ml-5 leading-tight';
+  p.textContent = personas.join(', ');
+  row.appendChild(p);
+}
+
+function setActivePhase(phaseId) {
+  // Reset previous active
+  if (state.activePhaseId) {
+    const prev = document.getElementById('phase-icon-' + state.activePhaseId);
+    if (prev) prev.textContent = '→'; // Will be updated to ✓ on complete
+    const prevBar = document.getElementById('phase-bar-' + state.activePhaseId);
+    if (prevBar) prevBar.classList.add('hidden');
+  }
+  state.activePhaseId = phaseId;
+
+  const icon = document.getElementById('phase-icon-' + phaseId);
+  if (icon) { icon.textContent = '→'; icon.className = 'text-indigo-400'; }
+
+  const barWrap = document.getElementById('phase-bar-' + phaseId);
+  if (barWrap) barWrap.classList.remove('hidden');
+}
+
+function updatePhaseProgress(phaseId) {
+  if (!phaseId) return;
+  const prog = state.phaseProgress[phaseId];
+  if (!prog) return;
+  const barWrap = document.getElementById('phase-bar-' + phaseId);
+  if (!barWrap) return;
+  const bar = barWrap.querySelector('div');
+  if (!bar) return;
+  const pct = prog.max_turns > 0 ? (prog.turn_num / prog.max_turns) * 100 : 0;
+  bar.style.width = Math.min(pct, 100) + '%';
+}
+
+function markPhaseComplete(phaseId, totalTurns) {
+  const icon = document.getElementById('phase-icon-' + phaseId);
+  if (icon) { icon.textContent = '✓'; icon.className = 'text-green-400'; }
+  const barWrap = document.getElementById('phase-bar-' + phaseId);
+  if (barWrap) {
+    const bar = barWrap.querySelector('div');
+    if (bar) { bar.style.width = '100%'; bar.className = 'progress-bar h-full bg-green-500'; }
+    setTimeout(() => barWrap.classList.add('hidden'), 1000);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// IDEAS PANEL
+// ══════════════════════════════════════════════════════════════════
+const STATUS_BADGE = {
+  in_play:   'bg-indigo-900 text-indigo-300',
+  rejected:  'bg-red-900 text-red-300',
+  integrated:'bg-green-900 text-green-300',
+};
+const STATUS_ICON = { in_play: '~', rejected: '✗', integrated: '✓' };
+
+function trackIdea(ev) {
+  state.ideas[ev.title] = ev;
+  renderIdeas();
+}
+
+function renderIdeas() {
+  const panel = document.getElementById('tab-ideas');
+  // Preserve convergence card if present
+  const existingConvergence = panel.querySelector('#convergence-card');
+  panel.innerHTML = '';
+  if (existingConvergence) panel.appendChild(existingConvergence);
+
+  const list = Object.values(state.ideas);
+  if (!list.length) {
+    panel.insertAdjacentHTML('beforeend', '<p class="text-slate-500 text-xs italic">No ideas tracked yet.</p>');
+    return;
+  }
+
+  function makeBulletList(items) {
+    const ul = document.createElement('ul');
+    ul.className = 'list-disc list-inside text-xs text-slate-400 leading-snug mt-0.5 space-y-0.5';
+    (items || []).forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function addField(container, label, value) {
+    if (!value) return;
+    const p = document.createElement('p');
+    p.className = 'text-xs text-slate-500 leading-snug mt-0.5';
+    p.innerHTML = '<span class="text-slate-600">' + label + '</span> ' + value;
+    container.appendChild(p);
+  }
+
+  list.forEach(idea => {
+    const row = document.createElement('div');
+    row.className = 'flex flex-col gap-1 p-2 rounded bg-slate-900 mb-2';
+
+    const top = document.createElement('div');
+    top.className = 'flex items-center gap-2';
+
+    const icon = document.createElement('span');
+    const badgeClass = STATUS_BADGE[idea.status] || 'bg-slate-700 text-slate-300';
+    icon.className = 'text-xs font-bold px-1.5 py-0.5 rounded ' + badgeClass;
+    icon.textContent = (STATUS_ICON[idea.status] || '?') + ' ' + (idea.status || 'unknown');
+
+    const title = document.createElement('span');
+    title.className = 'text-xs font-bold text-slate-200 flex-1';
+    title.textContent = idea.title;
+
+    top.append(icon, title);
+    row.appendChild(top);
+
+    // Overview / description
+    const overviewText = idea.overview || idea.description || '';
+    if (overviewText) {
+      const overview = document.createElement('p');
+      overview.className = 'text-xs text-slate-400 leading-snug';
+      overview.textContent = overviewText.slice(0, 160) + (overviewText.length > 160 ? '…' : '');
+      row.appendChild(overview);
+    }
+
+    // Extra extraction fields
+    if (idea.target_users) addField(row, 'Target:', idea.target_users);
+    if (idea.primary_outcome) addField(row, 'Outcome:', idea.primary_outcome);
+
+    if (idea.must_haves && idea.must_haves.length) {
+      const label = document.createElement('p');
+      label.className = 'text-xs text-slate-600 mt-0.5';
+      label.textContent = 'Must haves:';
+      row.appendChild(label);
+      row.appendChild(makeBulletList(idea.must_haves));
+    }
+
+    if (idea.why_it_works && idea.why_it_works.length) {
+      const label = document.createElement('p');
+      label.className = 'text-xs text-slate-600 mt-0.5';
+      label.textContent = 'Why it works:';
+      row.appendChild(label);
+      row.appendChild(makeBulletList(idea.why_it_works));
+    }
+
+    if (idea.why_it_might_fail && idea.why_it_might_fail.length) {
+      const label = document.createElement('p');
+      label.className = 'text-xs text-slate-600 mt-0.5';
+      label.textContent = 'Risks:';
+      row.appendChild(label);
+      row.appendChild(makeBulletList(idea.why_it_might_fail));
+    }
+
+    if (idea.non_goals && idea.non_goals.length) {
+      const label = document.createElement('p');
+      label.className = 'text-xs text-slate-600 mt-0.5';
+      label.textContent = 'Out of scope:';
+      row.appendChild(label);
+      row.appendChild(makeBulletList(idea.non_goals));
+    }
+
+    if (idea.rejection_reason) {
+      const reason = document.createElement('p');
+      reason.className = 'text-xs text-red-400 leading-snug';
+      reason.textContent = 'Rejected: ' + idea.rejection_reason.slice(0, 80);
+      row.appendChild(reason);
+    }
+
+    panel.appendChild(row);
+  });
+}
+
+function renderConvergence(c) {
+  if (!c) return;
+  const panel = document.getElementById('tab-ideas');
+
+  // Remove existing convergence card
+  const existing = panel.querySelector('#convergence-card');
+  if (existing) existing.remove();
+
+  const card = document.createElement('div');
+  card.id = 'convergence-card';
+  card.className = 'flex flex-col gap-1.5 p-3 rounded border border-amber-700 bg-amber-950 mb-3';
+
+  function heading(text) {
+    const p = document.createElement('p');
+    p.className = 'text-xs text-amber-500 font-bold mt-1';
+    p.textContent = text;
+    return p;
+  }
+
+  function field(label, value) {
+    if (!value) return null;
+    const p = document.createElement('p');
+    p.className = 'text-xs text-slate-300 leading-snug';
+    p.innerHTML = '<span class="text-amber-600">' + label + '</span> ' + value;
+    return p;
+  }
+
+  function bulletList(items) {
+    if (!items || !items.length) return null;
+    const ul = document.createElement('ul');
+    ul.className = 'list-disc list-inside text-xs text-slate-300 leading-snug space-y-0.5 ml-1';
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'flex items-center gap-2';
+  const star = document.createElement('span');
+  star.className = 'text-amber-400 text-sm';
+  star.textContent = '⭐';
+  const title = document.createElement('span');
+  title.className = 'text-xs font-bold text-amber-300 tracking-wide uppercase';
+  title.textContent = 'Convergence Output';
+  header.append(star, title);
+  card.appendChild(header);
+
+  if (c.product_name) {
+    const p = document.createElement('p');
+    p.className = 'text-xs font-bold text-slate-100';
+    p.textContent = c.product_name;
+    card.appendChild(p);
+  }
+
+  if (c.one_sentence_pitch) {
+    const q = document.createElement('p');
+    q.className = 'text-xs text-slate-300 italic leading-snug';
+    q.textContent = '"' + c.one_sentence_pitch + '"';
+    card.appendChild(q);
+  }
+
+  const f1 = field('Target user:', c.target_user_icp);
+  if (f1) card.appendChild(f1);
+
+  const f2 = field('Monetisation:', c.monetization_model);
+  if (f2) card.appendChild(f2);
+
+  const f3 = field('Differentiator:', c.key_differentiator);
+  if (f3) card.appendChild(f3);
+
+  if (c.mvp_bullets && c.mvp_bullets.length) {
+    card.appendChild(heading('MVP features:'));
+    card.appendChild(bulletList(c.mvp_bullets));
+  }
+
+  if (c.what_we_are_not_doing && c.what_we_are_not_doing.length) {
+    card.appendChild(heading('Not doing:'));
+    card.appendChild(bulletList(c.what_we_are_not_doing));
+  }
+
+  if (c.risks_unknowns && c.risks_unknowns.length) {
+    card.appendChild(heading('Risks:'));
+    card.appendChild(bulletList(c.risks_unknowns));
+  }
+
+  if (c.next_7_day_plan && c.next_7_day_plan.length) {
+    card.appendChild(heading('7-day plan:'));
+    card.appendChild(bulletList(c.next_7_day_plan));
+  }
+
+  // Insert at top of panel
+  panel.insertBefore(card, panel.firstChild);
+}
+
+function renderFinalIdeas(ideas) {
+  // Switch to ideas tab and show final structured ideas
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+  const btn = document.querySelector('.tab-btn[data-tab="ideas"]');
+  if (btn) btn.classList.add('active');
+  document.getElementById('tab-ideas').classList.remove('hidden');
+
+  // Merge final ideas into panel
+  ideas.forEach(idea => {
+    if (idea.title && !state.ideas[idea.title]) {
+      state.ideas[idea.title] = { ...idea, status: 'integrated' };
+    }
+  });
+  renderIdeas();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PERSONAS PANEL
+// ══════════════════════════════════════════════════════════════════
+function renderPersonaStates(ev) {
+  (ev.personas || []).forEach(p => {
+    state.personaStates[p.name] = { ...p, turn: ev.turn };
+  });
+
+  const panel = document.getElementById('tab-personas');
+  panel.innerHTML = '';
+
+  const personas = Object.values(state.personaStates);
+  if (!personas.length) {
+    panel.innerHTML = '<p class="text-slate-500 text-xs italic">Persona states will appear after the first turn.</p>';
+    return;
+  }
+
+  personas.forEach(p => {
+    const { bg, text } = getSpeakerColor(p.name);
+
+    const card = document.createElement('div');
+    card.className = 'flex flex-col rounded bg-slate-900 overflow-hidden';
+
+    // Header (clickable toggle)
+    const header = document.createElement('button');
+    header.className = 'flex items-center gap-2 px-2 py-1.5 text-left hover:bg-slate-700 w-full';
+    const dot = document.createElement('span');
+    dot.className = 'text-base leading-none ' + text;
+    dot.textContent = '●';
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'text-xs font-bold flex-1 ' + text;
+    nameSpan.textContent = p.name;
+    const arch = document.createElement('span');
+    arch.className = 'text-xs text-slate-500';
+    arch.textContent = p.archetype ? '(' + p.archetype + ')' : '';
+    const turnBadge = document.createElement('span');
+    turnBadge.className = 'text-xs text-slate-600 ml-auto';
+    turnBadge.textContent = 't' + p.turn;
+    header.append(dot, nameSpan, arch, turnBadge);
+
+    // Body (collapsed by default)
+    const body = document.createElement('div');
+    body.className = 'hidden px-3 pb-2 flex flex-col gap-1';
+
+    function addSection(label, content) {
+      if (!content) return;
+      const sec = document.createElement('div');
+      sec.className = 'mt-1';
+      const lbl = document.createElement('p');
+      lbl.className = 'text-xs text-slate-600 font-bold uppercase';
+      lbl.textContent = label;
+      sec.appendChild(lbl);
+      if (typeof content === 'string') {
+        const p = document.createElement('p');
+        p.className = 'text-xs text-slate-400 leading-snug';
+        p.textContent = content;
+        sec.appendChild(p);
+      } else if (Array.isArray(content)) {
+        content.forEach(item => {
+          const p = document.createElement('p');
+          p.className = 'text-xs text-slate-400 leading-snug';
+          p.textContent = '· ' + item;
+          sec.appendChild(p);
+        });
+      } else if (typeof content === 'object') {
+        Object.entries(content).forEach(([k, v]) => {
+          const p = document.createElement('p');
+          p.className = 'text-xs text-slate-400 leading-snug';
+          p.innerHTML = '<span class="text-slate-600">' + k + ':</span> ' + (Array.isArray(v) ? v.join(', ') : v);
+          sec.appendChild(p);
+        });
+      }
+      body.appendChild(sec);
+    }
+
+    if (p.summary) {
+      const divider = document.createElement('p');
+      divider.className = 'text-xs text-slate-600 font-bold mt-1.5 border-t border-slate-700 pt-1';
+      divider.textContent = '── Summary ──';
+      body.appendChild(divider);
+      if (p.summary.objective_facts)  addSection('Facts', p.summary.objective_facts);
+      if (p.summary.key_concerns)     addSection('Concerns', p.summary.key_concerns);
+      if (p.summary.priorities)       addSection('Priorities', p.summary.priorities);
+      if (p.summary.opinions)         addSection('Opinions', p.summary.opinions);
+    }
+
+    if (p.belief_state) {
+      const divider = document.createElement('p');
+      divider.className = 'text-xs text-slate-600 font-bold mt-1.5 border-t border-slate-700 pt-1';
+      divider.textContent = '── Belief State ──';
+      body.appendChild(divider);
+      const bs = p.belief_state;
+      if (bs.position)    addSection('Position', bs.position);
+      if (bs.certainty !== undefined || bs.confidence !== undefined) {
+        addSection('Certainty / Confidence',
+          (bs.certainty ? bs.certainty : '') + (bs.confidence !== undefined ? '  conf: ' + bs.confidence : ''));
+      }
+      if (bs.deltas)      addSection('Deltas', bs.deltas);
+      if (bs.concessions) addSection('Concessions', bs.concessions);
+    }
+
+    header.addEventListener('click', () => {
+      body.classList.toggle('hidden');
+    });
+
+    card.append(header, body);
+    panel.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// NUANCES (Ideas tab)
+// ══════════════════════════════════════════════════════════════════
+function renderNuances() {
+  const panel = document.getElementById('tab-ideas');
+
+  // Remove existing nuances section
+  const existing = panel.querySelector('#nuances-section');
+  if (existing) existing.remove();
+
+  if (!state.nuances.length) return;
+
+  const section = document.createElement('div');
+  section.id = 'nuances-section';
+  section.className = 'flex flex-col gap-1 mt-1 border-t border-slate-700 pt-2';
+
+  const toggle = document.createElement('button');
+  toggle.className = 'flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-slate-200 text-left';
+  toggle.innerHTML = '<span id="nuances-arrow">◆</span> Angles explored (' + state.nuances.length + ')';
+
+  const body = document.createElement('p');
+  body.className = 'hidden text-xs text-slate-500 leading-relaxed';
+  body.textContent = state.nuances.join(', ');
+
+  toggle.addEventListener('click', () => {
+    body.classList.toggle('hidden');
+    toggle.querySelector('#nuances-arrow').textContent = body.classList.contains('hidden') ? '◆' : '◇';
+  });
+
+  section.append(toggle, body);
+  panel.appendChild(section);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MEDIATOR LOG (Phases tab)
+// ══════════════════════════════════════════════════════════════════
+function renderMediatorLog() {
+  if (!state.mediationLog) return;
+
+  const section = document.getElementById('mediator-log-section');
+  if (!section) return;
+  section.classList.remove('hidden');
+
+  const body = document.getElementById('mediator-log-body');
+  body.innerHTML = '';
+
+  const LOG_LABELS = {
+    questions_asked: 'Questions asked',
+    circular_arguments_detected: 'Circular args detected',
+    synthesis_points: 'Synthesis points',
+    conceptual_tools_introduced: 'Conceptual tools',
+    definitions_forced: 'Definitions forced',
+    scenarios_presented: 'Scenarios presented',
+  };
+
+  Object.entries(state.mediationLog).forEach(([key, entries]) => {
+    if (!entries || !entries.length) return;
+    const label = LOG_LABELS[key] || key;
+    const row = document.createElement('div');
+    row.className = 'flex flex-col gap-0.5';
+    const header = document.createElement('p');
+    header.className = 'text-xs text-amber-700 font-bold';
+    header.textContent = label + ' (' + entries.length + ')';
+    row.appendChild(header);
+    entries.forEach(entry => {
+      const p = document.createElement('p');
+      p.className = 'text-xs text-slate-500 leading-snug ml-2 cursor-pointer hover:text-slate-300';
+      const summary = typeof entry === 'string' ? entry : (entry.summary || entry.text || JSON.stringify(entry));
+      p.textContent = summary.slice(0, 100) + (summary.length > 100 ? '…' : '');
+      p.title = typeof entry === 'string' ? entry : JSON.stringify(entry, null, 2);
+      row.appendChild(p);
+    });
+    body.appendChild(row);
+  });
+
+  // Wire up toggle
+  const toggleBtn = document.getElementById('mediator-log-toggle');
+  if (toggleBtn && !toggleBtn._wired) {
+    toggleBtn._wired = true;
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('hidden');
+      document.getElementById('mediator-log-arrow').textContent =
+        body.classList.contains('hidden') ? '▶' : '▼';
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SCENARIO HISTORY (Memory tab)
+// ══════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// TOP NAV
+// ══════════════════════════════════════════════════════════════════
+document.getElementById('nav-run').addEventListener('click', () => {
+  document.getElementById('view-run').classList.remove('hidden');
+  document.getElementById('view-benchmarks').classList.add('hidden');
+  document.getElementById('nav-run').classList.add('active');
+  document.getElementById('nav-benchmarks').classList.remove('active');
+});
+
+document.getElementById('nav-benchmarks').addEventListener('click', () => {
+  document.getElementById('view-run').classList.add('hidden');
+  document.getElementById('view-benchmarks').classList.remove('hidden');
+  document.getElementById('nav-run').classList.remove('active');
+  document.getElementById('nav-benchmarks').classList.add('active');
+  loadBenchmarks();
+});
+
+document.getElementById('bm-log-close').addEventListener('click', () => {
+  document.getElementById('bm-log-panel').classList.add('hidden');
+});
+
+// ══════════════════════════════════════════════════════════════════
+// BENCHMARKS — load & render
+// ══════════════════════════════════════════════════════════════════
+let _benchmarksData = null;
+
+async function loadBenchmarks() {
+  if (_benchmarksData) { renderBenchmarkCards(_benchmarksData); return; }
+  try {
+    const resp = await fetch('/api/benchmarks');
+    _benchmarksData = await resp.json();
+    renderBenchmarkCards(_benchmarksData);
+  } catch (e) {
+    document.getElementById('bm-cards').innerHTML =
+      '<p class="text-red-400 text-xs">Failed to load benchmarks: ' + e.message + '</p>';
+  }
+}
+
+function renderBenchmarkCards(benchmarks) {
+  const panel = document.getElementById('bm-cards');
+  panel.innerHTML = '';
+  // Group by category
+  const cats = {};
+  benchmarks.forEach(bm => {
+    if (!cats[bm.category]) cats[bm.category] = [];
+    cats[bm.category].push(bm);
+  });
+  Object.entries(cats).forEach(([cat, bms]) => {
+    const catHeader = document.createElement('h3');
+    catHeader.className = 'text-xs font-bold tracking-widest text-slate-500 uppercase mt-2';
+    catHeader.textContent = cat;
+    panel.appendChild(catHeader);
+    bms.forEach(bm => panel.appendChild(buildBenchmarkCard(bm)));
+  });
+}
+
+function buildBenchmarkCard(bm) {
+  const card = document.createElement('div');
+  card.className = 'bg-slate-800 border border-slate-700 rounded p-4 flex flex-col gap-3';
+  card.id = 'bm-card-' + bm.id;
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'flex items-start gap-2';
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'text-sm font-bold text-slate-200 flex-1';
+  nameSpan.textContent = bm.name;
+  const badge = document.createElement('span');
+  badge.className = 'text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-400 shrink-0 font-mono';
+  badge.textContent = bm.id;
+  header.append(nameSpan, badge);
+  card.appendChild(header);
+
+  // Description
+  const desc = document.createElement('p');
+  desc.className = 'text-xs text-slate-400 leading-relaxed';
+  desc.textContent = bm.description;
+  card.appendChild(desc);
+
+  // How it runs (collapsible)
+  if (bm.how_it_runs) {
+    const howWrap = document.createElement('div');
+    howWrap.className = 'flex flex-col gap-1';
+    const howToggle = document.createElement('button');
+    howToggle.className = 'flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 text-left';
+    howToggle.innerHTML = '<span class="how-arrow">▶</span> How it runs';
+    const howBody = document.createElement('p');
+    howBody.className = 'how-body hidden text-xs text-slate-500 leading-relaxed pl-3 ml-1 mt-1';
+    howBody.textContent = bm.how_it_runs;
+    howToggle.addEventListener('click', () => {
+      howBody.classList.toggle('hidden');
+      howToggle.querySelector('.how-arrow').textContent = howBody.classList.contains('hidden') ? '▶' : '▼';
+    });
+    howWrap.append(howToggle, howBody);
+    card.appendChild(howWrap);
+  }
+
+  // Params
+  if (bm.params && Object.keys(bm.params).length) {
+    const paramsWrap = document.createElement('div');
+    paramsWrap.className = 'flex flex-wrap gap-3 items-end';
+    Object.entries(bm.params).forEach(([key, spec]) => {
+      paramsWrap.appendChild(renderParamControl(bm.id, key, spec));
+    });
+    card.appendChild(paramsWrap);
+  }
+
+  // Results summary
+  const resultsWrap = document.createElement('div');
+  resultsWrap.id = 'bm-results-' + bm.id;
+  resultsWrap.className = 'flex flex-col gap-1';
+  renderResultsSummary(resultsWrap, bm, bm.latest_results);
+  card.appendChild(resultsWrap);
+
+  // Action buttons
+  const btnRow = document.createElement('div');
+  btnRow.className = 'flex gap-2 mt-1';
+  const runBtn = document.createElement('button');
+  runBtn.id = 'bm-run-btn-' + bm.id;
+  runBtn.className = 'bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded px-3 py-1.5 text-xs font-bold transition-colors';
+  runBtn.textContent = '▶ Run';
+  runBtn.addEventListener('click', () => startBenchmarkRun(bm.id, bm.name));
+  const refreshBtn = document.createElement('button');
+  refreshBtn.className = 'bg-slate-700 hover:bg-slate-600 rounded px-3 py-1.5 text-xs text-slate-300 transition-colors';
+  refreshBtn.textContent = '↻ Refresh results';
+  refreshBtn.addEventListener('click', () => refreshBenchmarkResults(bm.id));
+  btnRow.append(runBtn, refreshBtn);
+  card.appendChild(btnRow);
+
+  return card;
+}
+
+function renderParamControl(bmId, key, spec) {
+  const wrap = document.createElement('div');
+  wrap.className = 'flex flex-col gap-0.5';
+  const label = document.createElement('label');
+  label.className = 'text-xs text-slate-500';
+  label.textContent = spec.label || key;
+  label.htmlFor = 'bm-param-' + bmId + '-' + key;
+
+  let input;
+  if (spec.type === 'int') {
+    input = document.createElement('input');
+    input.type = 'number';
+    input.min = spec.min || 1;
+    input.max = spec.max || 10;
+    input.value = spec.default || 1;
+    input.className = 'bg-slate-900 border border-slate-600 rounded px-2 py-1 text-xs w-20 focus:outline-none focus:border-indigo-500';
+  } else if (spec.type === 'select') {
+    input = document.createElement('select');
+    input.className = 'bg-slate-900 border border-slate-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-indigo-500';
+    (spec.options || []).forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt; o.textContent = opt;
+      if (opt === spec.default) o.selected = true;
+      input.appendChild(o);
+    });
+  } else if (spec.type === 'multiselect') {
+    input = document.createElement('select');
+    input.multiple = true;
+    input.size = Math.min((spec.options || []).length, 4);
+    input.className = 'bg-slate-900 border border-slate-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-indigo-500';
+    (spec.options || []).forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt; o.textContent = opt;
+      if ((spec.default || []).includes(opt)) o.selected = true;
+      input.appendChild(o);
+    });
+  } else {
+    input = document.createElement('input');
+    input.type = 'text';
+    input.value = spec.default || '';
+    input.className = 'bg-slate-900 border border-slate-600 rounded px-2 py-1 text-xs w-28 focus:outline-none focus:border-indigo-500';
+  }
+  input.id = 'bm-param-' + bmId + '-' + key;
+  wrap.append(label, input);
+  return wrap;
+}
+
+function renderResultsSummary(container, bm, results) {
+  container.innerHTML = '';
+  if (!results) {
+    const p = document.createElement('p');
+    p.className = 'text-xs text-slate-600 italic';
+    p.textContent = 'No saved results yet.';
+    container.appendChild(p);
+    return;
+  }
+  const fileRow = document.createElement('div');
+  fileRow.className = 'flex items-center gap-2';
+  const ts = document.createElement('span');
+  ts.className = 'text-xs text-slate-600';
+  const resultFile = results._result_file || '';
+  ts.textContent = 'Latest: ' + (resultFile ? resultFile.split(/[/\\]/).pop() : 'saved result');
+  fileRow.appendChild(ts);
+  container.appendChild(fileRow);
+
+  const chips = _formatResults(bm.id, results);
+  if (chips) container.appendChild(chips);
+}
+
+function _formatResults(bmId, results) {
+  if (!results) return null;
+  const wrap = document.createElement('div');
+  wrap.className = 'flex flex-wrap gap-2 mt-1';
+
+  if (bmId === 'phase1_reliability') {
+    // summary.total_runs, summary.successful, summary.success_rate_percent, summary.structure_valid_percent
+    const s = results.summary || {};
+    const total = s.total_runs || results.total_runs || 0;
+    const success = s.successful !== undefined ? s.successful : (results.successful_runs || 0);
+    const pct = s.success_rate_percent !== undefined ? Math.round(s.success_rate_percent) : (total > 0 ? Math.round(success / total * 100) : 0);
+    const structPct = s.structure_valid_percent !== undefined ? Math.round(s.structure_valid_percent) : results.structure_valid_pct;
+    const gate = s.gate_passed !== undefined ? s.gate_passed : (pct >= 100);
+    wrap.appendChild(_metric('Runs', total));
+    wrap.appendChild(_metric('Success', success + '/' + total));
+    wrap.appendChild(_gateChip(gate, 'completion ' + pct + '%'));
+    if (structPct !== undefined) {
+      wrap.appendChild(_gateChip(structPct >= 90, 'structure ' + structPct + '%'));
+    }
+  } else if (bmId === 'phase1_role_adherence') {
+    // summary.adherence_rate_percent, summary.total_exchanges, summary.gate_passed
+    const s = results.summary || {};
+    const pct = s.adherence_rate_percent !== undefined ? s.adherence_rate_percent
+      : (results.in_role_pct !== undefined ? results.in_role_pct : results.in_role_percentage);
+    const total = s.total_exchanges !== undefined ? s.total_exchanges
+      : (results.total_turns_evaluated !== undefined ? results.total_turns_evaluated : results.total_turns);
+    const gate = s.gate_passed !== undefined ? s.gate_passed : (pct !== undefined && pct >= 90);
+    if (pct !== undefined) wrap.appendChild(_gateChip(gate, 'in-role ' + Math.round(pct) + '%'));
+    if (total !== undefined) wrap.appendChild(_metric('Exchanges', total));
+    if (s.average_score !== undefined) wrap.appendChild(_metric('Avg score', s.average_score.toFixed(2)));
+  } else if (bmId === 'phase2_two_way' || bmId === 'phase2_three_way') {
+    const agg = results.aggregated;
+    if (agg) {
+      if (agg.assembly_win_pct !== undefined) {
+        wrap.appendChild(_gateChip(agg.assembly_win_pct >= 70, 'Assembly wins ' + Math.round(agg.assembly_win_pct) + '%'));
+      }
+      if (agg.assembly_avg_score !== undefined && agg.baseline_avg_score !== undefined && agg.baseline_avg_score > 0) {
+        const delta = Math.round((agg.assembly_avg_score - agg.baseline_avg_score) / agg.baseline_avg_score * 100);
+        wrap.appendChild(_gateChip(delta >= 20, 'score ' + (delta >= 0 ? '+' : '') + delta + '%'));
+      }
+      if (agg.ranking && agg.ranking.length) wrap.appendChild(_metric('Ranking', agg.ranking.join(' > ')));
+    }
+  } else if (bmId === 'memory_benchmark') {
+    // aggregated.by_approach: {full_history: {wins, win_rate, avg_score}, structured: {...}}
+    const agg = results.aggregated || {};
+    const byApproach = agg.by_approach || {};
+    const structured = byApproach.structured || {};
+    const fullHistory = byApproach.full_history || {};
+    if (structured.win_rate !== undefined) {
+      wrap.appendChild(_gateChip(structured.win_rate >= 60, 'structured win rate ' + Math.round(structured.win_rate) + '%'));
+    }
+    if (structured.avg_score !== undefined && fullHistory.avg_score !== undefined) {
+      const delta = structured.avg_score - fullHistory.avg_score;
+      wrap.appendChild(_metric('Structured avg score', structured.avg_score.toFixed(1)));
+      wrap.appendChild(_metric('Full history avg score', fullHistory.avg_score.toFixed(1)));
+    }
+    if (agg.total_comparisons !== undefined) wrap.appendChild(_metric('Comparisons', agg.total_comparisons));
+  }
+  return wrap.children.length ? wrap : null;
+}
+
+function _metric(label, value) {
+  const chip = document.createElement('span');
+  chip.className = 'text-xs bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-slate-400';
+  chip.textContent = label + ': ' + value;
+  return chip;
+}
+
+function _gateChip(pass, label) {
+  const chip = document.createElement('span');
+  chip.className = 'text-xs rounded px-2 py-0.5 font-bold ' +
+    (pass ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-400');
+  chip.textContent = (pass ? '✓ ' : '✗ ') + label;
+  return chip;
+}
+
+async function refreshBenchmarkResults(bmId) {
+  try {
+    const resp = await fetch('/api/benchmarks/' + bmId + '/results');
+    if (!resp.ok) return;
+    const results = await resp.json();
+    const bm = (_benchmarksData || []).find(b => b.id === bmId);
+    if (!bm) return;
+    const container = document.getElementById('bm-results-' + bmId);
+    if (container) renderResultsSummary(container, bm, results);
+  } catch (e) {
+    console.warn('Failed to refresh results for', bmId, e);
+  }
+}
+
+async function startBenchmarkRun(bmId, bmName) {
+  const runBtn = document.getElementById('bm-run-btn-' + bmId);
+  if (runBtn) runBtn.disabled = true;
+
+  // Collect params
+  const bm = (_benchmarksData || []).find(b => b.id === bmId);
+  const params = {};
+  if (bm && bm.params) {
+    Object.entries(bm.params).forEach(([key, spec]) => {
+      const el = document.getElementById('bm-param-' + bmId + '-' + key);
+      if (!el) return;
+      if (spec.type === 'int') params[key] = parseInt(el.value) || spec.default;
+      else if (spec.type === 'multiselect') params[key] = Array.from(el.selectedOptions).map(o => o.value);
+      else params[key] = el.value;
+    });
+  }
+
+  // Show log panel
+  const logPanel = document.getElementById('bm-log-panel');
+  const logTitle = document.getElementById('bm-log-title');
+  const logEl = document.getElementById('bm-log');
+  const logStatus = document.getElementById('bm-log-status');
+  logTitle.textContent = bmName;
+  logEl.innerHTML = '';
+  logStatus.textContent = 'Starting…';
+  logStatus.className = 'px-3 py-2 border-t border-slate-700 text-xs text-slate-500';
+  logPanel.classList.remove('hidden');
+
+  let data;
+  try {
+    const resp = await fetch('/api/benchmarks/' + bmId + '/run', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ params }),
+    });
+    data = await resp.json();
+    if (!resp.ok) {
+      logStatus.textContent = 'Error: ' + (data.error || resp.statusText);
+      if (runBtn) runBtn.disabled = false;
+      return;
+    }
+  } catch (e) {
+    logStatus.textContent = 'Request failed: ' + e.message;
+    if (runBtn) runBtn.disabled = false;
+    return;
+  }
+
+  logStatus.textContent = 'Running…';
+
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const ws = new WebSocket(proto + '://' + location.host + '/ws/benchmarks/' + data.job_id);
+
+  ws.onmessage = (evt) => {
+    let ev;
+    try { ev = JSON.parse(evt.data); } catch { return; }
+
+    if (ev.type === 'benchmark_log') {
+      const line = document.createElement('div');
+      line.textContent = ev.line;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    } else if (ev.type === 'benchmark_complete') {
+      logStatus.textContent = '✓ Done';
+      logStatus.className = 'px-3 py-2 border-t border-slate-700 text-xs text-green-400';
+      if (runBtn) runBtn.disabled = false;
+      // Refresh this card's results, then invalidate cache so next loadBenchmarks is fresh
+      refreshBenchmarkResults(bmId).then(() => { _benchmarksData = null; });
+    } else if (ev.type === 'benchmark_error') {
+      const err = document.createElement('div');
+      err.className = 'text-red-400';
+      err.textContent = 'ERROR: ' + ev.message;
+      if (ev.detail) {
+        const detail = document.createElement('pre');
+        detail.className = 'text-red-500 text-xs whitespace-pre-wrap mt-1';
+        detail.textContent = ev.detail.slice(0, 500);
+        logEl.appendChild(err);
+        logEl.appendChild(detail);
+      } else {
+        logEl.appendChild(err);
+      }
+      logEl.scrollTop = logEl.scrollHeight;
+      logStatus.textContent = '✗ Failed';
+      logStatus.className = 'px-3 py-2 border-t border-slate-700 text-xs text-red-400';
+      if (runBtn) runBtn.disabled = false;
+    }
+  };
+
+  ws.onerror = () => {
+    logStatus.textContent = '✗ WebSocket error';
+    logStatus.className = 'px-3 py-2 border-t border-slate-700 text-xs text-red-400';
+    if (runBtn) runBtn.disabled = false;
+  };
+}
+
+function renderScenarioHistory() {
+  if (!state.scenarioHistory.length) return;
+
+  const section = document.getElementById('scenario-history-section');
+  if (!section) return;
+  section.classList.remove('hidden');
+
+  const body = document.getElementById('scenario-history-body');
+  body.innerHTML = '';
+
+  state.scenarioHistory.forEach(entry => {
+    const wrap = document.createElement('div');
+    wrap.className = 'flex flex-col gap-0.5 bg-slate-900 rounded p-2';
+    const meta = document.createElement('p');
+    meta.className = 'text-xs text-slate-500 font-bold';
+    meta.textContent = 't' + entry.turn + ': ' + (entry.scenarios ? entry.scenarios.length : 0) +
+      ' scenario(s) — ' + (entry.mediator || '');
+    wrap.appendChild(meta);
+
+    (entry.scenarios || []).forEach(s => {
+      const sRow = document.createElement('div');
+      sRow.className = 'ml-2 mt-0.5';
+      const sId = document.createElement('span');
+      sId.className = 'text-xs font-bold text-slate-400';
+      sId.textContent = (s.id || 'CASE') + ' — ';
+      const sDesc = document.createElement('span');
+      sDesc.className = 'text-xs text-slate-500';
+      const desc = s.description || s.title || s.text || JSON.stringify(s);
+      sDesc.textContent = desc.slice(0, 100) + (desc.length > 100 ? '…' : '');
+      sRow.append(sId, sDesc);
+      wrap.appendChild(sRow);
+    });
+    body.appendChild(wrap);
+  });
+
+  // Wire up toggle
+  const toggleBtn = document.getElementById('scenario-history-toggle');
+  if (toggleBtn && !toggleBtn._wired) {
+    toggleBtn._wired = true;
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('hidden');
+      document.getElementById('scenario-history-arrow').textContent =
+        body.classList.contains('hidden') ? '▶' : '▼';
+    });
+  }
+}
+</script>
+</body>
+</html>
