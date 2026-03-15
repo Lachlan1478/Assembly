@@ -1,0 +1,619 @@
+{
+  "test_name": "assembly_vs_baseline",
+  "timestamp": "2026-03-15T16:44:56.252843",
+  "config": {
+    "model": "gpt-5.1",
+    "mode": "fast",
+    "num_prompts": 3,
+    "anonymized": true
+  },
+  "comparisons": [
+    {
+      "prompt_id": "finance",
+      "inspiration": "Domain: Personal finance\nTarget users: Young professionals (25-35) new to investing\nPrimary outcome: Build confidence in making investment decisions\n\nContext: Most investment apps are overwhelming for beginners.\nThey present too much information without guidance, leading to\nanalysis paralysis and poor decisions.",
+      "timestamp": "2026-03-15T16:44:56.253384",
+      "assembly": {
+        "success": true,
+        "idea": {
+          "title": "Beginner Investing Onboarding Orchestrator",
+          "description": "A guided investing-onboarding platform for beginners that converts a complex financial blueprint into a concrete, low-friction first-month action plan. It assesses financial stability, risk tolerance, and time horizons, then generates a week-by-week, do-or-done checklist (A1\u2013D4) with built-in guardrails, automation setup, and confidence checks so users can safely move from \u201cno account\u201d to automated investing.",
+          "target_users": [
+            "Beginner retail investors",
+            "Young professionals starting to invest",
+            "Financial coaching clients who have a plan but struggle with execution",
+            "Robo-advisors and fintech apps wanting safer, structured onboarding flows"
+          ],
+          "primary_outcome": "Safely get beginners from zero to a sustainable, automated investing setup that matches their true risk capacity and comfort, while minimizing overwhelm and execution failure.",
+          "must_haves": [
+            "Financial stability indexer to collect minimal inputs (income, essential vs discretionary expenses, liquid savings, debt, emergency fund in months) and compute a stability score with hard safety thresholds.",
+            "Risk tolerance quantifier using Bayesian-style multi-signal inputs (self-labels, loss scenarios, emotional language, time-horizon coherence) to infer a realistic risk band and guard against over/underconfidence.",
+            "Time-horizon segmenter that classifies goals into short/medium/long term, detects horizon conflicts (e.g., one pot for multiple timelines), and flags unrealistic timelines.",
+            "Blueprint-to-actions engine that converts a high-level investing framework (chosen account type, risk level, contribution rule) into a chronological, week-by-week action plan (A1\u2013D4) with atomic, \u226430-minute steps.",
+            "Blocker detection and classification system (e.g., B01\u2013B12) that identifies missing inputs, unclear rules, platform constraints, and emotional blockers, and ties them to specific steps.",
+            "Confidence calibration module that collects a global comfort rating (e.g., 1\u20135) plus optional per-step confidence scores, anchors the scale, and adjusts for structural blockers to detect over/underconfidence.",
+            "Automation setup and guardrails, including: first manual transfer, then recurring contributions and auto-investment, with clear rules for when to maintain or pause automation based on confidence and blockers.",
+            "User-facing explanations that clearly show which constraints (e.g., lack of emergency fund, high-interest debt, unstable income) cap risk-taking and why, without overwhelming detail.",
+            "Platform and regulatory abstraction layer that maps user country and account type to a small set of pre-vetted brokers/platforms and pre-mapped portfolios for each risk level.",
+            "Progress and review tools, such as a one-page snapshot of contributions, portfolio type, next auto-contribution, and a simple log of skipped/confusing steps for later refinement."
+          ],
+          "constraints": [
+            "Requires accurate user-provided financial data (income, expenses, savings, debt) to compute a valid stability index; poor data quality reduces reliability.",
+            "Must not provide individualized investment advice that violates local regulations; portfolio mappings and thresholds need to be designed with compliance in mind for each jurisdiction.",
+            "Depends on integration with or cooperation from brokerages/platforms for KYC status, bank-linking, auto-deposit, and auto-investment features; capabilities will vary by partner.",
+            "Emergency-fund rules, risk-to-portfolio mappings, and account-type recommendations must be pre-defined by experts or partner institutions; the system cannot safely improvise these.",
+            "Onboarding must remain low-friction for beginners, limiting the number and complexity of questions, which constrains how precise early risk and confidence estimates can be.",
+            "Global rollout is limited by differing tax regimes, account types, and regulatory constraints; localized configurations are required for each country.",
+            "The system relies on self-reported emotional and confidence ratings, which are noisy and may require smoothing and conservative guardrails to avoid misclassification."
+          ],
+          "non_goals": [
+            "It will not act as a full-featured brokerage or hold client assets; instead, it orchestrates onboarding and connects to existing platforms.",
+            "It will not optimize portfolios for tax efficiency, advanced asset classes, or complex strategies in Month 1; focus is on simple, pre-mapped default portfolios per risk band.",
+            "It will not provide detailed financial planning across all life domains (e.g., retirement projections, insurance planning, estate planning); its scope is early investing setup and behavior.",
+            "It will not continuously micromanage or rebalance portfolios; beyond initial mapping and auto-invest configuration, ongoing portfolio management is left to the underlying platform or advisor.",
+            "It will not override regulatory or institutional suitability rules; if a partner platform\u2019s constraints conflict with the app\u2019s recommendations, the platform\u2019s rules take precedence.",
+            "It will not attempt to diagnose or treat deep psychological or mental health issues related to money anxiety; it only flags emotional blockers and suggests pausing or simplifying actions.",
+            "It will not encourage users to bypass minimum safety conditions (e.g., emergency fund, high-interest debt thresholds) just to start investing sooner."
+          ]
+        },
+        "error": null
+      },
+      "baseline": {
+        "success": true,
+        "idea": {
+          "title": "Ladder",
+          "description": "Ladder is a guided investing app for young professionals that turns your first years of investing into a clear, step-by-step journey. It combines real brokerage accounts with bite-sized missions, safe defaults, and explainable recommendations so you can learn by doing and build lasting confidence in your investment decisions.",
+          "target_users": "Young professionals aged 25\u201335 with stable income and some savings, who are new or hesitant investors and feel overwhelmed by traditional trading apps or passive robo-advisors.",
+          "primary_outcome": "Transform anxious, uncertain beginners into confident, informed long-term investors who can make and understand their own investment decisions.",
+          "must_haves": [
+            "Brokerage integration (via partner APIs) to enable real-money investing within the app",
+            "Mission-based investing journeys that guide users through small, structured actions with embedded micro-lessons",
+            "Personalized onboarding that assesses risk tolerance, goals, and financial literacy to tailor the experience",
+            "Guardrails and safe defaults (e.g., diversified ETFs, position limits, risk alerts) to prevent harmful early decisions",
+            "Explainable recommendations that clearly state the reasoning behind each suggestion in plain language",
+            "Simulation and 'what-if' tools that visualize potential outcomes and volatility in an intuitive way",
+            "Progress and confidence tracking, including concept mastery and self-reported confidence over time",
+            "Mobile-first, low-jargon UX designed specifically for beginners"
+          ],
+          "constraints": [
+            "Must comply with financial regulations, which may limit the specificity of personalized advice without appropriate licensing or registrations",
+            "Initial asset coverage will focus on core instruments (e.g., ETFs, major index funds) rather than complex products like options or derivatives",
+            "Geographic availability will be limited at launch (e.g., U.S. only) due to regulatory and brokerage integration constraints",
+            "Reliance on third-party brokerage and data APIs introduces dependencies on partner uptime, pricing, and feature sets",
+            "Building deep employer/benefits integrations will require longer sales cycles and may only come after initial consumer traction"
+          ],
+          "non_goals": [
+            "It will not be a high-frequency trading or day-trading platform optimized for active speculators",
+            "It will not prioritize complex financial instruments (e.g., options, leveraged ETFs, crypto derivatives) as core features for beginners",
+            "It will not function as a generic financial news or content feed disconnected from user actions",
+            "It will not replace comprehensive human financial planning for complex, high-net-worth situations",
+            "It will not encourage excessive trading activity as a primary engagement or revenue driver"
+          ]
+        },
+        "error": null,
+        "tokens_used": 4593
+      },
+      "idea_a": {
+        "title": "Beginner Investing Onboarding Orchestrator",
+        "description": "A guided investing-onboarding platform for beginners that converts a complex financial blueprint into a concrete, low-friction first-month action plan. It assesses financial stability, risk tolerance, and time horizons, then generates a week-by-week, do-or-done checklist (A1\u2013D4) with built-in guardrails, automation setup, and confidence checks so users can safely move from \u201cno account\u201d to automated investing.",
+        "target_users": [
+          "Beginner retail investors",
+          "Young professionals starting to invest",
+          "Financial coaching clients who have a plan but struggle with execution",
+          "Robo-advisors and fintech apps wanting safer, structured onboarding flows"
+        ],
+        "primary_outcome": "Safely get beginners from zero to a sustainable, automated investing setup that matches their true risk capacity and comfort, while minimizing overwhelm and execution failure.",
+        "must_haves": [
+          "Financial stability indexer to collect minimal inputs (income, essential vs discretionary expenses, liquid savings, debt, emergency fund in months) and compute a stability score with hard safety thresholds.",
+          "Risk tolerance quantifier using Bayesian-style multi-signal inputs (self-labels, loss scenarios, emotional language, time-horizon coherence) to infer a realistic risk band and guard against over/underconfidence.",
+          "Time-horizon segmenter that classifies goals into short/medium/long term, detects horizon conflicts (e.g., one pot for multiple timelines), and flags unrealistic timelines.",
+          "Blueprint-to-actions engine that converts a high-level investing framework (chosen account type, risk level, contribution rule) into a chronological, week-by-week action plan (A1\u2013D4) with atomic, \u226430-minute steps.",
+          "Blocker detection and classification system (e.g., B01\u2013B12) that identifies missing inputs, unclear rules, platform constraints, and emotional blockers, and ties them to specific steps.",
+          "Confidence calibration module that collects a global comfort rating (e.g., 1\u20135) plus optional per-step confidence scores, anchors the scale, and adjusts for structural blockers to detect over/underconfidence.",
+          "Automation setup and guardrails, including: first manual transfer, then recurring contributions and auto-investment, with clear rules for when to maintain or pause automation based on confidence and blockers.",
+          "User-facing explanations that clearly show which constraints (e.g., lack of emergency fund, high-interest debt, unstable income) cap risk-taking and why, without overwhelming detail.",
+          "Platform and regulatory abstraction layer that maps user country and account type to a small set of pre-vetted brokers/platforms and pre-mapped portfolios for each risk level.",
+          "Progress and review tools, such as a one-page snapshot of contributions, portfolio type, next auto-contribution, and a simple log of skipped/confusing steps for later refinement."
+        ],
+        "constraints": [
+          "Requires accurate user-provided financial data (income, expenses, savings, debt) to compute a valid stability index; poor data quality reduces reliability.",
+          "Must not provide individualized investment advice that violates local regulations; portfolio mappings and thresholds need to be designed with compliance in mind for each jurisdiction.",
+          "Depends on integration with or cooperation from brokerages/platforms for KYC status, bank-linking, auto-deposit, and auto-investment features; capabilities will vary by partner.",
+          "Emergency-fund rules, risk-to-portfolio mappings, and account-type recommendations must be pre-defined by experts or partner institutions; the system cannot safely improvise these.",
+          "Onboarding must remain low-friction for beginners, limiting the number and complexity of questions, which constrains how precise early risk and confidence estimates can be.",
+          "Global rollout is limited by differing tax regimes, account types, and regulatory constraints; localized configurations are required for each country.",
+          "The system relies on self-reported emotional and confidence ratings, which are noisy and may require smoothing and conservative guardrails to avoid misclassification."
+        ],
+        "non_goals": [
+          "It will not act as a full-featured brokerage or hold client assets; instead, it orchestrates onboarding and connects to existing platforms.",
+          "It will not optimize portfolios for tax efficiency, advanced asset classes, or complex strategies in Month 1; focus is on simple, pre-mapped default portfolios per risk band.",
+          "It will not provide detailed financial planning across all life domains (e.g., retirement projections, insurance planning, estate planning); its scope is early investing setup and behavior.",
+          "It will not continuously micromanage or rebalance portfolios; beyond initial mapping and auto-invest configuration, ongoing portfolio management is left to the underlying platform or advisor.",
+          "It will not override regulatory or institutional suitability rules; if a partner platform\u2019s constraints conflict with the app\u2019s recommendations, the platform\u2019s rules take precedence.",
+          "It will not attempt to diagnose or treat deep psychological or mental health issues related to money anxiety; it only flags emotional blockers and suggests pausing or simplifying actions.",
+          "It will not encourage users to bypass minimum safety conditions (e.g., emergency fund, high-interest debt thresholds) just to start investing sooner."
+        ]
+      },
+      "idea_b": {
+        "title": "Ladder",
+        "description": "Ladder is a guided investing app for young professionals that turns your first years of investing into a clear, step-by-step journey. It combines real brokerage accounts with bite-sized missions, safe defaults, and explainable recommendations so you can learn by doing and build lasting confidence in your investment decisions.",
+        "target_users": "Young professionals aged 25\u201335 with stable income and some savings, who are new or hesitant investors and feel overwhelmed by traditional trading apps or passive robo-advisors.",
+        "primary_outcome": "Transform anxious, uncertain beginners into confident, informed long-term investors who can make and understand their own investment decisions.",
+        "must_haves": [
+          "Brokerage integration (via partner APIs) to enable real-money investing within the app",
+          "Mission-based investing journeys that guide users through small, structured actions with embedded micro-lessons",
+          "Personalized onboarding that assesses risk tolerance, goals, and financial literacy to tailor the experience",
+          "Guardrails and safe defaults (e.g., diversified ETFs, position limits, risk alerts) to prevent harmful early decisions",
+          "Explainable recommendations that clearly state the reasoning behind each suggestion in plain language",
+          "Simulation and 'what-if' tools that visualize potential outcomes and volatility in an intuitive way",
+          "Progress and confidence tracking, including concept mastery and self-reported confidence over time",
+          "Mobile-first, low-jargon UX designed specifically for beginners"
+        ],
+        "constraints": [
+          "Must comply with financial regulations, which may limit the specificity of personalized advice without appropriate licensing or registrations",
+          "Initial asset coverage will focus on core instruments (e.g., ETFs, major index funds) rather than complex products like options or derivatives",
+          "Geographic availability will be limited at launch (e.g., U.S. only) due to regulatory and brokerage integration constraints",
+          "Reliance on third-party brokerage and data APIs introduces dependencies on partner uptime, pricing, and feature sets",
+          "Building deep employer/benefits integrations will require longer sales cycles and may only come after initial consumer traction"
+        ],
+        "non_goals": [
+          "It will not be a high-frequency trading or day-trading platform optimized for active speculators",
+          "It will not prioritize complex financial instruments (e.g., options, leveraged ETFs, crypto derivatives) as core features for beginners",
+          "It will not function as a generic financial news or content feed disconnected from user actions",
+          "It will not replace comprehensive human financial planning for complex, high-net-worth situations",
+          "It will not encourage excessive trading activity as a primary engagement or revenue driver"
+        ]
+      },
+      "mapping": {
+        "A": "assembly",
+        "B": "baseline"
+      },
+      "assembly_score": {
+        "novelty": 4,
+        "feasibility": 3,
+        "specificity": 5,
+        "commercial_clarity": 3,
+        "notes": "Novelty: The core domain (beginner investing) is crowded, but the idea is differentiated by its explicit focus on orchestration of the first month, structured week-by-week checklists, blocker classification, confidence calibration, and a platform/regulatory abstraction layer. This is a non-obvious, process-centric angle rather than yet another robo-advisor, so it merits a 4.\n\nFeasibility: Each individual component (risk questionnaires, goal segmentation, basic rules-based guardrails, integrations with brokers) is buildable with current tech, but the combination introduces real complexity. Regulatory constraints across jurisdictions, need for expert-defined rules, and dependence on broker integrations and suitability frameworks make execution challenging. Achievable with a well-funded, experienced team, but not straightforward, so a 3.\n\nSpecificity: The ICP, problem, and solution are described in high detail. There are concrete modules (stability indexer, Bayesian-style risk quantifier, blueprint-to-actions engine, blocker taxonomy, confidence calibration, automation guardrails, abstraction layer) and clear non-goals. This is a textbook example of a highly specified concept, so a 5.\n\nCommercial_clarity: There is a plausible path to revenue (e.g., B2B2C via robo-advisors/fintechs wanting better onboarding, or B2C subscription for beginners or financial coaches), but the idea text doesn\u2019t spell out pricing, who pays (end user vs platform vs advisor), or how value is captured relative to existing free onboarding flows. Business model is implied but not clearly articulated, so a 3."
+      },
+      "baseline_score": {
+        "novelty": 3,
+        "feasibility": 4,
+        "specificity": 5,
+        "commercial_clarity": 3,
+        "notes": "Novelty: The mission-based, confidence-tracking, explainable-recommendation framing is a decent twist, but the core concept (guided beginner investing with guardrails, ETFs, and education) overlaps heavily with existing players like Acorns, Betterment, Wealthfront, Public, and various learn-by-doing apps; differentiated but not fundamentally new. Feasibility: Technically and operationally very doable with existing brokerage APIs and known UX patterns; main challenges are regulatory constraints around advice vs. education, plus the usual trust, compliance, and partnership hurdles\u2014hard but clearly achievable. Specificity: Extremely clear ICP (25\u201335, new investors, overwhelmed by current apps), well-defined problem, concrete feature set (missions, micro-lessons, guardrails, simulations, progress tracking), and explicit constraints/non-goals; this is product-spec-level detail. Commercial_clarity: It\u2019s obvious this could monetize via standard models (AUM fee, subscription for premium guidance/sim tools, revenue share with broker, or B2B2C via employers), but the idea description doesn\u2019t specify a primary revenue model, pricing, or go-to-market focus (direct-to-consumer vs. employer benefits), so the path to revenue is plausible but not crisply articulated."
+      },
+      "comparison": {
+        "a_total": 15,
+        "b_total": 15,
+        "winner": "Tie",
+        "difference": 0,
+        "percent_difference": 0.0,
+        "criteria_comparison": {
+          "novelty": {
+            "a": 4,
+            "b": 3
+          },
+          "feasibility": {
+            "a": 3,
+            "b": 4
+          },
+          "specificity": {
+            "a": 5,
+            "b": 5
+          },
+          "commercial_clarity": {
+            "a": 3,
+            "b": 3
+          }
+        }
+      }
+    },
+    {
+      "prompt_id": "remote_work",
+      "inspiration": "Domain: Remote work and team collaboration\nTarget users: Distributed teams (10-50 people) struggling with async communication\nPrimary outcome: Reduce meeting fatigue while maintaining team alignment\n\nContext: Remote teams spend too much time in synchronous meetings that\ncould be async. But async tools create information silos and people\nfeel disconnected.",
+      "timestamp": "2026-03-15T16:49:27.906793",
+      "assembly": {
+        "success": true,
+        "idea": {
+          "title": "Async Collaboration Pilot Orchestrator",
+          "description": "A SaaS platform that designs, runs, and evaluates tightly scoped async-first collaboration pilots for knowledge-work teams. It helps organizations convert specific recurring meetings (like status updates and project reviews) into structured async workflows, while instrumenting the pilot with detailed metrics, guardrails, and rollback rules to ensure meeting reduction does not harm alignment or delivery.",
+          "target_users": [
+            "Engineering and product team leads",
+            "Operations and transformation leaders",
+            "Remote-first and distributed organizations",
+            "HR/People teams focused on ways-of-working",
+            "Consultancies running collaboration-change programs"
+          ],
+          "primary_outcome": "Safely reduce meeting load and time-zone friction while preserving (or improving) alignment, by running data-driven async-first pilots that are low-risk and highly measurable.",
+          "must_haves": [
+            "Pilot design wizard to scope experiments (team selection, workflows, meeting types, duration, tooling constraints)",
+            "Template library for async replacements of common meetings (status updates, project reviews, demos, etc.) across existing tools like Slack, Teams, Notion, Jira",
+            "Metric schema engine to configure goals, sub-goals, metrics, thresholds, guardrails, and decision rules for each pilot",
+            "Automated data collection from calendars and collaboration tools to measure meeting time, async activity, and engagement",
+            "Survey and pulse-check module for fatigue, clarity, visibility, and perceived effort (with role/timezone segmentation)",
+            "Risk and guardrail monitor that flags breaches (e.g., spikes in surprises, rework, or confusion) and recommends rollback or adding sync checkpoints",
+            "Time-zone and role equity analytics to detect uneven burden or off-hours work across regions and roles",
+            "Pilot outcome dashboard summarizing net time saved, alignment impact, adoption, and recommendations for expand/adjust/rollback",
+            "Playbooks for scaling successful configurations to similar teams and workflows"
+          ],
+          "constraints": [
+            "Relies on integrations with calendar and collaboration tools (Slack, Teams, Zoom, Jira, Notion, etc.), which may be limited by API access and enterprise security policies",
+            "Effectiveness depends on teams\u2019 willingness to adopt structured async norms and fill in templates consistently",
+            "Best suited for knowledge-work environments; may be less applicable to highly synchronous or frontline operational contexts",
+            "Cannot fully control or observe informal communication (DMs, ad hoc calls), which may mask some alignment or fatigue effects",
+            "Requires a minimum pilot duration (e.g., ~4 weeks) to generate reliable behavioral and outcome data"
+          ],
+          "non_goals": [
+            "Replacing all synchronous collaboration or eliminating high-stakes live meetings (e.g., incidents, conflict resolution, performance talks)",
+            "Acting as a general-purpose project management or documentation tool",
+            "Serving as an employee surveillance system or detailed time-tracking product",
+            "Making unilateral scheduling decisions; it recommends scopes and guardrails but does not auto-reschedule all meetings",
+            "Providing generic meeting analytics without structured experimentation (the focus is on designed pilots, not passive reporting)"
+          ]
+        },
+        "error": null
+      },
+      "baseline": {
+        "success": true,
+        "idea": {
+          "title": "Pulseboard",
+          "description": "Pulseboard is an async operating layer for remote teams that replaces recurring status meetings with AI-generated alignment feeds. It connects to your existing tools, turns scattered updates and work activity into clear weekly narratives, and gives each person exactly the context they need without filling their calendar.",
+          "target_users": "Distributed product and engineering teams of 10\u201350 people using tools like Slack, Jira/Linear, and Notion, who are experiencing meeting fatigue but can\u2019t risk losing alignment across squads.",
+          "primary_outcome": "Reduce recurring meeting time by 30\u201350% while improving team alignment and sense of connection through structured async updates and role-based alignment feeds.",
+          "must_haves": [
+            "Integrations with core tools (Slack or Teams, project management like Jira/Linear/Asana, docs like Notion/Confluence, and calendar)",
+            "AI-powered aggregation and summarization of updates, conversations, and work items into weekly team and initiative narratives",
+            "Structured async rituals (e.g., prompts for weekly updates and standups) that can replace recurring status meetings",
+            "Role-based alignment views for ICs, managers, and execs highlighting relevant changes, decisions, risks, and blockers",
+            "A lightweight decision log that links decisions back to source conversations, tasks, and documents",
+            "Meeting analytics and recommendations that identify low-value recurring meetings and propose async replacements",
+            "Clear traceability from summaries back to original messages and tasks to maintain trust and allow quick verification"
+          ],
+          "constraints": [
+            "Relies on customers connecting and authorizing access to their existing tools; value is limited if key systems (e.g., chat or project management) are not integrated",
+            "Initial AI summaries and classifications may require tuning and user feedback to reach high accuracy, especially in domain-specific contexts",
+            "Best suited to knowledge work environments with reasonably structured workflows; less effective for highly ad-hoc or non-digital work",
+            "Enterprise-grade security, compliance certifications, and on-prem/VPC deployment options may lag behind initial product-market fit and will be phased in over time"
+          ],
+          "non_goals": [
+            "Replacing core chat or project management tools; Pulseboard is a layer on top, not a new Slack or Jira",
+            "Serving as a full HR or performance management system (e.g., performance reviews, compensation, HRIS functions)",
+            "Becoming a generic note-taking or documentation platform; it will link to and summarize existing docs rather than replace them",
+            "Optimizing in-meeting experience (e.g., video conferencing, live collaboration); the focus is on preventing unnecessary meetings, not enhancing them"
+          ]
+        },
+        "error": null,
+        "tokens_used": 5852
+      },
+      "idea_a": {
+        "title": "Pulseboard",
+        "description": "Pulseboard is an async operating layer for remote teams that replaces recurring status meetings with AI-generated alignment feeds. It connects to your existing tools, turns scattered updates and work activity into clear weekly narratives, and gives each person exactly the context they need without filling their calendar.",
+        "target_users": "Distributed product and engineering teams of 10\u201350 people using tools like Slack, Jira/Linear, and Notion, who are experiencing meeting fatigue but can\u2019t risk losing alignment across squads.",
+        "primary_outcome": "Reduce recurring meeting time by 30\u201350% while improving team alignment and sense of connection through structured async updates and role-based alignment feeds.",
+        "must_haves": [
+          "Integrations with core tools (Slack or Teams, project management like Jira/Linear/Asana, docs like Notion/Confluence, and calendar)",
+          "AI-powered aggregation and summarization of updates, conversations, and work items into weekly team and initiative narratives",
+          "Structured async rituals (e.g., prompts for weekly updates and standups) that can replace recurring status meetings",
+          "Role-based alignment views for ICs, managers, and execs highlighting relevant changes, decisions, risks, and blockers",
+          "A lightweight decision log that links decisions back to source conversations, tasks, and documents",
+          "Meeting analytics and recommendations that identify low-value recurring meetings and propose async replacements",
+          "Clear traceability from summaries back to original messages and tasks to maintain trust and allow quick verification"
+        ],
+        "constraints": [
+          "Relies on customers connecting and authorizing access to their existing tools; value is limited if key systems (e.g., chat or project management) are not integrated",
+          "Initial AI summaries and classifications may require tuning and user feedback to reach high accuracy, especially in domain-specific contexts",
+          "Best suited to knowledge work environments with reasonably structured workflows; less effective for highly ad-hoc or non-digital work",
+          "Enterprise-grade security, compliance certifications, and on-prem/VPC deployment options may lag behind initial product-market fit and will be phased in over time"
+        ],
+        "non_goals": [
+          "Replacing core chat or project management tools; Pulseboard is a layer on top, not a new Slack or Jira",
+          "Serving as a full HR or performance management system (e.g., performance reviews, compensation, HRIS functions)",
+          "Becoming a generic note-taking or documentation platform; it will link to and summarize existing docs rather than replace them",
+          "Optimizing in-meeting experience (e.g., video conferencing, live collaboration); the focus is on preventing unnecessary meetings, not enhancing them"
+        ]
+      },
+      "idea_b": {
+        "title": "Async Collaboration Pilot Orchestrator",
+        "description": "A SaaS platform that designs, runs, and evaluates tightly scoped async-first collaboration pilots for knowledge-work teams. It helps organizations convert specific recurring meetings (like status updates and project reviews) into structured async workflows, while instrumenting the pilot with detailed metrics, guardrails, and rollback rules to ensure meeting reduction does not harm alignment or delivery.",
+        "target_users": [
+          "Engineering and product team leads",
+          "Operations and transformation leaders",
+          "Remote-first and distributed organizations",
+          "HR/People teams focused on ways-of-working",
+          "Consultancies running collaboration-change programs"
+        ],
+        "primary_outcome": "Safely reduce meeting load and time-zone friction while preserving (or improving) alignment, by running data-driven async-first pilots that are low-risk and highly measurable.",
+        "must_haves": [
+          "Pilot design wizard to scope experiments (team selection, workflows, meeting types, duration, tooling constraints)",
+          "Template library for async replacements of common meetings (status updates, project reviews, demos, etc.) across existing tools like Slack, Teams, Notion, Jira",
+          "Metric schema engine to configure goals, sub-goals, metrics, thresholds, guardrails, and decision rules for each pilot",
+          "Automated data collection from calendars and collaboration tools to measure meeting time, async activity, and engagement",
+          "Survey and pulse-check module for fatigue, clarity, visibility, and perceived effort (with role/timezone segmentation)",
+          "Risk and guardrail monitor that flags breaches (e.g., spikes in surprises, rework, or confusion) and recommends rollback or adding sync checkpoints",
+          "Time-zone and role equity analytics to detect uneven burden or off-hours work across regions and roles",
+          "Pilot outcome dashboard summarizing net time saved, alignment impact, adoption, and recommendations for expand/adjust/rollback",
+          "Playbooks for scaling successful configurations to similar teams and workflows"
+        ],
+        "constraints": [
+          "Relies on integrations with calendar and collaboration tools (Slack, Teams, Zoom, Jira, Notion, etc.), which may be limited by API access and enterprise security policies",
+          "Effectiveness depends on teams\u2019 willingness to adopt structured async norms and fill in templates consistently",
+          "Best suited for knowledge-work environments; may be less applicable to highly synchronous or frontline operational contexts",
+          "Cannot fully control or observe informal communication (DMs, ad hoc calls), which may mask some alignment or fatigue effects",
+          "Requires a minimum pilot duration (e.g., ~4 weeks) to generate reliable behavioral and outcome data"
+        ],
+        "non_goals": [
+          "Replacing all synchronous collaboration or eliminating high-stakes live meetings (e.g., incidents, conflict resolution, performance talks)",
+          "Acting as a general-purpose project management or documentation tool",
+          "Serving as an employee surveillance system or detailed time-tracking product",
+          "Making unilateral scheduling decisions; it recommends scopes and guardrails but does not auto-reschedule all meetings",
+          "Providing generic meeting analytics without structured experimentation (the focus is on designed pilots, not passive reporting)"
+        ]
+      },
+      "mapping": {
+        "A": "baseline",
+        "B": "assembly"
+      },
+      "assembly_score": {
+        "novelty": 4,
+        "feasibility": 4,
+        "specificity": 5,
+        "commercial_clarity": 3,
+        "notes": "Novelty: The async/meeting-reduction space is crowded, but focusing specifically on orchestrated, metrics-driven pilots with guardrails, rollback rules, and playbooks is a differentiated, non-obvious angle vs generic meeting analytics or async tools. Not a 5 because the underlying components (templates, surveys, analytics) are familiar; the novelty is in the orchestration and experimentation framing.\nFeasibility: All core capabilities (integrations with calendars/collab tools, survey modules, analytics dashboards, template libraries, rule-based alerts) are well within current SaaS norms. The main risk is organizational behavior change and integration/security hurdles, not technical impossibility, so a 4 fits better than 5. \nSpecificity: Very high. Clear ICP (remote/distributed knowledge teams, transformation leaders, consultancies), concrete problem (reduce meetings without harming alignment), and detailed feature list (pilot wizard, metric schema engine, guardrail monitor, timezone equity analytics, outcome dashboards, playbooks). Constraints and non-goals are explicitly articulated.\nCommercial_clarity: It\u2019s obvious this could be sold B2B SaaS to orgs trying to improve remote collaboration, but the idea doesn\u2019t specify pricing model (per seat vs per team vs per pilot), buyer persona economics, or how it competes with/augments existing tools and consulting. There is a reasonable implied model (SaaS for transformation/HR/ops leaders, possibly with services), but no explicit monetization strategy, so a 3 is appropriate."
+      },
+      "baseline_score": {
+        "novelty": 3,
+        "feasibility": 4,
+        "specificity": 5,
+        "commercial_clarity": 3,
+        "notes": "Novelty: The concept of an async layer that summarizes activity across Slack/Jira/Notion into role-based feeds and replaces status meetings is differentiated but not highly original; several tools (status/standup tools, async hubs, AI workfeeds) are moving in this direction, though the explicit focus on narrative weekly alignment and decision logs is a decent twist. Feasibility: Technically very buildable with current LLMs and existing APIs; main challenges are integration depth, summarization quality, and handling edge cases in complex orgs, but nothing is fundamentally blocking. Specificity: Extremely clear ICP (10\u201350 person product/engineering teams), problem (meeting fatigue vs alignment), solution (integrations, AI narratives, role-based views, decision log, meeting analytics) and constraints/non-goals; this is well-scoped. Commercial_clarity: It\u2019s obvious this could be sold as B2B SaaS (per-seat or per-team pricing, likely mid-market), but the description doesn\u2019t spell out pricing strategy, buyer persona (e.g., head of eng/product/ops), or how ROI will be quantified and proven, so the business model is plausible but not fully articulated."
+      },
+      "comparison": {
+        "a_total": 16,
+        "b_total": 15,
+        "winner": "A",
+        "difference": 1,
+        "percent_difference": 6.666666666666667,
+        "criteria_comparison": {
+          "novelty": {
+            "a": 4,
+            "b": 3
+          },
+          "feasibility": {
+            "a": 4,
+            "b": 4
+          },
+          "specificity": {
+            "a": 5,
+            "b": 5
+          },
+          "commercial_clarity": {
+            "a": 3,
+            "b": 3
+          }
+        }
+      }
+    },
+    {
+      "prompt_id": "health",
+      "inspiration": "Domain: Health and wellness\nTarget users: Busy parents (30-45) trying to maintain healthy habits\nPrimary outcome: Sustainable health improvements without major lifestyle changes\n\nContext: Parents know what healthy habits look like but struggle to\nmaintain them with limited time and competing priorities.",
+      "timestamp": "2026-03-15T16:56:03.559906",
+      "assembly": {
+        "success": true,
+        "idea": {
+          "title": "Parent-Centric Habit Feasibility & Routine Designer",
+          "description": "A digital coach that analyzes a busy parent\u2019s real weekly schedule, mental load, and stress patterns to design ultra-realistic health routines. It maps time fragmentation, interference from work/childcare, and decision fatigue, then proposes a tiny set of high-ROI, low-friction habits that actually fit into micro-windows and stable anchors in their week.",
+          "target_users": [
+            "Working parents with young or school-age children",
+            "Caregivers juggling multiple roles (worker, parent, home manager)",
+            "Health/wellness coaches serving time-poor parents"
+          ],
+          "primary_outcome": "Deliver a sustainable, low-effort health routine that parents can consistently follow within real-world time, energy, and cognitive constraints, improving health without requiring major life reorganization.",
+          "must_haves": [
+            "Temporal Fragmentation Analyzer to build a 7\u00d724 map of the user\u2019s week, labeling blocks as rigid/semi-flexible/flexible and identifying crunch zones and micro-windows",
+            "Load Interference Matrix Builder to map which work, childcare, household, and social loads systematically displace specific intended habits",
+            "Stress Peak & Decision Fatigue Mapper to model daily/weekly stress curves and identify time bands where effortful habits are unlikely to succeed",
+            "Habit Return-On-Effort Filter to score candidate habits on health impact, time cost, perceived effort, adherence, and compute health_gain_per_minute and health_gain_per_effort_unit",
+            "Routine Friction Point Pruner to detect high-friction steps (by failure rate and constraint tags) and automatically remove, shrink, or relocate them",
+            "Micro-Habit Anchor Consolidator to find a small set of stable daily anchors and attach \u22642 context-fitting micro-habits to each",
+            "Personalized routine generator that outputs 3\u20135 high-ROI habits within a strict weekly time/effort cap (e.g., 90\u2013150 minutes), including suggested timing windows and formats (embedded vs standalone)",
+            "Simple logging and feedback loop to track adherence, update interference and stress models, and iteratively refine the routine",
+            "Clear visualizations of time fragmentation, role density, and interference hotspots to make trade-offs and constraints understandable to users",
+            "Privacy-preserving data handling for schedule, family, and health information"
+          ],
+          "constraints": [
+            "Relies on accurate or at least directionally correct self-reported schedules, stress levels, and habit logs; poor input quality will reduce recommendation quality",
+            "Cannot create more time or remove external obligations; it can only reallocate within existing constraints and suggest smaller or embedded habits",
+            "Effectiveness depends on user willingness to log or sync data (calendar, basic check-ins) for an initial calibration period",
+            "Models must remain interpretable and not overly complex so parents can understand and trust the suggested trade-offs",
+            "Needs to adapt to high-variability weeks (illness, travel, custody changes) without overfitting to short-term anomalies",
+            "Must avoid prescribing medical interventions or replacing professional medical advice; focuses on behavior and routine design only"
+          ],
+          "non_goals": [
+            "It will not function as a generic fitness or diet app with large libraries of workouts or meal plans unrelated to the user\u2019s constraints",
+            "It will not attempt to optimize every possible health domain simultaneously; instead it focuses on a small, high-ROI habit portfolio",
+            "It will not provide clinical diagnosis, treatment plans, or manage medications",
+            "It will not enforce strict, rigid schedules that ignore parenting realities; recommendations are designed to be robust to variability",
+            "It will not act as a full family scheduler or childcare management platform beyond what is needed to understand constraints",
+            "It will not rely on constant, high-frequency manual tracking that adds significant cognitive load to already overloaded parents"
+          ]
+        },
+        "error": null
+      },
+      "baseline": {
+        "success": true,
+        "idea": {
+          "title": "MicroNest",
+          "description": "MicroNest is a health companion app built for busy parents, turning scattered minutes into meaningful wellness gains. It uses your real schedule and simple data to suggest tiny, family-aware actions in movement, nutrition, sleep, and stress that fit into your chaotic days without major lifestyle changes.",
+          "target_users": "Parents aged 30\u201345 with one or more children under 12, juggling full-time work and family responsibilities, who understand basic healthy habits but struggle to maintain them due to time constraints, mental load, and unpredictable schedules.",
+          "primary_outcome": "Sustainable, baseline health improvements for parents\u2014more energy, better mood, and healthier routines\u2014achieved through consistent micro-habits that fit seamlessly into everyday family life.",
+          "must_haves": [
+            "Context-aware micro-action recommendations (2\u201315 minutes) across movement, nutrition, sleep, and stress based on calendar, time of day, and user preferences",
+            "Calendar integration (e.g., Google, Apple, Outlook) to identify realistic windows for micro-habits in between work and family commitments",
+            "Family-aware setup and suggestions that consider kids\u2019 ages, household routines, and shared meals",
+            "A simple daily interface highlighting 1\u20133 prioritized actions with one-tap completion and minimal manual logging",
+            "Resilience features including an explicit 'gentle mode' and guided re-entry plans after disruptions such as illness, travel, or busy seasons",
+            "A curated library of quick, healthy-enough family meal ideas with auto-generated shopping lists tailored to time and dietary constraints",
+            "Optional integration with basic wearable or phone data (steps, sleep) to adjust intensity and focus areas",
+            "Lightweight progress visualization that emphasizes cumulative micro-wins over perfection and supports long-term motivation"
+          ],
+          "constraints": [
+            "Initial personalization will rely primarily on rule-based logic and simple heuristics before more advanced machine learning is introduced",
+            "The app will not function as a full telehealth or medical service and will not diagnose or treat medical conditions",
+            "Nutrition and activity recommendations must remain general and may not fully account for complex medical or dietary needs without clinician oversight",
+            "Effectiveness depends on users granting access to calendars and enabling notifications, which some may decline due to privacy or notification fatigue",
+            "International expansion will require localization of content, recipes, and cultural norms around family routines, which may roll out gradually"
+          ],
+          "non_goals": [
+            "Providing intensive weight-loss programs, strict diet plans, or body transformation regimens",
+            "Replacing professional medical advice, therapy, or clinical interventions for serious health conditions",
+            "Becoming a comprehensive recipe platform or full-featured meal-planning service with thousands of recipes",
+            "Serving as a high-performance athletic training app or optimizing for competitive sports goals",
+            "Building a broad social network or community feed; social features will remain minimal and focused on partner/family coordination"
+          ]
+        },
+        "error": null,
+        "tokens_used": 5257
+      },
+      "idea_a": {
+        "title": "MicroNest",
+        "description": "MicroNest is a health companion app built for busy parents, turning scattered minutes into meaningful wellness gains. It uses your real schedule and simple data to suggest tiny, family-aware actions in movement, nutrition, sleep, and stress that fit into your chaotic days without major lifestyle changes.",
+        "target_users": "Parents aged 30\u201345 with one or more children under 12, juggling full-time work and family responsibilities, who understand basic healthy habits but struggle to maintain them due to time constraints, mental load, and unpredictable schedules.",
+        "primary_outcome": "Sustainable, baseline health improvements for parents\u2014more energy, better mood, and healthier routines\u2014achieved through consistent micro-habits that fit seamlessly into everyday family life.",
+        "must_haves": [
+          "Context-aware micro-action recommendations (2\u201315 minutes) across movement, nutrition, sleep, and stress based on calendar, time of day, and user preferences",
+          "Calendar integration (e.g., Google, Apple, Outlook) to identify realistic windows for micro-habits in between work and family commitments",
+          "Family-aware setup and suggestions that consider kids\u2019 ages, household routines, and shared meals",
+          "A simple daily interface highlighting 1\u20133 prioritized actions with one-tap completion and minimal manual logging",
+          "Resilience features including an explicit 'gentle mode' and guided re-entry plans after disruptions such as illness, travel, or busy seasons",
+          "A curated library of quick, healthy-enough family meal ideas with auto-generated shopping lists tailored to time and dietary constraints",
+          "Optional integration with basic wearable or phone data (steps, sleep) to adjust intensity and focus areas",
+          "Lightweight progress visualization that emphasizes cumulative micro-wins over perfection and supports long-term motivation"
+        ],
+        "constraints": [
+          "Initial personalization will rely primarily on rule-based logic and simple heuristics before more advanced machine learning is introduced",
+          "The app will not function as a full telehealth or medical service and will not diagnose or treat medical conditions",
+          "Nutrition and activity recommendations must remain general and may not fully account for complex medical or dietary needs without clinician oversight",
+          "Effectiveness depends on users granting access to calendars and enabling notifications, which some may decline due to privacy or notification fatigue",
+          "International expansion will require localization of content, recipes, and cultural norms around family routines, which may roll out gradually"
+        ],
+        "non_goals": [
+          "Providing intensive weight-loss programs, strict diet plans, or body transformation regimens",
+          "Replacing professional medical advice, therapy, or clinical interventions for serious health conditions",
+          "Becoming a comprehensive recipe platform or full-featured meal-planning service with thousands of recipes",
+          "Serving as a high-performance athletic training app or optimizing for competitive sports goals",
+          "Building a broad social network or community feed; social features will remain minimal and focused on partner/family coordination"
+        ]
+      },
+      "idea_b": {
+        "title": "Parent-Centric Habit Feasibility & Routine Designer",
+        "description": "A digital coach that analyzes a busy parent\u2019s real weekly schedule, mental load, and stress patterns to design ultra-realistic health routines. It maps time fragmentation, interference from work/childcare, and decision fatigue, then proposes a tiny set of high-ROI, low-friction habits that actually fit into micro-windows and stable anchors in their week.",
+        "target_users": [
+          "Working parents with young or school-age children",
+          "Caregivers juggling multiple roles (worker, parent, home manager)",
+          "Health/wellness coaches serving time-poor parents"
+        ],
+        "primary_outcome": "Deliver a sustainable, low-effort health routine that parents can consistently follow within real-world time, energy, and cognitive constraints, improving health without requiring major life reorganization.",
+        "must_haves": [
+          "Temporal Fragmentation Analyzer to build a 7\u00d724 map of the user\u2019s week, labeling blocks as rigid/semi-flexible/flexible and identifying crunch zones and micro-windows",
+          "Load Interference Matrix Builder to map which work, childcare, household, and social loads systematically displace specific intended habits",
+          "Stress Peak & Decision Fatigue Mapper to model daily/weekly stress curves and identify time bands where effortful habits are unlikely to succeed",
+          "Habit Return-On-Effort Filter to score candidate habits on health impact, time cost, perceived effort, adherence, and compute health_gain_per_minute and health_gain_per_effort_unit",
+          "Routine Friction Point Pruner to detect high-friction steps (by failure rate and constraint tags) and automatically remove, shrink, or relocate them",
+          "Micro-Habit Anchor Consolidator to find a small set of stable daily anchors and attach \u22642 context-fitting micro-habits to each",
+          "Personalized routine generator that outputs 3\u20135 high-ROI habits within a strict weekly time/effort cap (e.g., 90\u2013150 minutes), including suggested timing windows and formats (embedded vs standalone)",
+          "Simple logging and feedback loop to track adherence, update interference and stress models, and iteratively refine the routine",
+          "Clear visualizations of time fragmentation, role density, and interference hotspots to make trade-offs and constraints understandable to users",
+          "Privacy-preserving data handling for schedule, family, and health information"
+        ],
+        "constraints": [
+          "Relies on accurate or at least directionally correct self-reported schedules, stress levels, and habit logs; poor input quality will reduce recommendation quality",
+          "Cannot create more time or remove external obligations; it can only reallocate within existing constraints and suggest smaller or embedded habits",
+          "Effectiveness depends on user willingness to log or sync data (calendar, basic check-ins) for an initial calibration period",
+          "Models must remain interpretable and not overly complex so parents can understand and trust the suggested trade-offs",
+          "Needs to adapt to high-variability weeks (illness, travel, custody changes) without overfitting to short-term anomalies",
+          "Must avoid prescribing medical interventions or replacing professional medical advice; focuses on behavior and routine design only"
+        ],
+        "non_goals": [
+          "It will not function as a generic fitness or diet app with large libraries of workouts or meal plans unrelated to the user\u2019s constraints",
+          "It will not attempt to optimize every possible health domain simultaneously; instead it focuses on a small, high-ROI habit portfolio",
+          "It will not provide clinical diagnosis, treatment plans, or manage medications",
+          "It will not enforce strict, rigid schedules that ignore parenting realities; recommendations are designed to be robust to variability",
+          "It will not act as a full family scheduler or childcare management platform beyond what is needed to understand constraints",
+          "It will not rely on constant, high-frequency manual tracking that adds significant cognitive load to already overloaded parents"
+        ]
+      },
+      "mapping": {
+        "A": "baseline",
+        "B": "assembly"
+      },
+      "assembly_score": {
+        "novelty": 4,
+        "feasibility": 4,
+        "specificity": 5,
+        "commercial_clarity": 3,
+        "notes": "Novelty: The focus on time fragmentation, interference mapping, and health-ROI scoring for micro-habits tailored to parents\u2019 real schedules is a non-obvious, differentiated angle vs generic habit/fitness apps, though it builds on existing coaching and habit-design concepts. Feasibility: All components (calendar integration, simple ML/heuristics for stress/load mapping, habit scoring, visualizations) are buildable with current tech; main risks are data quality, behavior change efficacy, and UX complexity, not technical impossibility. Specificity: ICP, problem, constraints, and feature set are extremely concrete (e.g., 7\u00d724 map, health_gain_per_minute, 3\u20135 habits within a weekly cap), giving a clear picture of what\u2019s being built and how it works. Commercial clarity: It\u2019s implicitly a B2C or B2B2C digital coach, but pricing, acquisition channel, and who pays (parents directly vs employers/insurers vs coaches as a pro tool) are not specified; monetization is plausible (subscription, coach tooling) but not clearly articulated or validated in the description."
+      },
+      "baseline_score": {
+        "novelty": 3,
+        "feasibility": 4,
+        "specificity": 5,
+        "commercial_clarity": 3,
+        "notes": "Novelty: The micro-habit + calendar-aware wellness companion for parents is a differentiated positioning but built from well-known components (habit apps, calendar integration, family-aware content), so it\u2019s moderately novel rather than groundbreaking. Feasibility: All core features (rule-based personalization, calendar integration, simple heuristics, basic wearables integration, micro-content library) are clearly buildable with current tech; main risks are content quality, behavior change efficacy, and engagement, not technical impossibility. Specificity: ICP, context, constraints, non-goals, and must-have features are very clearly defined, including age of kids, use cases (2\u201315 minute actions, gentle mode, re-entry after disruptions), and product boundaries. Commercial clarity: It\u2019s obvious this could be sold as a subscription wellness app for parents, but the idea doesn\u2019t specify pricing, distribution channels, or evidence of willingness to pay vs. free alternatives, so the business model is plausible but not yet sharply articulated."
+      },
+      "comparison": {
+        "a_total": 16,
+        "b_total": 15,
+        "winner": "A",
+        "difference": 1,
+        "percent_difference": 6.666666666666667,
+        "criteria_comparison": {
+          "novelty": {
+            "a": 4,
+            "b": 3
+          },
+          "feasibility": {
+            "a": 4,
+            "b": 4
+          },
+          "specificity": {
+            "a": 5,
+            "b": 5
+          },
+          "commercial_clarity": {
+            "a": 3,
+            "b": 3
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "both_successful": 3,
+    "assembly_only": 0,
+    "baseline_only": 0,
+    "both_failed": 0,
+    "assembly_success_rate": 100.0,
+    "baseline_success_rate": 100.0
+  },
+  "aggregated": {
+    "total_comparisons": 3,
+    "a_wins": 2,
+    "b_wins": 0,
+    "ties": 1,
+    "a_win_rate": 66.66666666666666,
+    "a_avg_score": 15.666666666666666,
+    "b_avg_score": 15.0,
+    "avg_score_difference": 0.6666666666666666,
+    "percent_improvement": 4.444444444444445
+  },
+  "gate": {
+    "win_rate_target": 70,
+    "win_rate_actual": 0,
+    "win_rate_passed": false,
+    "improvement_target": 20,
+    "improvement_actual": 0,
+    "improvement_passed": false,
+    "gate_passed": false,
+    "recommendation": "REVISIT persona design or facilitator logic"
+  }
+}

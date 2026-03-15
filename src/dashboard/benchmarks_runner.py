@@ -29,14 +29,21 @@ BENCHMARKS: List[Dict[str, Any]] = [
         "name": "End-to-End Reliability",
         "category": "Phase 1 — System Validity",
         "description": (
-            "Runs the same inspiration prompt N times and verifies that every run "
-            "completes without error and returns a correctly structured idea output "
-            "(title, description, target_users, must_haves, …)."
+            "Assembly chains together many LLM calls, async persona updates, and "
+            "structured JSON extraction across multiple phases. Before any quality "
+            "claim can be trusted, we need to know: does the system reliably produce "
+            "a complete, valid idea output every time it runs? Without this guarantee "
+            "every downstream benchmark is meaningless — you can't measure idea quality "
+            "if the pipeline randomly fails or returns malformed output."
         ),
         "how_it_runs": (
-            "Calls multiple_llm_idea_generator() N times with a fixed personal-finance "
-            "prompt. Each result is validated against the expected idea schema. "
-            "Gate: 100 % completion rate and ≥ 90 % valid output structure."
+            "Runs the full Assembly pipeline N times against the same fixed inspiration "
+            "prompt (personal finance tools for young professionals). Each output is "
+            "validated against the required idea schema — title, description, "
+            "target_users, must_haves, constraints, non_goals. Failures are classified "
+            "as either completion failures (pipeline crashed or timed out) or structure "
+            "failures (output produced but fields are missing or malformed). "
+            "Gate: 100 % completion rate and ≥ 90 % structurally valid outputs."
         ),
         "params": {
             "num_runs": {"type": "int", "default": 3, "label": "Number of runs", "min": 1, "max": 10},
@@ -55,15 +62,23 @@ BENCHMARKS: List[Dict[str, Any]] = [
         "name": "Persona Role Adherence",
         "category": "Phase 1 — System Validity",
         "description": (
-            "Generates one fresh conversation run then measures what fraction of "
-            "persona turns stay fully in-character — i.e. the response matches the "
-            "persona's assigned reasoning type and avoids out-of-scope content."
+            "Assembly's core value comes from distinct perspectives clashing — a market "
+            "researcher challenges assumptions differently than a risk analyst. If "
+            "personas drift out of character and start speaking generically, the "
+            "multi-persona debate collapses to a single averaged voice and loses its "
+            "advantage over a plain GPT call. This test measures whether each persona "
+            "consistently reasons from their assigned viewpoint throughout the full "
+            "conversation, not just their opening turn."
         ),
         "how_it_runs": (
-            "Runs the generator once to produce conversation logs, then heuristically "
-            "scores every exchange 1–5: a turn is 'in-role' when positive "
-            "role-indicator words outweigh out-of-role indicators. "
-            "Gate: ≥ 90 % in-role turns."
+            "Runs one full Assembly session to produce conversation logs, then scores "
+            "every persona turn for role adherence. A turn is 'in-role' when it "
+            "contains reasoning patterns characteristic of the persona's archetype "
+            "(e.g. a risk analyst raises constraints and failure modes; a market "
+            "researcher references user segments and willingness to pay) and avoids "
+            "content outside their defined scope. Each turn is scored 1–5; a score "
+            "of ≥ 3 counts as in-role. "
+            "Gate: ≥ 90 % of all turns scored in-role."
         ),
         "params": {
             "mode": {
@@ -81,14 +96,21 @@ BENCHMARKS: List[Dict[str, Any]] = [
         "name": "Assembly vs Single LLM (2-way)",
         "category": "Phase 2 — Quality vs Single LLM",
         "description": (
-            "For each test prompt, generates one idea via Assembly and one via a "
-            "direct single-shot GPT call, then has an LLM judge score both ideas on "
-            "novelty, feasibility, specificity and commercial clarity (1–5 each)."
+            "The central hypothesis behind Assembly: a structured multi-persona debate "
+            "produces better startup ideas than asking a single LLM directly — even "
+            "when that single prompt is carefully crafted to instruct the model to "
+            "reason as a team of experts. This test puts that claim to the test head-"
+            "to-head, using an independent LLM as a blind judge to eliminate bias."
         ),
         "how_it_runs": (
-            "Runs N benchmark prompts (finance, remote_work, health, …) through "
-            "Assembly and a single GPT call in parallel. Ideas are anonymised (A/B) "
-            "then scored by the same model acting as judge. "
+            "Runs N real-world inspiration prompts (spanning finance, health, remote "
+            "work, and more) through both approaches independently. Ideas are "
+            "anonymised (A/B, randomly assigned) so the judge cannot tell which "
+            "system produced them. The judge scores each idea on four criteria: "
+            "novelty (is this idea surprising and non-obvious?), feasibility (could "
+            "this realistically be built?), specificity (are the target user and "
+            "solution concrete?), and commercial clarity (is the monetisation path "
+            "clear?), each 1–5. "
             "Gate: Assembly wins ≥ 70 % of comparisons and scores ≥ 20 % higher on average."
         ),
         "params": {
@@ -108,15 +130,22 @@ BENCHMARKS: List[Dict[str, Any]] = [
         "name": "Assembly vs Single LLM vs Iterative (3-way)",
         "category": "Phase 2 — Quality vs Single LLM",
         "description": (
-            "Extends the 2-way benchmark with a third baseline: a 3-round iterative "
-            "LLM refinement loop. All three ideas are anonymised (A/B/C) and scored "
-            "by an LLM judge, producing a ranked comparison."
+            "A sceptic might argue: why pay for a multi-agent system when you can "
+            "just ask the same LLM to critique and improve its own output? Iterative "
+            "self-refinement is a real and cheap alternative. This test adds that as "
+            "a third baseline alongside the single-shot approach, so all three "
+            "strategies are ranked blind by the same judge on the same prompts."
         ),
         "how_it_runs": (
-            "Runs N prompts through Assembly, a single-shot GPT call, and a "
-            "3-round iterative GPT refinement. All ideas are anonymised then "
-            "scored on the same 4-criterion rubric (novelty, feasibility, "
-            "specificity, commercial clarity)."
+            "Runs N prompts through three approaches: (1) Single-shot — one prompt "
+            "instructing GPT to reason as a team of experts and produce a structured "
+            "idea. (2) Iterative — 4 sequential turns with the same model: initial "
+            "proposal → self-critique identifying 3 weaknesses → address each "
+            "critique with concrete refinements → finalise to JSON. (3) Assembly — "
+            "multi-persona structured debate across phases with a mediator persona. "
+            "All three outputs are anonymised (A/B/C, randomly assigned) then scored "
+            "by an LLM judge on the same 4-criterion rubric: novelty, feasibility, "
+            "specificity, and commercial clarity (each 1–5)."
         ),
         "params": {
             "num_prompts": {"type": "int", "default": 3, "label": "Number of prompts", "min": 1, "max": 10},
@@ -135,17 +164,28 @@ BENCHMARKS: List[Dict[str, Any]] = [
         "name": "Full History vs Structured Memory",
         "category": "Memory System",
         "description": (
-            "Runs Assembly twice on the same domain — once with full_history memory "
-            "(dumps the entire conversation each turn) and once with structured memory "
-            "(shared consensus + personal belief state + last-3-turn verbatim) — then "
-            "compares idea quality and conversation quality."
+            "As Assembly conversations grow longer, feeding the full transcript to "
+            "every persona on every turn becomes expensive and eventually hits model "
+            "context limits. Structured memory is the proposed solution: instead of "
+            "the full history, each persona receives a shared consensus summary "
+            "(what the group has agreed on and ruled out), their own belief-state "
+            "evolution (how their position has shifted), and only the last 3 exchanges "
+            "verbatim. This benchmark tests a critical question: does that compression "
+            "hurt idea quality, or does the tighter, more curated context actually "
+            "improve it by reducing noise?"
         ),
         "how_it_runs": (
-            "For each selected domain, runs two Assembly sessions back-to-back with "
-            "different memory modes. Scores both output ideas with LLM-as-judge "
-            "(novelty/feasibility/specificity/commercial clarity). Also measures "
-            "conversation quality: repetition count, dead-end recovery, and concept "
-            "density (unique concepts per turn)."
+            "Runs Assembly twice on the same inspiration domain — once with "
+            "full_history (entire conversation transcript injected into every persona "
+            "prompt each turn) and once with structured memory (shared consensus + "
+            "personal belief state + 3-turn verbatim window). Both output ideas are "
+            "scored by an LLM judge on novelty, feasibility, specificity, and "
+            "commercial clarity (each 1–5). Conversation quality is measured "
+            "independently across three signals: repetition count (how often the "
+            "same idea surfaces without development), dead-end recovery (how often "
+            "the conversation escapes stuck or circular patterns), and concept density "
+            "(unique concepts introduced per turn — higher means the conversation is "
+            "covering more ground per token spent)."
         ),
         "params": {
             "domains": {

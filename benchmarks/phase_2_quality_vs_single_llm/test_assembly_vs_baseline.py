@@ -15,8 +15,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.idea_generation.generator import multiple_llm_idea_generator
-from baseline_single_llm import generate_idea_single_llm
-from iterative_single_llm import generate_idea_iterative
+from benchmarks.phase_2_quality_vs_single_llm.baseline_single_llm import generate_idea_single_llm
+from benchmarks.phase_2_quality_vs_single_llm.iterative_single_llm import generate_idea_iterative
 
 
 def run_single_comparison(
