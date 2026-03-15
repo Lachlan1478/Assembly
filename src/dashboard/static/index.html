@@ -1567,20 +1567,30 @@ function _formatResults(bmId, results) {
   wrap.className = 'flex flex-wrap gap-2 mt-1';
 
   if (bmId === 'phase1_reliability') {
-    const total = results.total_runs || 0;
-    const success = results.successful_runs || 0;
-    const pct = total > 0 ? Math.round(success / total * 100) : 0;
+    // summary.total_runs, summary.successful, summary.success_rate_percent, summary.structure_valid_percent
+    const s = results.summary || {};
+    const total = s.total_runs || results.total_runs || 0;
+    const success = s.successful !== undefined ? s.successful : (results.successful_runs || 0);
+    const pct = s.success_rate_percent !== undefined ? Math.round(s.success_rate_percent) : (total > 0 ? Math.round(success / total * 100) : 0);
+    const structPct = s.structure_valid_percent !== undefined ? Math.round(s.structure_valid_percent) : results.structure_valid_pct;
+    const gate = s.gate_passed !== undefined ? s.gate_passed : (pct >= 100);
     wrap.appendChild(_metric('Runs', total));
     wrap.appendChild(_metric('Success', success + '/' + total));
-    wrap.appendChild(_gateChip(pct >= 100, 'completion ' + pct + '%'));
-    if (results.structure_valid_pct !== undefined) {
-      wrap.appendChild(_gateChip(results.structure_valid_pct >= 90, 'structure ' + Math.round(results.structure_valid_pct) + '%'));
+    wrap.appendChild(_gateChip(gate, 'completion ' + pct + '%'));
+    if (structPct !== undefined) {
+      wrap.appendChild(_gateChip(structPct >= 90, 'structure ' + structPct + '%'));
     }
   } else if (bmId === 'phase1_role_adherence') {
-    const inRole = results.in_role_pct !== undefined ? results.in_role_pct : results.in_role_percentage;
-    if (inRole !== undefined) wrap.appendChild(_gateChip(inRole >= 90, 'in-role ' + Math.round(inRole) + '%'));
-    const total = results.total_turns_evaluated !== undefined ? results.total_turns_evaluated : results.total_turns;
-    if (total !== undefined) wrap.appendChild(_metric('Turns', total));
+    // summary.adherence_rate_percent, summary.total_exchanges, summary.gate_passed
+    const s = results.summary || {};
+    const pct = s.adherence_rate_percent !== undefined ? s.adherence_rate_percent
+      : (results.in_role_pct !== undefined ? results.in_role_pct : results.in_role_percentage);
+    const total = s.total_exchanges !== undefined ? s.total_exchanges
+      : (results.total_turns_evaluated !== undefined ? results.total_turns_evaluated : results.total_turns);
+    const gate = s.gate_passed !== undefined ? s.gate_passed : (pct !== undefined && pct >= 90);
+    if (pct !== undefined) wrap.appendChild(_gateChip(gate, 'in-role ' + Math.round(pct) + '%'));
+    if (total !== undefined) wrap.appendChild(_metric('Exchanges', total));
+    if (s.average_score !== undefined) wrap.appendChild(_metric('Avg score', s.average_score.toFixed(2)));
   } else if (bmId === 'phase2_two_way' || bmId === 'phase2_three_way') {
     const agg = results.aggregated;
     if (agg) {
@@ -1594,16 +1604,20 @@ function _formatResults(bmId, results) {
       if (agg.ranking && agg.ranking.length) wrap.appendChild(_metric('Ranking', agg.ranking.join(' > ')));
     }
   } else if (bmId === 'memory_benchmark') {
-    const summ = results.summary || results.aggregated;
-    if (summ) {
-      if (summ.structured_wins !== undefined && summ.total) {
-        const pct = Math.round(summ.structured_wins / summ.total * 100);
-        wrap.appendChild(_gateChip(pct >= 60, 'structured wins ' + pct + '%'));
-      }
-      if (summ.avg_quality_delta !== undefined) {
-        wrap.appendChild(_metric('Avg Δ quality', (summ.avg_quality_delta > 0 ? '+' : '') + summ.avg_quality_delta.toFixed(2)));
-      }
+    // aggregated.by_approach: {full_history: {wins, win_rate, avg_score}, structured: {...}}
+    const agg = results.aggregated || {};
+    const byApproach = agg.by_approach || {};
+    const structured = byApproach.structured || {};
+    const fullHistory = byApproach.full_history || {};
+    if (structured.win_rate !== undefined) {
+      wrap.appendChild(_gateChip(structured.win_rate >= 60, 'structured win rate ' + Math.round(structured.win_rate) + '%'));
     }
+    if (structured.avg_score !== undefined && fullHistory.avg_score !== undefined) {
+      const delta = structured.avg_score - fullHistory.avg_score;
+      wrap.appendChild(_metric('Structured avg score', structured.avg_score.toFixed(1)));
+      wrap.appendChild(_metric('Full history avg score', fullHistory.avg_score.toFixed(1)));
+    }
+    if (agg.total_comparisons !== undefined) wrap.appendChild(_metric('Comparisons', agg.total_comparisons));
   }
   return wrap.children.length ? wrap : null;
 }
@@ -1702,9 +1716,8 @@ async function startBenchmarkRun(bmId, bmName) {
       logStatus.textContent = '✓ Done';
       logStatus.className = 'px-3 py-2 border-t border-slate-700 text-xs text-green-400';
       if (runBtn) runBtn.disabled = false;
-      // Invalidate cache and refresh this card's results
-      _benchmarksData = null;
-      refreshBenchmarkResults(bmId);
+      // Refresh this card's results, then invalidate cache so next loadBenchmarks is fresh
+      refreshBenchmarkResults(bmId).then(() => { _benchmarksData = null; });
     } else if (ev.type === 'benchmark_error') {
       const err = document.createElement('div');
       err.className = 'text-red-400';

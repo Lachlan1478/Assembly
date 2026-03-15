@@ -150,7 +150,10 @@ class ConversationMonitor:
         phase_id: str,
         summary: str,
         total_turns: int,
-        total_time: float
+        total_time: float,
+        ideas_in_play=None,
+        ideas_rejected_count: int = 0,
+        nuance_count: int = 0,
     ) -> None:
         """
         Called when a phase completes.
