@@ -187,10 +187,10 @@
       <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Execution Mode</label>
       <select id="p-mode"
         class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500">
-        <option value="fast">fast — quick test (no mediator)</option>
-        <option value="medium" selected>medium — balanced (mediator + convergence)</option>
-        <option value="standard">standard — comprehensive</option>
-        <option value="deep">deep — maximum depth</option>
+        <option value="fast">fast — quick test (~1–2 min)</option>
+        <option value="medium" selected>medium — balanced (~3–5 min)</option>
+        <option value="standard">standard — comprehensive (~30–60 min)</option>
+        <option value="deep">deep — maximum depth (~60–90 min)</option>
       </select>
       <p class="text-slate-500 text-xs leading-tight mt-0.5">Controls depth, speed, and which features are enabled</p>
     </div>
@@ -221,10 +221,9 @@
         <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Memory</label>
         <select id="p-memory"
           class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs focus:outline-none focus:border-indigo-500">
-          <option value="full_history">full_history</option>
           <option value="structured">structured</option>
         </select>
-        <p class="text-slate-500 text-xs leading-tight mt-0.5">full_history dumps everything; structured uses a maintained summary</p>
+        <p class="text-slate-500 text-xs leading-tight mt-0.5">Maintains a shared summary + personal belief state per turn</p>
       </div>
     </div>
 
@@ -459,7 +458,7 @@
           <div class="flow-box flex-1 min-w-[100px] text-left"><div class="text-teal-300 font-bold mb-1">standard</div><div class="text-slate-400">8 turns</div><div class="text-slate-400">4 personas</div><div class="text-green-500">mediator ✓</div><div class="text-slate-500">30–60 min</div></div>
           <div class="flow-box flex-1 min-w-[100px] text-left"><div class="text-amber-300 font-bold mb-1">deep</div><div class="text-slate-400">15 turns</div><div class="text-slate-400">5 personas</div><div class="text-green-500">mediator ✓</div><div class="text-slate-500">60–90 min</div></div>
         </div>
-        <p class="text-xs text-slate-400 leading-relaxed">The <span class="text-slate-300 font-bold">mode</span> sets default turns and persona count. <span class="text-slate-300 font-bold">fast</span> uses <code class="text-indigo-400">full_history</code> memory (all exchanges verbatim, no extra LLM calls). <span class="text-slate-300 font-bold">medium/standard/deep</span> use <code class="text-indigo-400">structured</code> memory — a maintained summary that reduces context bloat as conversations grow long.</p>
+        <p class="text-xs text-slate-400 leading-relaxed">The <span class="text-slate-300 font-bold">mode</span> sets default turns and persona count. All modes use <code class="text-indigo-400">structured</code> memory — a maintained summary that reduces context bloat as conversations grow long.</p>
       </div>
     </div>
 
@@ -523,7 +522,7 @@
         <div class="flex flex-col gap-2 mb-4">
           <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">①</span><div class="flow-box flex-1 text-left">Facilitator selects next speaker based on recent exchanges + novelty</div></div>
           <div class="ml-3 text-slate-600 text-xs">↓</div>
-          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">②</span><div class="flow-box flex-1 text-left">Persona reads context (full history or structured memory)</div></div>
+          <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">②</span><div class="flow-box flex-1 text-left">Persona reads context (structured memory)</div></div>
           <div class="ml-3 text-slate-600 text-xs">↓</div>
           <div class="flex items-center gap-3"><span class="step-circle bg-slate-700 text-slate-300">③</span><div class="flow-box flex-1 text-left">Persona generates response via LLM</div></div>
           <div class="ml-3 text-slate-600 text-xs">↓</div>
@@ -553,7 +552,7 @@
           <div class="flow-box flex-1 min-w-[120px] text-left"><div class="text-blue-300 font-bold text-xs mb-2">PERSONAL MEMORY</div><div class="text-slate-400 text-xs">summary: facts / concerns</div><div class="text-slate-400 text-xs">belief_state: position / deltas</div></div>
           <div class="flow-box flex-1 min-w-[120px] text-left"><div class="text-purple-300 font-bold text-xs mb-2">SHORT-TERM</div><div class="text-slate-400 text-xs">Last 3 exchanges verbatim</div></div>
         </div>
-        <p class="text-xs text-slate-400 leading-relaxed"><code class="text-indigo-400">full_history</code> mode dumps the entire conversation each turn — simple but grows large. <code class="text-indigo-400">structured</code> mode maintains these 3 components updated each turn via <code class="text-indigo-400">update_shared_memory_async()</code>, <code class="text-indigo-400">update_summary_async()</code>, and <code class="text-indigo-400">update_belief_state_async()</code>. This reduces context bloat while preserving continuity.</p>
+        <p class="text-xs text-slate-400 leading-relaxed"><code class="text-indigo-400">structured</code> memory maintains these 3 components updated each turn via <code class="text-indigo-400">update_shared_memory_async()</code>, <code class="text-indigo-400">update_summary_async()</code>, and <code class="text-indigo-400">update_belief_state_async()</code>. This reduces context bloat while preserving continuity.</p>
       </div>
     </div>
 
@@ -791,7 +790,7 @@ function openInspector(speaker, turn) {
 // MODE DEFAULTS — auto-populate all fields from mode selection
 // ══════════════════════════════════════════════════════════════════
 const modeDefaults = {
-  fast:     { turns: 3,  personas: 3, memory: 'full_history', mediator: false, convergence: false, model: 'gpt-5.1' },
+  fast:     { turns: 3,  personas: 3, memory: 'structured',   mediator: false, convergence: false, model: 'gpt-5.1' },
   medium:   { turns: 5,  personas: 4, memory: 'structured',   mediator: true,  convergence: true,  model: 'gpt-5.1' },
   standard: { turns: 8,  personas: 4, memory: 'structured',   mediator: true,  convergence: true,  model: 'gpt-5.1' },
   deep:     { turns: 15, personas: 5, memory: 'structured',   mediator: true,  convergence: true,  model: 'gpt-5.1' },
