@@ -1,8 +1,11 @@
 # persona.py
 import json
 import asyncio
+import logging
 from typing import Dict, Any, Optional, List
 from openai import OpenAI, AsyncOpenAI
+
+logger = logging.getLogger(__name__)
 
 
 def extract_last_claim(last_turn: Dict) -> str:
@@ -171,7 +174,7 @@ class Persona:
                     domain = "general"
             self._domain = domain
             self.belief_state = self._initialize_belief_state(domain, phase)
-            print(f"[i] Initialized {domain} belief state for {self.name}")
+            logger.info("Initialized %s belief state for %s", domain, self.name)
 
         # Build system message as bare logic-role (no personality)
         # Strengthened to improve role adherence (target: >=90%)
@@ -244,7 +247,7 @@ CRITICAL CONSTRAINTS:
                     "token_count": 0  # Token counting can be added later if needed
                 })
             except Exception as e:
-                print(f"[!] Warning: Failed to log prompt input: {e}")
+                logger.warning("Failed to log prompt input: %s", e)
 
         # Call LLM
         completion = self.client.chat.completions.create(
@@ -566,448 +569,229 @@ CRITICAL CONSTRAINTS:
 
         return "\n".join(lines) if lines else "No belief state yet"
 
+    # -------------------------------------------------------------------------
+    # Private helpers shared by sync and async update methods
+    # -------------------------------------------------------------------------
+
+    def _build_summary_messages(self, new_exchange: Dict[str, Any]) -> List[Dict[str, str]]:
+        """Build the LLM message list for a summary update."""
+        speaker = new_exchange.get("speaker", "Unknown")
+        content = new_exchange.get("content", "")
+        phase = new_exchange.get("phase", "")
+        prompt = (
+            f"You are {self.name}, the {self.archetype}.\n\n"
+            f"CURRENT SUMMARY:\n{self._format_summary()}\n\n"
+            f"NEW EXCHANGE:\n{speaker}: {content}\n\n"
+            f"CURRENT PHASE: {phase}\n\n"
+            f"Update your summary by:\n"
+            f"1. Extracting any new OBJECTIVE FACTS (concrete information that everyone should know)\n"
+            f"2. Adding your SUBJECTIVE NOTES as {self.archetype} (concerns, priorities, opinions)\n\n"
+            f'Respond ONLY with a JSON object in this format:\n'
+            f'{{\n'
+            f'  "new_objective_facts": ["fact1", "fact2"],\n'
+            f'  "new_subjective_notes": {{\n'
+            f'    "key_concerns": ["concern1"],\n'
+            f'    "priorities": ["priority1"],\n'
+            f'    "opinions": ["opinion1"]\n'
+            f'  }}\n'
+            f'}}\n\n'
+            f"Only include fields that have new information. Empty lists/objects are fine if nothing new."
+        )
+        return [
+            {
+                "role": "system",
+                "content": (
+                    f"You are a summary updater for {self.name}, the {self.archetype}. "
+                    f"Extract objective facts and subjective notes from conversations."
+                ),
+            },
+            {"role": "user", "content": prompt},
+        ]
+
+    def _apply_summary_updates(self, updates: Dict[str, Any]) -> None:
+        """Merge LLM-returned summary updates into self.summary."""
+        for fact in updates.get("new_objective_facts", []):
+            if fact and fact not in self.summary["objective_facts"]:
+                self.summary["objective_facts"].append(fact)
+        for key, values in updates.get("new_subjective_notes", {}).items():
+            if key in self.summary["subjective_notes"]:
+                if isinstance(values, list):
+                    for val in values:
+                        if val and val not in self.summary["subjective_notes"][key]:
+                            self.summary["subjective_notes"][key].append(val)
+                else:
+                    self.summary["subjective_notes"][key] = values
+            else:
+                self.summary["subjective_notes"][key] = values
+
+    def _build_belief_state_messages(
+        self, new_exchange: Dict[str, Any], turn_count: int
+    ) -> List[Dict[str, str]]:
+        """Build the LLM message list for a belief state update."""
+        speaker = new_exchange.get("speaker", "Unknown")
+        content = new_exchange.get("content", "")
+        phase = new_exchange.get("phase", "")
+        current_belief_state = json.dumps(self.belief_state, indent=2)
+        prompt = (
+            f"You are {self.name}, the {self.archetype}.\n\n"
+            f"CURRENT BELIEF STATE:\n{current_belief_state}\n\n"
+            f"NEW EXCHANGE:\n{speaker}: {content}\n\n"
+            f"CURRENT PHASE: {phase}\n"
+            f"TURN: {turn_count}\n\n"
+            f"Update your belief state by extracting:\n"
+            f"1. **position**: Has your position changed? (if yes, provide new position statement, else leave null)\n"
+            f"2. **confidence**: Updated confidence level 0.0-1.0 (or null if no change)\n"
+            f"3. **new_uncertainties**: Any new things you're uncertain about\n"
+            f"4. **resolved_uncertainties**: Any uncertainties that were resolved (provide index from current list)\n"
+            f"5. **new_concessions**: Points you acknowledged from the last speaker (if any)\n"
+            f"6. **new_deltas**: Position shifts (if any) - what changed and why\n"
+            f"7. **domain_specific**: Any domain-specific updates (cruxes for debates, key_tradeoffs for ideas)\n\n"
+            f"Respond ONLY with a JSON object in this format:\n"
+            f"{{\n"
+            f'  "position": "updated position statement or null",\n'
+            f'  "confidence": 0.7,\n'
+            f'  "new_uncertainties": ["uncertainty1"],\n'
+            f'  "resolved_uncertainties": [0, 1],\n'
+            f'  "new_concessions": [{{"from_speaker": "Name", "point": "what you acknowledged"}}],\n'
+            f'  "new_deltas": [{{"turn": {turn_count}, "change": "what shifted", "reason": "why"}}],\n'
+            f'  "domain_specific": {{"cruxes": ["new crux"]}}\n'
+            f"}}\n\n"
+            f"Only include fields with new information. Empty lists/objects are fine if nothing new."
+        )
+        return [
+            {
+                "role": "system",
+                "content": (
+                    f"You are a belief state updater for {self.name}, the {self.archetype}. "
+                    f"Extract position changes, uncertainties, concessions, and deltas."
+                ),
+            },
+            {"role": "user", "content": prompt},
+        ]
+
+    def _apply_belief_state_updates(
+        self, updates: Dict[str, Any], turn_count: int
+    ) -> None:
+        """Merge LLM-returned belief state updates into self.belief_state."""
+        if updates.get("position"):
+            old_position = self.belief_state.get("position")
+            self.belief_state["position"] = updates["position"]
+            if old_position and old_position != updates["position"]:
+                logger.debug("%s position changed: %.50s... -> %.50s...", self.name, old_position, updates["position"])
+
+        if updates.get("confidence") is not None:
+            self.belief_state["confidence"] = updates["confidence"]
+
+        for unc in updates.get("new_uncertainties", []):
+            if unc and unc not in self.belief_state.get("uncertainties", []):
+                self.belief_state["uncertainties"].append(unc)
+
+        for idx in sorted(updates.get("resolved_uncertainties", []), reverse=True):
+            if 0 <= idx < len(self.belief_state.get("uncertainties", [])):
+                resolved = self.belief_state["uncertainties"].pop(idx)
+                logger.debug("%s resolved uncertainty: %.50s...", self.name, resolved)
+
+        for conc in updates.get("new_concessions", []):
+            if conc:
+                conc["turn"] = turn_count
+                self.belief_state["concessions"].append(conc)
+                logger.debug("%s conceded point from %s: %.50s...", self.name, conc.get("from_speaker"), conc.get("point", ""))
+
+        for delta in updates.get("new_deltas", []):
+            if delta:
+                self.belief_state["deltas"].append(delta)
+                logger.debug("%s position delta (turn %d): %.50s...", self.name, turn_count, delta.get("change", ""))
+
+        domain_spec = updates.get("domain_specific", {})
+        for key, values in domain_spec.items():
+            if key in self.belief_state and isinstance(values, list):
+                for val in values:
+                    if val and val not in self.belief_state[key]:
+                        self.belief_state[key].append(val)
+
+    # -------------------------------------------------------------------------
+    # Public update methods (sync and async share the helpers above)
+    # -------------------------------------------------------------------------
+
     def update_summary(self, new_exchange: Dict[str, Any]) -> None:
         """
         Update the persona's summary based on a new conversation exchange.
 
-        Uses LLM to extract:
-        1. Objective facts that should be added to shared understanding
-        2. Subjective observations relevant to this persona's role
-
         Args:
-            new_exchange: Dict containing:
-                - speaker: Who spoke
-                - content: What was said
-                - phase: Current phase info (optional)
+            new_exchange: Dict with 'speaker', 'content', and optional 'phase' keys.
         """
-        speaker = new_exchange.get("speaker", "Unknown")
-        content = new_exchange.get("content", "")
-        phase = new_exchange.get("phase", "")
-
-        # Build prompt for summary update
-        update_prompt = f"""You are {self.name}, the {self.archetype}.
-
-CURRENT SUMMARY:
-{self._format_summary()}
-
-NEW EXCHANGE:
-{speaker}: {content}
-
-CURRENT PHASE: {phase}
-
-Update your summary by:
-1. Extracting any new OBJECTIVE FACTS (concrete information that everyone should know)
-2. Adding your SUBJECTIVE NOTES as {self.archetype} (concerns, priorities, opinions)
-
-Respond ONLY with a JSON object in this format:
-{{
-  "new_objective_facts": ["fact1", "fact2"],
-  "new_subjective_notes": {{
-    "key_concerns": ["concern1"],
-    "priorities": ["priority1"],
-    "opinions": ["opinion1"]
-  }}
-}}
-
-Only include fields that have new information. Empty lists/objects are fine if nothing new."""
-
-        messages = [
-            {
-                "role": "system",
-                "content": f"You are a summary updater for {self.name}, the {self.archetype}. "
-                           f"Extract objective facts and subjective notes from conversations."
-            },
-            {
-                "role": "user",
-                "content": update_prompt
-            }
-        ]
-
-        # Call LLM to update summary
+        messages = self._build_summary_messages(new_exchange)
         try:
             completion = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
             )
-
-            response_content = completion.choices[0].message.content.strip()
-            updates = json.loads(response_content)
-
-            # Merge new facts (avoid duplicates)
-            new_facts = updates.get("new_objective_facts", [])
-            for fact in new_facts:
-                if fact and fact not in self.summary["objective_facts"]:
-                    self.summary["objective_facts"].append(fact)
-
-            # Merge subjective notes
-            new_subj = updates.get("new_subjective_notes", {})
-            for key, values in new_subj.items():
-                if key in self.summary["subjective_notes"]:
-                    if isinstance(values, list):
-                        for val in values:
-                            if val and val not in self.summary["subjective_notes"][key]:
-                                self.summary["subjective_notes"][key].append(val)
-                    else:
-                        self.summary["subjective_notes"][key] = values
-                else:
-                    self.summary["subjective_notes"][key] = values
-
+            updates = json.loads(completion.choices[0].message.content.strip())
+            self._apply_summary_updates(updates)
         except Exception as e:
-            print(f"[!] Failed to update summary for {self.name}: {e}")
-            # Continue without updating - non-critical failure
+            logger.warning("Failed to update summary for %s: %s", self.name, e)
 
     async def update_summary_async(self, new_exchange: Dict[str, Any]) -> None:
         """
         Async version of update_summary for parallel execution.
 
-        Update the persona's summary based on a new conversation exchange.
-        This method can be called concurrently with other personas for speedup.
-
-        Uses LLM to extract:
-        1. Objective facts that should be added to shared understanding
-        2. Subjective observations relevant to this persona's role
-
         Args:
-            new_exchange: Dict containing:
-                - speaker: Who spoke
-                - content: What was said
-                - phase: Current phase info (optional)
+            new_exchange: Dict with 'speaker', 'content', and optional 'phase' keys.
         """
-        speaker = new_exchange.get("speaker", "Unknown")
-        content = new_exchange.get("content", "")
-        phase = new_exchange.get("phase", "")
-
-        # Build prompt for summary update
-        update_prompt = f"""You are {self.name}, the {self.archetype}.
-
-CURRENT SUMMARY:
-{self._format_summary()}
-
-NEW EXCHANGE:
-{speaker}: {content}
-
-CURRENT PHASE: {phase}
-
-Update your summary by:
-1. Extracting any new OBJECTIVE FACTS (concrete information that everyone should know)
-2. Adding your SUBJECTIVE NOTES as {self.archetype} (concerns, priorities, opinions)
-
-Respond ONLY with a JSON object in this format:
-{{
-  "new_objective_facts": ["fact1", "fact2"],
-  "new_subjective_notes": {{
-    "key_concerns": ["concern1"],
-    "priorities": ["priority1"],
-    "opinions": ["opinion1"]
-  }}
-}}
-
-Only include fields that have new information. Empty lists/objects are fine if nothing new."""
-
-        messages = [
-            {
-                "role": "system",
-                "content": f"You are a summary updater for {self.name}, the {self.archetype}. "
-                           f"Extract objective facts and subjective notes from conversations."
-            },
-            {
-                "role": "user",
-                "content": update_prompt
-            }
-        ]
-
-        # Call LLM asynchronously to update summary
+        messages = self._build_summary_messages(new_exchange)
         try:
             completion = await self.async_client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
             )
-
-            response_content = completion.choices[0].message.content.strip()
-            updates = json.loads(response_content)
-
-            # Merge new facts (avoid duplicates)
-            new_facts = updates.get("new_objective_facts", [])
-            for fact in new_facts:
-                if fact and fact not in self.summary["objective_facts"]:
-                    self.summary["objective_facts"].append(fact)
-
-            # Merge subjective notes
-            new_subj = updates.get("new_subjective_notes", {})
-            for key, values in new_subj.items():
-                if key in self.summary["subjective_notes"]:
-                    if isinstance(values, list):
-                        for val in values:
-                            if val and val not in self.summary["subjective_notes"][key]:
-                                self.summary["subjective_notes"][key].append(val)
-                    else:
-                        self.summary["subjective_notes"][key] = values
-                else:
-                    self.summary["subjective_notes"][key] = values
-
+            updates = json.loads(completion.choices[0].message.content.strip())
+            self._apply_summary_updates(updates)
         except Exception as e:
-            print(f"[!] Failed to async update summary for {self.name}: {e}")
-            # Continue without updating - non-critical failure
+            logger.warning("Failed to async update summary for %s: %s", self.name, e)
 
     def update_belief_state(self, new_exchange: Dict[str, Any], turn_count: int) -> None:
         """
         Update the persona's belief state based on a new conversation exchange.
 
-        Uses LLM to extract:
-        1. Updated position (if changed)
-        2. New uncertainties or resolved ones
-        3. Concessions made to other speakers
-        4. Position deltas (what changed and why)
-        5. Domain-specific fields (cruxes, key_tradeoffs, etc.)
-
         Args:
-            new_exchange: Dict containing:
-                - speaker: Who spoke
-                - content: What was said
-                - phase: Current phase info (optional)
-            turn_count: Current turn number
+            new_exchange: Dict with 'speaker', 'content', and optional 'phase' keys.
+            turn_count: Current turn number.
         """
         if not self.belief_state:
-            return  # Belief state not initialized yet
-
-        speaker = new_exchange.get("speaker", "Unknown")
-        content = new_exchange.get("content", "")
-        phase = new_exchange.get("phase", "")
-
-        # Build prompt for belief state update
-        current_belief_state = json.dumps(self.belief_state, indent=2)
-
-        update_prompt = f"""You are {self.name}, the {self.archetype}.
-
-CURRENT BELIEF STATE:
-{current_belief_state}
-
-NEW EXCHANGE:
-{speaker}: {content}
-
-CURRENT PHASE: {phase}
-TURN: {turn_count}
-
-Update your belief state by extracting:
-1. **position**: Has your position changed? (if yes, provide new position statement, else leave null)
-2. **confidence**: Updated confidence level 0.0-1.0 (or null if no change)
-3. **new_uncertainties**: Any new things you're uncertain about
-4. **resolved_uncertainties**: Any uncertainties that were resolved (provide index from current list)
-5. **new_concessions**: Points you acknowledged from the last speaker (if any)
-6. **new_deltas**: Position shifts (if any) - what changed and why
-7. **domain_specific**: Any domain-specific updates (cruxes for debates, key_tradeoffs for ideas)
-
-Respond ONLY with a JSON object in this format:
-{{
-  "position": "updated position statement or null",
-  "confidence": 0.7 or null,
-  "new_uncertainties": ["uncertainty1"],
-  "resolved_uncertainties": [0, 1],
-  "new_concessions": [
-    {{"from_speaker": "Name", "point": "what you acknowledged"}}
-  ],
-  "new_deltas": [
-    {{"turn": {turn_count}, "change": "what shifted", "reason": "why"}}
-  ],
-  "domain_specific": {{
-    "cruxes": ["new crux"] or "key_tradeoffs": ["new tradeoff"]
-  }}
-}}
-
-Only include fields with new information. Empty lists/objects are fine if nothing new."""
-
-        messages = [
-            {
-                "role": "system",
-                "content": f"You are a belief state updater for {self.name}, the {self.archetype}. "
-                           f"Extract position changes, uncertainties, concessions, and deltas."
-            },
-            {
-                "role": "user",
-                "content": update_prompt
-            }
-        ]
-
-        # Call LLM to update belief state
+            return
+        messages = self._build_belief_state_messages(new_exchange, turn_count)
         try:
             completion = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
             )
-
-            response_content = completion.choices[0].message.content.strip()
-            updates = json.loads(response_content)
-
-            # Update position if changed
-            if updates.get("position"):
-                old_position = self.belief_state.get("position")
-                self.belief_state["position"] = updates["position"]
-                if old_position and old_position != updates["position"]:
-                    print(f"[i] {self.name} position changed: {old_position[:50]}... -> {updates['position'][:50]}...")
-
-            # Update confidence if changed
-            if updates.get("confidence") is not None:
-                self.belief_state["confidence"] = updates["confidence"]
-
-            # Add new uncertainties
-            for unc in updates.get("new_uncertainties", []):
-                if unc and unc not in self.belief_state.get("uncertainties", []):
-                    self.belief_state["uncertainties"].append(unc)
-
-            # Remove resolved uncertainties
-            for idx in sorted(updates.get("resolved_uncertainties", []), reverse=True):
-                if 0 <= idx < len(self.belief_state.get("uncertainties", [])):
-                    resolved = self.belief_state["uncertainties"].pop(idx)
-                    print(f"[i] {self.name} resolved uncertainty: {resolved[:50]}...")
-
-            # Add new concessions
-            for conc in updates.get("new_concessions", []):
-                if conc:
-                    conc["turn"] = turn_count
-                    self.belief_state["concessions"].append(conc)
-                    print(f"[i] {self.name} conceded point from {conc.get('from_speaker')}: {conc.get('point', '')[:50]}...")
-
-            # Add new deltas
-            for delta in updates.get("new_deltas", []):
-                if delta:
-                    self.belief_state["deltas"].append(delta)
-                    print(f"[i] {self.name} position delta (turn {turn_count}): {delta.get('change', '')[:50]}...")
-
-            # Update domain-specific fields
-            domain_spec = updates.get("domain_specific", {})
-            for key, values in domain_spec.items():
-                if key in self.belief_state and isinstance(values, list):
-                    for val in values:
-                        if val and val not in self.belief_state[key]:
-                            self.belief_state[key].append(val)
-
+            updates = json.loads(completion.choices[0].message.content.strip())
+            self._apply_belief_state_updates(updates, turn_count)
         except Exception as e:
-            print(f"[!] Failed to update belief state for {self.name}: {e}")
-            # Continue without updating - non-critical failure
+            logger.warning("Failed to update belief state for %s: %s", self.name, e)
 
     async def update_belief_state_async(self, new_exchange: Dict[str, Any], turn_count: int) -> None:
         """
         Async version of update_belief_state for parallel execution.
 
-        Update the persona's belief state based on a new conversation exchange.
-        This method can be called concurrently with other personas for speedup.
-
         Args:
-            new_exchange: Dict containing:
-                - speaker: Who spoke
-                - content: What was said
-                - phase: Current phase info (optional)
-            turn_count: Current turn number
+            new_exchange: Dict with 'speaker', 'content', and optional 'phase' keys.
+            turn_count: Current turn number.
         """
         if not self.belief_state:
-            return  # Belief state not initialized yet
-
-        speaker = new_exchange.get("speaker", "Unknown")
-        content = new_exchange.get("content", "")
-        phase = new_exchange.get("phase", "")
-
-        # Build prompt for belief state update
-        current_belief_state = json.dumps(self.belief_state, indent=2)
-
-        update_prompt = f"""You are {self.name}, the {self.archetype}.
-
-CURRENT BELIEF STATE:
-{current_belief_state}
-
-NEW EXCHANGE:
-{speaker}: {content}
-
-CURRENT PHASE: {phase}
-TURN: {turn_count}
-
-Update your belief state by extracting:
-1. **position**: Has your position changed? (if yes, provide new position statement, else leave null)
-2. **confidence**: Updated confidence level 0.0-1.0 (or null if no change)
-3. **new_uncertainties**: Any new things you're uncertain about
-4. **resolved_uncertainties**: Any uncertainties that were resolved (provide index from current list)
-5. **new_concessions**: Points you acknowledged from the last speaker (if any)
-6. **new_deltas**: Position shifts (if any) - what changed and why
-7. **domain_specific**: Any domain-specific updates (cruxes for debates, key_tradeoffs for ideas)
-
-Respond ONLY with a JSON object in this format:
-{{
-  "position": "updated position statement or null",
-  "confidence": 0.7 or null,
-  "new_uncertainties": ["uncertainty1"],
-  "resolved_uncertainties": [0, 1],
-  "new_concessions": [
-    {{"from_speaker": "Name", "point": "what you acknowledged"}}
-  ],
-  "new_deltas": [
-    {{"turn": {turn_count}, "change": "what shifted", "reason": "why"}}
-  ],
-  "domain_specific": {{
-    "cruxes": ["new crux"] or "key_tradeoffs": ["new tradeoff"]
-  }}
-}}
-
-Only include fields with new information. Empty lists/objects are fine if nothing new."""
-
-        messages = [
-            {
-                "role": "system",
-                "content": f"You are a belief state updater for {self.name}, the {self.archetype}. "
-                           f"Extract position changes, uncertainties, concessions, and deltas."
-            },
-            {
-                "role": "user",
-                "content": update_prompt
-            }
-        ]
-
-        # Call LLM asynchronously to update belief state
+            return
+        messages = self._build_belief_state_messages(new_exchange, turn_count)
         try:
             completion = await self.async_client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
             )
-
-            response_content = completion.choices[0].message.content.strip()
-            updates = json.loads(response_content)
-
-            # Update position if changed
-            if updates.get("position"):
-                old_position = self.belief_state.get("position")
-                self.belief_state["position"] = updates["position"]
-                if old_position and old_position != updates["position"]:
-                    print(f"[i] {self.name} position changed: {old_position[:50]}... -> {updates['position'][:50]}...")
-
-            # Update confidence if changed
-            if updates.get("confidence") is not None:
-                self.belief_state["confidence"] = updates["confidence"]
-
-            # Add new uncertainties
-            for unc in updates.get("new_uncertainties", []):
-                if unc and unc not in self.belief_state.get("uncertainties", []):
-                    self.belief_state["uncertainties"].append(unc)
-
-            # Remove resolved uncertainties
-            for idx in sorted(updates.get("resolved_uncertainties", []), reverse=True):
-                if 0 <= idx < len(self.belief_state.get("uncertainties", [])):
-                    resolved = self.belief_state["uncertainties"].pop(idx)
-                    print(f"[i] {self.name} resolved uncertainty: {resolved[:50]}...")
-
-            # Add new concessions
-            for conc in updates.get("new_concessions", []):
-                if conc:
-                    conc["turn"] = turn_count
-                    self.belief_state["concessions"].append(conc)
-                    print(f"[i] {self.name} conceded point from {conc.get('from_speaker')}: {conc.get('point', '')[:50]}...")
-
-            # Add new deltas
-            for delta in updates.get("new_deltas", []):
-                if delta:
-                    self.belief_state["deltas"].append(delta)
-                    print(f"[i] {self.name} position delta (turn {turn_count}): {delta.get('change', '')[:50]}...")
+            updates = json.loads(completion.choices[0].message.content.strip())
+            self._apply_belief_state_updates(updates, turn_count)
 
             # Update domain-specific fields
             domain_spec = updates.get("domain_specific", {})
@@ -1018,5 +802,4 @@ Only include fields with new information. Empty lists/objects are fine if nothin
                             self.belief_state[key].append(val)
 
         except Exception as e:
-            print(f"[!] Failed to async update belief state for {self.name}: {e}")
-            # Continue without updating - non-critical failure
+            logger.warning("Failed to async update belief state for %s: %s", self.name, e)

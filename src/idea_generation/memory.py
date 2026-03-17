@@ -1,7 +1,10 @@
 # memory.py
 # Shared memory update logic for structured memory system
 
-from openai import OpenAI, AsyncOpenAI
+import logging
+from openai import AsyncOpenAI
+
+logger = logging.getLogger(__name__)
 
 
 SHARED_MEMORY_UPDATE_PROMPT = """
@@ -20,53 +23,6 @@ Update the shared memory. Keep it under 200 words. Capture:
 
 Return only the updated shared memory text. No preamble.
 """
-
-
-def update_shared_memory(
-    current_memory: str,
-    new_exchange: dict,
-    model: str = "gpt-5.1"
-) -> str:
-    """
-    Call LLM to update shared memory after each turn.
-
-    Args:
-        current_memory: Current shared memory text
-        new_exchange: Dict with 'speaker' and 'content' keys
-        model: LLM model to use
-
-    Returns:
-        Updated shared memory string
-    """
-    client = OpenAI()
-
-    speaker = new_exchange.get("speaker", "Unknown")
-    content = new_exchange.get("content", "")
-
-    prompt = SHARED_MEMORY_UPDATE_PROMPT.format(
-        current_memory=current_memory or "(empty — first turn)",
-        speaker=speaker,
-        content=content
-    )
-
-    try:
-        completion = client.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a concise memory keeper for a group brainstorm. Update shared memory faithfully."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        )
-        return completion.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"[!] Failed to update shared memory: {e}")
-        return current_memory  # Return unchanged on failure
 
 
 async def update_shared_memory_async(
@@ -112,8 +68,8 @@ async def update_shared_memory_async(
         )
         return completion.choices[0].message.content.strip()
     except Exception as e:
-        print(f"[!] Failed to async update shared memory: {e}")
-        return current_memory  # Return unchanged on failure
+        logger.warning("Failed to async update shared memory: %s", e)
+        return current_memory
 
 
 def format_shared_memory_block(shared_memory: str) -> str:

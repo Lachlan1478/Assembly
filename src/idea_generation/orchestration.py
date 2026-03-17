@@ -2,6 +2,7 @@
 # Orchestration module: Meeting facilitator and conversation management
 
 import asyncio
+import logging
 import time
 from typing import Dict, List, Any, Optional
 from framework import Persona, FacilitatorAgent, ConversationLogger
@@ -22,6 +23,9 @@ from src.idea_generation.idea_tracker import (
 )
 from src.idea_generation.gap_detection import compute_coverage_gaps
 from src.idea_generation.memory import update_shared_memory_async
+from framework.facilitator import extract_key_phrases
+
+logger = logging.getLogger(__name__)
 
 
 async def meeting_facilitator(
@@ -101,11 +105,7 @@ async def meeting_facilitator(
                 goal=phase.get('goal', 'No goal specified')
             )
         else:
-            # Fallback display if no monitor
-            print(f"\n{'='*60}")
-            print(f"=== Phase: {phase['phase_id'].upper()} ===")
-            print(f"Goal: {phase.get('goal')}")
-            print(f"{'='*60}\n")
+            logger.info("=== Phase: %s | Goal: %s ===", phase["phase_id"].upper(), phase.get("goal"))
 
         # Request personas from PersonaManager for this phase
         active_personas = persona_manager.request_personas_for_phase(
@@ -132,7 +132,7 @@ async def meeting_facilitator(
             )
 
         if not active_personas:
-            print(f"[!] No personas selected for phase '{phase['phase_id']}', skipping")
+            logger.warning("No personas selected for phase '%s', skipping", phase["phase_id"])
             continue
 
         # Phase-specific tracking
@@ -193,7 +193,7 @@ async def meeting_facilitator(
 
             # Validate speaker
             if next_speaker_name not in active_personas:
-                print(f"[!] Facilitator selected invalid persona '{next_speaker_name}', skipping")
+                logger.warning("Facilitator selected invalid persona '%s', skipping", next_speaker_name)
                 turn_count += 1
                 continue
 
@@ -208,8 +208,7 @@ async def meeting_facilitator(
                     max_turns=max_turns
                 )
             else:
-                # Fallback display if no monitor
-                print(f"\n[Speaker] {speaker_persona.name} ({speaker_persona.archetype}) speaking...")
+                logger.info("[Speaker] %s (%s) speaking...", speaker_persona.name, speaker_persona.archetype)
 
             # Build other_speaker from last exchange (for native threading)
             other_speaker = None
@@ -253,12 +252,9 @@ async def meeting_facilitator(
             )
 
             if repetition_warning:
-                print(repetition_warning)
-                # Note: In a full implementation, we could request a revision here
-                # For now, we just warn and continue
+                logger.warning(repetition_warning)
 
             # Track novelty: extract key phrases from response and add to mentioned_nuances
-            from framework.facilitator import extract_key_phrases
             new_phrases = extract_key_phrases(response_content, max_phrases=3)
             # Add new phrases to list (avoiding duplicates)
             for phrase in new_phrases:
@@ -272,7 +268,7 @@ async def meeting_facilitator(
 
             # Display response (only if not using monitor, to avoid clutter)
             if not monitor:
-                print(f"\n{speaker_persona.name}: {response_content[:200]}...")
+                logger.debug("%s: %.200s...", speaker_persona.name, response_content)
 
             # Monitor: Turn complete (estimate ~500 tokens per response)
             if monitor:
@@ -342,7 +338,7 @@ async def meeting_facilitator(
                 if use_async_updates:
                     # Parallel async updates for speed
                     if not monitor:
-                        print(f"[i] Updating summaries and belief states for all active personas (async parallel)...")
+                        logger.info("Updating summaries and belief states for all active personas (async parallel)...")
 
                     # Update both summaries and belief states in parallel
                     update_tasks = []
@@ -371,7 +367,7 @@ async def meeting_facilitator(
                 else:
                     # Sequential updates (backward compatibility)
                     if not monitor:
-                        print(f"[i] Updating summaries and belief states for all active personas (sequential)...")
+                        logger.info("Updating summaries and belief states for all active personas (sequential)...")
 
                     for persona_name, persona in active_personas.items():
                         persona.update_summary(exchange_data)
@@ -380,7 +376,7 @@ async def meeting_facilitator(
                             persona.update_belief_state(exchange_data, turn_count)
             else:
                 if not monitor:
-                    print(f"[i] Fast mode: Skipping summary updates")
+                    logger.info("Fast mode: Skipping summary updates")
                 # Even in fast mode, emit persona identities so the Personas tab populates
                 if monitor:
                     persona_snapshots = []
@@ -425,7 +421,7 @@ async def meeting_facilitator(
                     if monitor:
                         getattr(monitor, 'on_gap_nudge', lambda **kw: None)(content=gap_nudge)
                     else:
-                        print(f"[i] Gap nudge computed: {gap_nudge[:80]}...")
+                        logger.info("Gap nudge computed: %.80s...", gap_nudge)
 
             # Check if mediator should intervene
             if enable_mediator and mediator is not None:
@@ -447,7 +443,7 @@ async def meeting_facilitator(
                             max_turns=max_turns
                         )
                     else:
-                        print(f"\n[Mediator] {mediator.name} intervening...")
+                        logger.info("[Mediator] %s intervening...", mediator.name)
 
                     # Build advocate belief states for mediator
                     advocate_belief_states = {}
@@ -490,7 +486,7 @@ async def meeting_facilitator(
                         })
                         scenario_ids = [s.get("id", "UNKNOWN") for s in scenarios]
                         if not monitor:
-                            print(f"[Mediator] Presented {len(scenarios)} scenarios: {scenario_ids}")
+                            logger.info("[Mediator] Presented %d scenarios: %s", len(scenarios), scenario_ids)
 
                     # Notify monitor of mediator intervention
                     if monitor:
@@ -504,7 +500,7 @@ async def meeting_facilitator(
                             scenario_history=shared_context.get("scenario_history", []),
                         )
                     else:
-                        print(f"\n{mediator.name} (Mediator): {mediator_content[:200]}...")
+                        logger.debug("%s (Mediator): %.200s...", mediator.name, mediator_content)
 
                     # Monitor: Turn complete
                     if monitor:
@@ -571,14 +567,14 @@ async def meeting_facilitator(
         # Phase complete - ensure all pending extractions are complete before moving to summary
         if pending_extractions:
             if not monitor:
-                print(f"[i] Waiting for {len(pending_extractions)} pending idea extractions/rejection detections...")
+                logger.info("Waiting for %d pending idea extractions/rejection detections...", len(pending_extractions))
             await asyncio.gather(*pending_extractions, return_exceptions=True)
 
         # Phase complete - create summary
         phase_elapsed_time = time.time() - phase_start_time
 
         if not monitor:
-            print(f"\n[OK] Phase '{phase['phase_id']}' complete after {turn_count} turns")
+            logger.info("Phase '%s' complete after %d turns", phase["phase_id"], turn_count)
 
         phase_summary = facilitator.summarize_phase(
             phase=phase,
@@ -599,7 +595,7 @@ async def meeting_facilitator(
                 nuance_count=len(shared_context.get("mentioned_nuances", [])),
             )
         else:
-            print(f"[Summary] {phase_summary}\n")
+            logger.info("[Summary] %s", phase_summary)
 
         all_phase_summaries.append({
             "phase_id": phase["phase_id"],

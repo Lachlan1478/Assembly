@@ -2,9 +2,13 @@
 # Main entry point: Multi-persona startup idea generator with staged discovery
 
 import json
+import logging
 import re
 import asyncio
 from framework import FacilitatorAgent, ConversationLogger, ConversationMonitor
+
+log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 from framework.helpers import load_personas_from_directory
 from framework.persona_manager import PersonaManager
 from framework.generators import generate_phases_for_domain
@@ -31,16 +35,16 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     """
     # Get mode configuration
     if mode not in MODE_CONFIGS:
-        print(f"[!] Unknown mode '{mode}', using 'medium'")
+        log.warning("Unknown mode '%s', using 'medium'", mode)
         mode = "medium"
 
     config = dict(MODE_CONFIGS[mode])
     if config_overrides:
         config.update(config_overrides)
-    print(f"\n[i] Running in {mode.upper()} mode: {config['description']}")
+    log.info("Running in %s mode: %s", mode.upper(), config["description"])
 
     # Initialize PersonaManager for dynamic generation
-    print("\n[i] Initializing PersonaManager for dynamic persona generation...")
+    log.info("Initializing PersonaManager for dynamic persona generation...")
     persona_manager = PersonaManager(
         cache_dir="dynamic_personas",
         archive_dir="personas_archive",
@@ -64,7 +68,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     logger.log_metadata("dynamic_generation", True)
 
     # Generate domain-specific phases using LLM
-    print("\n[i] Generating custom workflow phases for domain...")
+    log.info("Generating custom workflow phases for domain...")
     all_phases = generate_phases_for_domain(
         inspiration=inspiration,
         number_of_ideas=number_of_ideas,
@@ -123,8 +127,8 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
         if "max_turns" not in phase:
             phase["max_turns"] = config["max_turns_per_phase"]
 
-    print(f"[i] Running {len(phases)} phases: {', '.join([p['phase_id'] for p in phases])}")
-    print(f"[i] Max turns per phase: varies by phase\n")
+    log.info("Running %d phases: %s", len(phases), ", ".join(p["phase_id"] for p in phases))
+    log.info("Max turns per phase: varies by phase")
 
     # Log phases to metadata
     logger.log_metadata("phases", phases)
@@ -140,7 +144,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     }
 
     # Run the facilitator-directed meeting (async) with dynamic persona generation
-    print("\n[i] Starting facilitator-directed meeting with dynamic persona generation...\n")
+    log.info("Starting facilitator-directed meeting with dynamic persona generation...")
     final_context = asyncio.run(meeting_facilitator(
         persona_manager=persona_manager,
         inspiration=inspiration,
@@ -161,7 +165,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     logs = final_context.get("logs", [])
     with open("meeting_logs.txt", "w", encoding="utf-8") as f:
         json.dump(logs, f, indent=2)
-    print(f"\n[OK] Meeting logs saved to meeting_logs.txt ({len(logs)} exchanges)")
+    log.info("Meeting logs saved to meeting_logs.txt (%d exchanges)", len(logs))
 
     # Extract ideas from the final conversation
     business_ideas = []
@@ -183,18 +187,18 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
             if json_match:
                 raw_ideas = json_match.group(0)
                 business_ideas = json.loads(raw_ideas)
-                print(f"\n[OK] Successfully extracted {len(business_ideas)} idea(s)")
+                log.info("Successfully extracted %d idea(s)", len(business_ideas))
         except Exception as e:
-            print(f"[!] Failed to parse ideas from decision phase: {e}")
+            log.warning("Failed to parse ideas from decision phase: %s", e)
 
     # Fallback: check if ideas were added to shared_context
     if not business_ideas and final_context.get("ideas"):
         business_ideas = final_context["ideas"]
-        print(f"\n[OK] Using ideas from shared context: {len(business_ideas)} idea(s)")
+        log.info("Using ideas from shared context: %d idea(s)", len(business_ideas))
 
     # LLM extraction fallback: If JSON extraction failed, use LLM to extract ideas
     if not business_ideas:
-        print("\n[i] JSON extraction failed, using LLM extraction fallback...")
+        log.info("JSON extraction failed, using LLM extraction fallback...")
         business_ideas = extract_ideas_with_llm(
             logs=logs,
             number_of_ideas=number_of_ideas,
@@ -208,9 +212,9 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     # Optional final refinement phase that produces commercially sharp output
     convergence_result = None
     if config.get("enable_convergence_phase", False):
-        print("\n" + "=" * 60)
-        print("CONVERGENCE PHASE: Refining into commercial spec...")
-        print("=" * 60)
+        log.info("=" * 60)
+        log.info("CONVERGENCE PHASE: Refining into commercial spec...")
+        log.info("=" * 60)
 
         convergence_result = run_convergence_phase(
             inspiration=inspiration,
@@ -229,12 +233,12 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
             logger.log_metadata("convergence_turns", convergence_result.get("turns", []))
 
             # Display formatted output
-            print("\n" + format_convergence_output(convergence_output))
+            log.info("\n%s", format_convergence_output(convergence_output))
         else:
-            print(f"\n[!] Convergence phase failed: {convergence_result.get('error', 'Unknown error')}")
+            log.error("Convergence phase failed: %s", convergence_result.get("error", "Unknown error"))
             logger.log_metadata("convergence_error", convergence_result.get("error"))
     else:
-        print("\n[i] Convergence phase disabled (enable with enable_convergence_phase=True)")
+        log.info("Convergence phase disabled (enable with enable_convergence_phase=True)")
 
     # Save all comprehensive logs
     logger.save_all()
@@ -247,7 +251,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
 
     # Return ideas (or empty list with warning)
     if not business_ideas:
-        print("[!] Warning: No ideas could be extracted from conversation")
+        log.warning("No ideas could be extracted from conversation")
 
     # For backwards compatibility, return just ideas if convergence disabled
     if not config.get("enable_convergence_phase", False):
