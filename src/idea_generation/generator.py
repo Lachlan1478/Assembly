@@ -154,7 +154,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
         model_name=config["model"],  # Pass model for idea extraction
         personas_per_phase=config.get("personas_per_phase", 4),  # Configurable persona count
         enable_mediator=config.get("enable_mediator", True),  # Enable mediator based on mode
-        memory_mode=config.get("memory_mode", "full_history"),  # Structured vs full history
+        memory_mode=config.get("memory_mode", "structured"),
     ))
 
     # Save basic logs (backwards compatibility)

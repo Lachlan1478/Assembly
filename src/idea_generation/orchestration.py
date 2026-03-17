@@ -38,7 +38,7 @@ async def meeting_facilitator(
     personas_per_phase: int = 4,
     enable_mediator: bool = True,
     mediator: Optional[MediatorPersona] = None,
-    memory_mode: str = "full_history"
+    memory_mode: str = "structured"
 ) -> Dict[str, Any]:
     """
     Facilitator-directed conversation with dynamic persona generation and novelty tracking.
@@ -228,7 +228,7 @@ async def meeting_facilitator(
                 "phase": phase,
                 "shared_context": shared_context,
                 "exchanges": phase_exchanges,  # Full conversation history from all participants
-                "memory_mode": memory_mode,  # "full_history" or "structured"
+                "memory_mode": memory_mode,
             }
 
             # Persona generates response using their summary

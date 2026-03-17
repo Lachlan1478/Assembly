@@ -18,7 +18,7 @@ MODE_CONFIGS = {
         "enable_summary_updates": False,
         "enable_mediator": False,  # Disable mediator for speed
         "enable_convergence_phase": False,  # Skip convergence for speed
-        "memory_mode": "full_history",  # Baseline: raw history dump (no extra LLM calls)
+        "memory_mode": "structured",
         "description": "Quick test (1-2 min) - exploration -> decision only"
     },
     "medium": {
