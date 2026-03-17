@@ -53,6 +53,7 @@ dynamic_personas/
 # Tests (exclude all except active pytest tests)
 tests/*
 !tests/test_auth_middleware.py
+!tests/test_persona_helpers.py
 
 # Generated files
 *.html

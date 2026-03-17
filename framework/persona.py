@@ -649,12 +649,14 @@ CRITICAL CONSTRAINTS:
             f"Respond ONLY with a JSON object in this format:\n"
             f"{{\n"
             f'  "position": "updated position statement or null",\n'
-            f'  "confidence": 0.7,\n'
+            f'  "confidence": 0.7 or null,\n'
             f'  "new_uncertainties": ["uncertainty1"],\n'
             f'  "resolved_uncertainties": [0, 1],\n'
             f'  "new_concessions": [{{"from_speaker": "Name", "point": "what you acknowledged"}}],\n'
             f'  "new_deltas": [{{"turn": {turn_count}, "change": "what shifted", "reason": "why"}}],\n'
-            f'  "domain_specific": {{"cruxes": ["new crux"]}}\n'
+            f'  "domain_specific": {{\n'
+            f'    "cruxes": ["new crux"] or "key_tradeoffs": ["new tradeoff"]\n'
+            f'  }}\n'
             f"}}\n\n"
             f"Only include fields with new information. Empty lists/objects are fine if nothing new."
         )
