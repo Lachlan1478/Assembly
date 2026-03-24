@@ -6,6 +6,9 @@ import os
 import sys
 from datetime import datetime
 
+# Force UTF-8 stdout to prevent charmap encoding errors on Windows
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 

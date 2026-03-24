@@ -192,6 +192,7 @@ class RunParams(BaseModel):
     inspiration: str = Field(..., min_length=10)
     mode: str = "medium"
     number_of_ideas: int = Field(1, ge=1, le=5)
+    domain: str = "product"  # "product" | "technical" | "general"
     # The remaining fields are informational (stored) but mode controls the
     # actual config.  We include them so the UI can send overrides if needed.
     max_turns_per_phase: Optional[int] = None
@@ -223,6 +224,11 @@ async def api_run(params: RunParams):
     if params.mode not in MODE_CONFIGS:
         return JSONResponse(
             {"error": f"Unknown mode '{params.mode}'. Valid: {list(MODE_CONFIGS.keys())}"},
+            status_code=400,
+        )
+    if params.domain not in ("product", "technical", "general"):
+        return JSONResponse(
+            {"error": f"Unknown domain '{params.domain}'. Valid: product, technical, general"},
             status_code=400,
         )
 
@@ -496,6 +502,7 @@ async def _run_assembly(
                 inspiration=params.inspiration,
                 number_of_ideas=params.number_of_ideas,
                 mode=params.mode,
+                domain=params.domain,
                 monitor=emitter,
                 logger=dash_logger,
                 config_overrides=overrides or None,

@@ -18,7 +18,7 @@ from src.idea_generation.extraction import extract_ideas_with_llm
 from src.idea_generation.convergence import run_convergence_phase, format_convergence_output
 
 
-def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", monitor=None, logger=None, config_overrides=None):
+def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", monitor=None, logger=None, config_overrides=None, domain="product"):
     """
     Generate startup ideas using dynamic persona loading and facilitator-directed conversation.
 
@@ -42,6 +42,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     if config_overrides:
         config.update(config_overrides)
     log.info("Running in %s mode: %s", mode.upper(), config["description"])
+    log.info("Domain: %s", domain)
 
     # Initialize PersonaManager for dynamic generation
     log.info("Initializing PersonaManager for dynamic persona generation...")
@@ -64,6 +65,7 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
     logger.log_metadata("inspiration", inspiration)
     logger.log_metadata("number_of_ideas", number_of_ideas)
     logger.log_metadata("mode", mode)
+    logger.log_metadata("domain", domain)
     logger.log_metadata("model", config["model"])
     logger.log_metadata("dynamic_generation", True)
 
@@ -154,11 +156,12 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
         logger=logger,
         monitor=monitor,
         enable_summary_updates=config["enable_summary_updates"],
-        use_async_updates=True,  # Enable async parallel summary updates
-        model_name=config["model"],  # Pass model for idea extraction
-        personas_per_phase=config.get("personas_per_phase", 4),  # Configurable persona count
-        enable_mediator=config.get("enable_mediator", True),  # Enable mediator based on mode
+        use_async_updates=True,
+        model_name=config["model"],
+        personas_per_phase=config.get("personas_per_phase", 4),
+        enable_mediator=config.get("enable_mediator", True),
         memory_mode=config.get("memory_mode", "structured"),
+        domain=domain,
     ))
 
     # Save basic logs (backwards compatibility)
@@ -222,7 +225,8 @@ def multiple_llm_idea_generator(inspiration, number_of_ideas=1, mode="medium", m
             ideas_discussed=final_context.get("ideas_discussed", []),
             raw_ideas=business_ideas,
             model=config["model"],
-            verbose=True
+            verbose=True,
+            domain=domain,
         )
 
         if convergence_result.get("success"):

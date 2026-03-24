@@ -1,6 +1,11 @@
 # convergence.py
 # Final "Decision Owner / Convergence" phase that refines Assembly output
-# into a commercially sharp, structured format using iterative self-critique.
+# into a domain-appropriate structured format using iterative self-critique.
+#
+# Domains:
+#   "product"   — startup/product idea → ConvergenceOutput (commercial spec)
+#   "technical" — coding/architecture  → TechnicalConvergenceOutput (design spec)
+#   "general"   — anything else        → GeneralConvergenceOutput (decision summary)
 
 import json
 from typing import Dict, List, Any, Optional
@@ -10,7 +15,7 @@ from openai import OpenAI
 
 @dataclass
 class ConvergenceOutput:
-    """Structured output from the convergence phase."""
+    """Structured output for product/startup domain."""
     product_name: str
     one_sentence_pitch: str
     target_user_icp: str
@@ -20,6 +25,40 @@ class ConvergenceOutput:
     what_we_are_not_doing: List[str]
     risks_unknowns: List[str]  # Top 3
     next_7_day_plan: List[str]
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass
+class TechnicalConvergenceOutput:
+    """Structured output for technical/coding domain."""
+    solution_name: str
+    one_sentence_summary: str
+    target_context: str          # e.g. "Node.js backends with >10k req/min"
+    architecture_bullets: List[str]  # Max 5 key decisions
+    tech_stack: str
+    key_differentiator: str      # vs closest alternative approach
+    out_of_scope: List[str]
+    technical_risks: List[str]   # Top 3
+    implementation_plan: List[str]
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass
+class GeneralConvergenceOutput:
+    """Structured output for general/open-ended domain."""
+    title: str
+    one_sentence_summary: str
+    target_audience: str
+    key_points: List[str]       # Max 5 main takeaways
+    recommended_approach: str
+    key_differentiator: str     # vs doing nothing or obvious alternative
+    out_of_scope: List[str]
+    risks: List[str]            # Top 3
+    action_plan: List[str]
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -56,24 +95,30 @@ Write a draft product specification covering:
 Be specific and concrete. No hand-waving."""
 
 
-# Turn 2: Self-critique
-CRITIQUE_PROMPT = """You are a skeptical investor reviewing this product spec.
+# Turn 2: Self-critique — hardened to force competitor naming and pricing specifics
+CRITIQUE_PROMPT = """You are a skeptical seed investor reviewing this product spec before a partner meeting.
 
 DRAFT SPEC:
 {draft_spec}
 
-Find exactly 3 weaknesses:
+Find exactly 3 weaknesses. Be brutal — your partners will ask these questions:
 
-1. **Positioning weakness**: Is the pitch clear? Is the ICP too broad? Is the differentiator actually different?
+1. **Positioning weakness**: Name the ONE existing product that already does the closest thing to this.
+   - What does that product charge and why would a customer switch?
+   - Is the differentiator in this spec actually 10x better, or just marginally different?
+   - If the ICP is "SMBs" or "developers" or any group larger than 10,000 people, the ICP is too broad — demand a specific sub-segment.
 
-2. **Feasibility weakness**: Is the MVP too big? Are there hidden technical risks? Can a small team build this?
+2. **Feasibility weakness**: Is the MVP too big for a 2-person team in 90 days?
+   - Name the hardest technical dependency (an API, a model, a dataset, a regulatory approval).
+   - What breaks if that dependency fails or prices change?
 
-3. **Commercial weakness**: Is the monetization model realistic? Will people actually pay? What's the GTM challenge?
+3. **Commercial weakness** (this is the hardest question — do not soften it):
+   - Name a specific type of company or person who would write a cheque for this TODAY.
+   - State the most credible price point ($X/month or $X one-time) and explain why that number, not 2x or 0.5x.
+   - Identify the go-to-market motion: outbound sales, product-led growth, marketplace listing, or partnership. Pick one and explain why the others won't work.
+   - What prevents a well-funded incumbent (name one) from copying this in 6 months?
 
-For each weakness, be specific about:
-- What's wrong
-- Why it matters
-- What question it leaves unanswered"""
+For each weakness, end with a single sentence: "This spec fails to answer: [specific question]." """
 
 
 # Turn 3: Address critiques and finalize
@@ -98,8 +143,8 @@ Address each critique with specific improvements. Then produce the FINAL output 
         "Feature 4",
         "Feature 5"
     ],
-    "monetization_model": "How it makes money (pricing, who pays, when)",
-    "key_differentiator": "The ONE thing that makes this 10x better than alternatives",
+    "monetization_model": "Specific model: who pays, exact price point (e.g. '$49/month per seat'), when they pay (upfront/monthly/usage), and the primary GTM motion (PLG/outbound/marketplace)",
+    "key_differentiator": "The ONE thing that makes this 10x better than [name the closest competitor]. Explain why that competitor cannot copy this in 6 months.",
     "what_we_are_not_doing": [
         "Explicit scope boundary 1",
         "Explicit scope boundary 2",
@@ -118,6 +163,186 @@ Address each critique with specific improvements. Then produce the FINAL output 
 }}
 
 MVP must have exactly 5 bullets or fewer. Be ruthlessly specific."""
+
+
+# ─── Technical domain prompts ────────────────────────────────────────────────
+
+TECHNICAL_SYNTHESIS_PROMPT = """You are a Technical Architect reviewing a multi-persona engineering discussion.
+
+PROBLEM:
+{inspiration}
+
+CONVERSATION SUMMARY:
+{conversation_summary}
+
+PROPOSALS DISCUSSED:
+{ideas_discussed}
+
+Synthesize into a SINGLE, focused technical solution covering:
+1. Solution name (descriptive, implementation-ready)
+2. One-sentence summary (what it does and what problem it solves)
+3. Target context (specific environment, codebase type, or scale this applies to)
+4. Core architecture decisions (the 3–5 choices that define the design)
+5. Tech stack (primary language, framework, key libraries)
+6. Key differentiator vs the most obvious alternative approach
+7. Explicit scope: what this design does NOT address
+
+Be concrete about trade-offs. No hand-waving."""
+
+
+TECHNICAL_CRITIQUE_PROMPT = """You are a senior engineer doing a design review before this goes to the team.
+
+DRAFT SPEC:
+{draft_spec}
+
+Find exactly 3 weaknesses:
+
+1. **Architecture weakness**: Is the design over-engineered for the stated context?
+   - Name a specific coupling point or hidden dependency that creates fragility.
+   - What breaks at 10x the stated load or data volume?
+
+2. **Implementation weakness**: What is the hardest single piece to build correctly?
+   - Name the external dependency (API, model, service, dataset) most likely to fail or change.
+   - What happens to the design if that dependency is unavailable or repriced?
+
+3. **Operational weakness**: How does this behave in production?
+   - What is the observability story — how would you know it is broken before users complain?
+   - How would you debug it at 2am when the logs are unhelpful?
+
+For each weakness, end with: "This spec fails to answer: [specific question]." """
+
+
+TECHNICAL_REFINEMENT_PROMPT = """You are finalizing a technical design spec based on peer review feedback.
+
+ORIGINAL SPEC:
+{draft_spec}
+
+REVIEW FEEDBACK:
+{critiques}
+
+Address each point with specific improvements. Then produce the FINAL output in this exact JSON format:
+
+{{
+    "solution_name": "Descriptive name for the solution",
+    "one_sentence_summary": "What it does and the problem it solves - max 20 words",
+    "target_context": "Specific environment (e.g., 'Python async services handling >5k concurrent connections')",
+    "architecture_bullets": [
+        "Decision 1: specific choice and the trade-off it makes",
+        "Decision 2",
+        "Decision 3",
+        "Decision 4",
+        "Decision 5"
+    ],
+    "tech_stack": "Language + framework + key libraries (e.g., 'Python 3.12, asyncio, Redis 7, PostgreSQL 16')",
+    "key_differentiator": "Why this approach vs [name the closest alternative] — name the concrete trade-off that favours this design",
+    "out_of_scope": [
+        "Explicit boundary 1",
+        "Explicit boundary 2",
+        "Explicit boundary 3"
+    ],
+    "technical_risks": [
+        "Risk 1: description and mitigation",
+        "Risk 2: description and mitigation",
+        "Risk 3: description and mitigation"
+    ],
+    "implementation_plan": [
+        "Phase 1 (Day 1-2): Specific deliverable",
+        "Phase 2 (Day 3-4): Specific deliverable",
+        "Phase 3 (Day 5-7): Specific deliverable"
+    ]
+}}
+
+Architecture must have exactly 5 bullets or fewer. Be specific about versions and quantities."""
+
+
+# ─── General domain prompts ───────────────────────────────────────────────────
+
+GENERAL_SYNTHESIS_PROMPT = """You are a Decision Facilitator reviewing a multi-perspective discussion.
+
+TOPIC:
+{inspiration}
+
+CONVERSATION SUMMARY:
+{conversation_summary}
+
+KEY POSITIONS DISCUSSED:
+{ideas_discussed}
+
+Synthesize into a SINGLE, focused recommendation covering:
+1. Title (clear name for the recommendation or decision)
+2. One-sentence summary (what it recommends and why)
+3. Target audience (who this recommendation is for)
+4. Key points (the 3–5 most important findings or decisions)
+5. Recommended approach (the specific path forward)
+6. Key differentiator (vs doing nothing or the most obvious alternative)
+7. Explicit scope: what this recommendation does NOT address
+
+Be concrete and actionable."""
+
+
+GENERAL_CRITIQUE_PROMPT = """You are a critical reviewer examining this recommendation before it is acted on.
+
+DRAFT RECOMMENDATION:
+{draft_spec}
+
+Find exactly 3 weaknesses:
+
+1. **Clarity weakness**: Is the recommendation specific enough to act on?
+   - What ambiguous term or phrase would two people interpret differently?
+   - Who is responsible for each action item?
+
+2. **Evidence weakness**: What assumption is most likely to be wrong?
+   - What evidence was cited vs assumed?
+   - What would change the recommendation if it turned out to be false?
+
+3. **Completeness weakness**: What important consideration is missing?
+   - What stakeholder was not represented in the discussion?
+   - What downstream consequence was not addressed?
+
+For each weakness, end with: "This recommendation fails to answer: [specific question]." """
+
+
+GENERAL_REFINEMENT_PROMPT = """You are finalizing a recommendation based on critical review feedback.
+
+ORIGINAL RECOMMENDATION:
+{draft_spec}
+
+REVIEW FEEDBACK:
+{critiques}
+
+Address each point with specific improvements. Then produce the FINAL output in this exact JSON format:
+
+{{
+    "title": "Clear title for the recommendation",
+    "one_sentence_summary": "What it recommends and why - max 20 words",
+    "target_audience": "Specific audience (e.g., 'Engineering leads at 20-100 person startups adopting microservices')",
+    "key_points": [
+        "Finding or decision 1",
+        "Finding or decision 2",
+        "Finding or decision 3",
+        "Finding or decision 4",
+        "Finding or decision 5"
+    ],
+    "recommended_approach": "The specific path forward with concrete first step",
+    "key_differentiator": "Why this vs [name the obvious alternative] — the specific reason to choose this path",
+    "out_of_scope": [
+        "Explicit boundary 1",
+        "Explicit boundary 2",
+        "Explicit boundary 3"
+    ],
+    "risks": [
+        "Risk 1: description and what to watch for",
+        "Risk 2: description and what to watch for",
+        "Risk 3: description and what to watch for"
+    ],
+    "action_plan": [
+        "Step 1 (Day 1-2): Specific action with owner",
+        "Step 2 (Day 3-4): Specific action with owner",
+        "Step 3 (Day 5-7): Specific action with owner"
+    ]
+}}
+
+Key points must have exactly 5 bullets or fewer. Be specific and actionable."""
 
 
 def summarize_conversation(logs: List[Dict[str, Any]], max_turns: int = 20) -> str:
@@ -175,22 +400,56 @@ def run_convergence_phase(
     raw_ideas: List[Dict[str, Any]],
     model: str = "gpt-4o-mini",
     verbose: bool = True,
+    domain: str = "product",
 ) -> Dict[str, Any]:
     """
     Run the convergence phase: 3-turn iterative refinement to produce
-    a commercially sharp final output.
+    a domain-appropriate final output.
 
     Args:
         inspiration: Original inspiration/domain
         logs: Conversation logs from meeting_facilitator
         ideas_discussed: Ideas tracked during conversation
-        raw_ideas: Extracted business ideas from Assembly
+        raw_ideas: Extracted ideas/proposals from Assembly
         model: Model to use
         verbose: Print progress
+        domain: "product" | "technical" | "general"
 
     Returns:
-        Dict with convergence_output and intermediate turns
+        Dict with convergence_output (domain-specific dataclass as dict),
+        intermediate turns, success flag, and error.
     """
+    # Select prompts and output builder for this domain
+    if domain == "technical":
+        synthesis_prompt = TECHNICAL_SYNTHESIS_PROMPT
+        critique_prompt = TECHNICAL_CRITIQUE_PROMPT
+        refinement_prompt = TECHNICAL_REFINEMENT_PROMPT
+        synthesis_system = "You are a Technical Architect synthesizing an engineering discussion into a concrete design spec. Be specific about trade-offs, version numbers, and scale constraints."
+        critique_system = "You are a senior engineer doing a design review. Find structural weaknesses, not surface-level style issues."
+        refinement_system = "You are finalizing a technical design spec. Output valid JSON only."
+        domain_label = "technical design"
+    elif domain == "general":
+        synthesis_prompt = GENERAL_SYNTHESIS_PROMPT
+        critique_prompt = GENERAL_CRITIQUE_PROMPT
+        refinement_prompt = GENERAL_REFINEMENT_PROMPT
+        synthesis_system = "You are a Decision Facilitator synthesizing a multi-perspective discussion into a clear, actionable recommendation. Be specific about who does what and why."
+        critique_system = "You are a critical reviewer. Find gaps in clarity, evidence, and completeness — not tone or style."
+        refinement_system = "You are finalizing a recommendation. Output valid JSON only."
+        domain_label = "recommendation"
+    else:  # "product" (default)
+        synthesis_prompt = SYNTHESIS_PROMPT
+        critique_prompt = CRITIQUE_PROMPT
+        refinement_prompt = REFINEMENT_PROMPT
+        synthesis_system = (
+            "You are a Decision Owner who synthesizes brainstorms into actionable product specs. "
+            "Be specific and concrete. Always identify a specific ICP (not 'developers' or 'SMBs' — "
+            "a sub-segment with a named job title and context), a specific monetization model with "
+            "a real price point, and name the closest existing competitor."
+        )
+        critique_system = "You are a skeptical seed investor. Find real weaknesses, not softballs."
+        refinement_system = "You are a product strategist finalizing a spec. Output valid JSON only."
+        domain_label = "product spec"
+
     client = OpenAI()
 
     result = {
@@ -198,13 +457,13 @@ def run_convergence_phase(
         "turns": [],
         "success": False,
         "error": None,
+        "domain": domain,
     }
 
     # Prepare context
     conversation_summary = summarize_conversation(logs)
     ideas_summary = format_ideas_discussed(ideas_discussed)
 
-    # Also include raw extracted ideas if available
     if raw_ideas:
         ideas_summary += "\n\nEXTRACTED IDEAS:\n"
         for idea in raw_ideas:
@@ -216,23 +475,20 @@ def run_convergence_phase(
     try:
         # Turn 1: Synthesis
         if verbose:
-            print("\n[Convergence 1/3] Synthesizing conversation into draft spec...")
+            print(f"\n[Convergence 1/3] Synthesizing conversation into draft {domain_label}...")
 
         turn1_response = client.chat.completions.create(
             model=model,
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are a Decision Owner who synthesizes brainstorms into actionable product specs. Be specific and concrete."
-                },
+                {"role": "system", "content": synthesis_system},
                 {
                     "role": "user",
-                    "content": SYNTHESIS_PROMPT.format(
+                    "content": synthesis_prompt.format(
                         inspiration=inspiration,
                         conversation_summary=conversation_summary,
-                        ideas_discussed=ideas_summary
-                    )
-                }
+                        ideas_discussed=ideas_summary,
+                    ),
+                },
             ],
             temperature=0.7,
         )
@@ -242,27 +498,21 @@ def run_convergence_phase(
             "turn": 1,
             "type": "synthesis",
             "content": draft_spec,
-            "tokens": turn1_response.usage.total_tokens if turn1_response.usage else 0
+            "tokens": turn1_response.usage.total_tokens if turn1_response.usage else 0,
         })
 
         if verbose:
             print(f"    Draft spec generated ({len(draft_spec)} chars)")
 
-        # Turn 2: Self-critique
+        # Turn 2: Critique
         if verbose:
-            print("[Convergence 2/3] Running self-critique...")
+            print("[Convergence 2/3] Running critique...")
 
         turn2_response = client.chat.completions.create(
             model=model,
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are a skeptical investor. Find real weaknesses, not softballs."
-                },
-                {
-                    "role": "user",
-                    "content": CRITIQUE_PROMPT.format(draft_spec=draft_spec)
-                }
+                {"role": "system", "content": critique_system},
+                {"role": "user", "content": critique_prompt.format(draft_spec=draft_spec)},
             ],
             temperature=0.7,
         )
@@ -272,7 +522,7 @@ def run_convergence_phase(
             "turn": 2,
             "type": "critique",
             "content": critiques,
-            "tokens": turn2_response.usage.total_tokens if turn2_response.usage else 0
+            "tokens": turn2_response.usage.total_tokens if turn2_response.usage else 0,
         })
 
         if verbose:
@@ -285,19 +535,16 @@ def run_convergence_phase(
         turn3_response = client.chat.completions.create(
             model=model,
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are a product strategist finalizing a spec. Output valid JSON only."
-                },
+                {"role": "system", "content": refinement_system},
                 {
                     "role": "user",
-                    "content": REFINEMENT_PROMPT.format(
+                    "content": refinement_prompt.format(
                         draft_spec=draft_spec,
-                        critiques=critiques
-                    )
-                }
+                        critiques=critiques,
+                    ),
+                },
             ],
-            temperature=0.3,  # Lower for consistent JSON
+            temperature=0.3,
         )
 
         final_json_str = turn3_response.choices[0].message.content
@@ -305,32 +552,20 @@ def run_convergence_phase(
             "turn": 3,
             "type": "final_output",
             "content": final_json_str,
-            "tokens": turn3_response.usage.total_tokens if turn3_response.usage else 0
+            "tokens": turn3_response.usage.total_tokens if turn3_response.usage else 0,
         })
 
-        # Parse JSON output
+        # Parse JSON and build domain-specific output object
         final_output = extract_json_from_response(final_json_str)
 
         if final_output:
-            # Validate and create ConvergenceOutput
-            convergence = ConvergenceOutput(
-                product_name=final_output.get("product_name", "Unnamed"),
-                one_sentence_pitch=final_output.get("one_sentence_pitch", ""),
-                target_user_icp=final_output.get("target_user_icp", ""),
-                mvp_bullets=final_output.get("mvp_bullets", [])[:5],  # Max 5
-                monetization_model=final_output.get("monetization_model", ""),
-                key_differentiator=final_output.get("key_differentiator", ""),
-                what_we_are_not_doing=final_output.get("what_we_are_not_doing", []),
-                risks_unknowns=final_output.get("risks_unknowns", [])[:3],  # Top 3
-                next_7_day_plan=final_output.get("next_7_day_plan", []),
-            )
-
+            convergence = _build_convergence_output(final_output, domain)
             result["convergence_output"] = convergence.to_dict()
             result["success"] = True
 
             if verbose:
-                print(f"    Final output: {convergence.product_name}")
-                print(f"    Pitch: {convergence.one_sentence_pitch[:80]}...")
+                label = _convergence_display_label(convergence, domain)
+                print(f"    Final output: {label}")
         else:
             result["error"] = "Failed to parse JSON from final turn"
             if verbose:
@@ -344,20 +579,59 @@ def run_convergence_phase(
     return result
 
 
+def _build_convergence_output(data: dict, domain: str):
+    """Construct the domain-appropriate output dataclass from parsed JSON."""
+    if domain == "technical":
+        return TechnicalConvergenceOutput(
+            solution_name=data.get("solution_name", "Unnamed"),
+            one_sentence_summary=data.get("one_sentence_summary", ""),
+            target_context=data.get("target_context", ""),
+            architecture_bullets=data.get("architecture_bullets", [])[:5],
+            tech_stack=data.get("tech_stack", ""),
+            key_differentiator=data.get("key_differentiator", ""),
+            out_of_scope=data.get("out_of_scope", []),
+            technical_risks=data.get("technical_risks", [])[:3],
+            implementation_plan=data.get("implementation_plan", []),
+        )
+    elif domain == "general":
+        return GeneralConvergenceOutput(
+            title=data.get("title", "Unnamed"),
+            one_sentence_summary=data.get("one_sentence_summary", ""),
+            target_audience=data.get("target_audience", ""),
+            key_points=data.get("key_points", [])[:5],
+            recommended_approach=data.get("recommended_approach", ""),
+            key_differentiator=data.get("key_differentiator", ""),
+            out_of_scope=data.get("out_of_scope", []),
+            risks=data.get("risks", [])[:3],
+            action_plan=data.get("action_plan", []),
+        )
+    else:  # "product"
+        return ConvergenceOutput(
+            product_name=data.get("product_name", "Unnamed"),
+            one_sentence_pitch=data.get("one_sentence_pitch", ""),
+            target_user_icp=data.get("target_user_icp", ""),
+            mvp_bullets=data.get("mvp_bullets", [])[:5],
+            monetization_model=data.get("monetization_model", ""),
+            key_differentiator=data.get("key_differentiator", ""),
+            what_we_are_not_doing=data.get("what_we_are_not_doing", []),
+            risks_unknowns=data.get("risks_unknowns", [])[:3],
+            next_7_day_plan=data.get("next_7_day_plan", []),
+        )
+
+
+def _convergence_display_label(convergence, domain: str) -> str:
+    """Return a short display string for the verbose completion log."""
+    if domain == "technical":
+        return convergence.solution_name
+    elif domain == "general":
+        return convergence.title
+    else:
+        return f"{convergence.product_name} — {convergence.one_sentence_pitch[:60]}..."
+
+
 def extract_json_from_response(content: str) -> Optional[dict]:
     """Extract JSON from LLM response."""
-    import re
-
-    # Try to find JSON block
-    json_match = re.search(r'\{[^{}]*"product_name"[^{}]*\}', content, re.DOTALL)
-
-    if json_match:
-        try:
-            return json.loads(json_match.group(0))
-        except json.JSONDecodeError:
-            pass
-
-    # Try more aggressive extraction
+    # Use start/rfind extraction — more reliable than regex for nested JSON
     try:
         start = content.find('{')
         end = content.rfind('}')
@@ -371,55 +645,77 @@ def extract_json_from_response(content: str) -> Optional[dict]:
 
 
 def format_convergence_output(output: Dict[str, Any]) -> str:
-    """Format convergence output for display/logging."""
+    """Format convergence output for display/logging.
+
+    Detects domain from which keys are present in the output dict.
+    """
     if not output:
         return "(No convergence output)"
 
-    lines = [
-        "=" * 60,
-        "CONVERGENCE OUTPUT",
-        "=" * 60,
-        "",
-        f"PRODUCT: {output.get('product_name', 'Unnamed')}",
-        "",
-        f"PITCH: {output.get('one_sentence_pitch', '')}",
-        "",
-        f"TARGET USER (ICP): {output.get('target_user_icp', '')}",
-        "",
-        "MVP (v1 Features):",
-    ]
+    sep = "=" * 60
 
-    for bullet in output.get("mvp_bullets", []):
-        lines.append(f"  - {bullet}")
+    # Technical domain
+    if "solution_name" in output:
+        lines = [sep, "CONVERGENCE OUTPUT (TECHNICAL)", sep, "",
+                 f"SOLUTION: {output.get('solution_name', 'Unnamed')}", "",
+                 f"SUMMARY: {output.get('one_sentence_summary', '')}", "",
+                 f"TARGET CONTEXT: {output.get('target_context', '')}", "",
+                 "ARCHITECTURE DECISIONS:"]
+        for b in output.get("architecture_bullets", []):
+            lines.append(f"  - {b}")
+        lines += ["", f"TECH STACK: {output.get('tech_stack', '')}", "",
+                  f"KEY DIFFERENTIATOR: {output.get('key_differentiator', '')}", "",
+                  "OUT OF SCOPE:"]
+        for item in output.get("out_of_scope", []):
+            lines.append(f"  - {item}")
+        lines += ["", "TECHNICAL RISKS:"]
+        for risk in output.get("technical_risks", []):
+            lines.append(f"  - {risk}")
+        lines += ["", "IMPLEMENTATION PLAN:"]
+        for step in output.get("implementation_plan", []):
+            lines.append(f"  - {step}")
 
-    lines.extend([
-        "",
-        f"MONETIZATION: {output.get('monetization_model', '')}",
-        "",
-        f"KEY DIFFERENTIATOR: {output.get('key_differentiator', '')}",
-        "",
-        "WHAT WE'RE NOT DOING:",
-    ])
+    # General domain
+    elif "recommended_approach" in output:
+        lines = [sep, "CONVERGENCE OUTPUT (GENERAL)", sep, "",
+                 f"TITLE: {output.get('title', 'Unnamed')}", "",
+                 f"SUMMARY: {output.get('one_sentence_summary', '')}", "",
+                 f"TARGET AUDIENCE: {output.get('target_audience', '')}", "",
+                 "KEY POINTS:"]
+        for pt in output.get("key_points", []):
+            lines.append(f"  - {pt}")
+        lines += ["", f"RECOMMENDED APPROACH: {output.get('recommended_approach', '')}", "",
+                  f"KEY DIFFERENTIATOR: {output.get('key_differentiator', '')}", "",
+                  "OUT OF SCOPE:"]
+        for item in output.get("out_of_scope", []):
+            lines.append(f"  - {item}")
+        lines += ["", "RISKS:"]
+        for risk in output.get("risks", []):
+            lines.append(f"  - {risk}")
+        lines += ["", "ACTION PLAN:"]
+        for step in output.get("action_plan", []):
+            lines.append(f"  - {step}")
 
-    for item in output.get("what_we_are_not_doing", []):
-        lines.append(f"  - {item}")
+    # Product domain (default)
+    else:
+        lines = [sep, "CONVERGENCE OUTPUT (PRODUCT)", sep, "",
+                 f"PRODUCT: {output.get('product_name', 'Unnamed')}", "",
+                 f"PITCH: {output.get('one_sentence_pitch', '')}", "",
+                 f"TARGET USER (ICP): {output.get('target_user_icp', '')}", "",
+                 "MVP (v1 Features):"]
+        for b in output.get("mvp_bullets", []):
+            lines.append(f"  - {b}")
+        lines += ["", f"MONETIZATION: {output.get('monetization_model', '')}", "",
+                  f"KEY DIFFERENTIATOR: {output.get('key_differentiator', '')}", "",
+                  "WHAT WE'RE NOT DOING:"]
+        for item in output.get("what_we_are_not_doing", []):
+            lines.append(f"  - {item}")
+        lines += ["", "RISKS / UNKNOWNS:"]
+        for risk in output.get("risks_unknowns", []):
+            lines.append(f"  - {risk}")
+        lines += ["", "NEXT 7-DAY PLAN:"]
+        for step in output.get("next_7_day_plan", []):
+            lines.append(f"  - {step}")
 
-    lines.extend([
-        "",
-        "RISKS / UNKNOWNS:",
-    ])
-
-    for risk in output.get("risks_unknowns", []):
-        lines.append(f"  - {risk}")
-
-    lines.extend([
-        "",
-        "NEXT 7-DAY PLAN:",
-    ])
-
-    for step in output.get("next_7_day_plan", []):
-        lines.append(f"  - {step}")
-
-    lines.append("=" * 60)
-
+    lines.append(sep)
     return "\n".join(lines)

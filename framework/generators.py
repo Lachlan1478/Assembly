@@ -37,12 +37,43 @@ def sanitize_for_console(text: str) -> str:
     return text
 
 
+# Fixed Commercial Validator persona injected into every debate phase.
+# Its sole job: challenge monetization assumptions — who pays, how much, why now.
+_COMMERCIAL_VALIDATOR_PERSONA = {
+    "Name": "Commercial Validator",
+    "Archetype": "Revenue falsification / market-demand testing",
+    "Purpose": (
+        "Challenge every monetization claim. Force the group to name a specific buyer, "
+        "a specific price point, a specific reason they would pay now rather than later, "
+        "and a specific reason they would pay for this over existing alternatives."
+    ),
+    "Deliverables": (
+        "A list of unresolved commercial questions: who is the paying customer, "
+        "what is the willingness-to-pay evidence, which competitor already charges for this, "
+        "what go-to-market motion reaches the buyer, and what the CAC/LTV looks like."
+    ),
+    "Strengths": "Exposes wishful-thinking pricing and vague 'enterprise sales' assumptions.",
+    "Watch-out": (
+        "Avoid scope creep into product feasibility — stay on commercial viability only. "
+        "Do not accept 'we will figure out monetization later' without a concrete rebuttal."
+    ),
+    "Conversation_Style": (
+        "Ask exactly one sharp commercial question per turn. "
+        "Each question must name a specific alternative product and ask why a customer "
+        "would switch. Examples: 'Who is writing the first cheque and why this week, not next year?' "
+        "'Notion already does X for $8/month — what is your price and why would someone pay it?' "
+        "'Name one company that has paid for something like this in the last 12 months.'"
+    ),
+}
+
+
 def generate_personas_for_context(
     inspiration: str,
     phase_info: Dict[str, Any],
     existing_personas: List[str],
     count: int = 4,
-    model_name: str = "gpt-4o-mini"
+    model_name: str = "gpt-4o-mini",
+    domain: str = "product",
 ) -> List[Dict[str, Any]]:
     """
     Generate domain-specific personas based on problem context.
@@ -144,6 +175,12 @@ Respond ONLY with JSON (map new fields to old schema):
             personas = parsed
         else:
             personas = []
+
+        # Inject Commercial Validator into debate phases for product domains only.
+        # Technical and general domains don't benefit from monetization challenge questions.
+        phase_type = phase_info.get("phase_type", "debate")
+        if phase_type == "debate" and domain == "product":
+            personas.append(_COMMERCIAL_VALIDATOR_PERSONA.copy())
 
         print(f"[OK] Generated {len(personas)} personas for {phase_info.get('phase_id', 'phase')}")
         return personas

@@ -62,7 +62,8 @@ class PersonaManager:
         self,
         inspiration: str,
         phase_info: Dict[str, Any],
-        count: int = 4
+        count: int = 4,
+        domain: str = "product",
     ) -> Dict[str, Persona]:
         """
         Request personas for a specific phase.
@@ -97,7 +98,8 @@ class PersonaManager:
             phase_info=phase_info,
             existing_personas=self.generated_personas,
             count=count,
-            model_name=self.model_name
+            model_name=self.model_name,
+            domain=domain,
         )
 
         if not persona_defs:

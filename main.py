@@ -3,6 +3,10 @@ from pprint import pprint
 import json
 import argparse
 import os
+import sys
+
+# Force UTF-8 stdout to prevent charmap encoding errors on Windows
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 from dotenv import load_dotenv
 

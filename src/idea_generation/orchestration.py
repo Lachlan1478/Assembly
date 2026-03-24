@@ -42,7 +42,8 @@ async def meeting_facilitator(
     personas_per_phase: int = 4,
     enable_mediator: bool = True,
     mediator: Optional[MediatorPersona] = None,
-    memory_mode: str = "structured"
+    memory_mode: str = "structured",
+    domain: str = "product",
 ) -> Dict[str, Any]:
     """
     Facilitator-directed conversation with dynamic persona generation and novelty tracking.
@@ -111,7 +112,8 @@ async def meeting_facilitator(
         active_personas = persona_manager.request_personas_for_phase(
             inspiration=inspiration,
             phase_info=phase,
-            count=personas_per_phase  # Configurable persona count (default: 4)
+            count=personas_per_phase,
+            domain=domain,
         )
 
         # Log persona generation
